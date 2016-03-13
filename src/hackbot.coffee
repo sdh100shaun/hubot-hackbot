@@ -238,7 +238,7 @@ module.exports = (robot) ->
 
     robot.hack24client.getUser(userId)
       .then (res) ->
-        if (!res.ok and res.statusCode is 404) or res.user.team is null
+        if (!res.ok and res.statusCode is 404) or res.user.team.name is undefined
           return response.reply "You're not in a team! :goberserk:"
 
         memberList = res.user.team.members.map((member) => member.name)
