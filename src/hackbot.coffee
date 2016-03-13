@@ -110,7 +110,7 @@ module.exports = (robot) ->
 
         if res.team.members.length == 0
           return response.reply "\"#{res.team.name}\" is an empty team."
-          
+
         if res.team.members.length == 1 and res.team.members[0].id == response.message.user.id
           motto = if res.team.motto is null then "and you have not yet set your motto!" else "and your motto is: #{res.team.motto}"
           return response.reply "You are the only member of \"#{res.team.name}\" #{motto}"
@@ -168,7 +168,7 @@ module.exports = (robot) ->
     userId = response.message.user.id
     userName = response.message.user.name
     motto = response.match[1]
-    
+
     robot.hack24client.getUser(userId)
       .then (res) ->
 
@@ -181,10 +181,10 @@ module.exports = (robot) ->
           .then (updateMottoResponse) ->
             if updateMottoResponse.ok
               return response.reply "So it is! As #{res.user.team.name} say: #{motto}"
-            
+
             if updateMottoResponse.statusCode is 403
               return response.reply 'Sorry, only team members can change the motto.'
-              
+
             response.reply "Sorry, I tried, but something went wrong."
 
       .catch (err) ->
@@ -192,38 +192,38 @@ module.exports = (robot) ->
         response.reply 'I\'m sorry Sir, there appears to be a big problem!'
 
 
-  robot.respond /add @(.+) to my team/, (response) ->
+  robot.respond /add @([a-z0-9.-_]+)\s+to my team/, (response) ->
     otherUsername = response.match[1]
     userId = response.message.user.id
-      
+
     robot.hack24client.getUser(userId)
       .then (res) ->
         if res.user.team.id is undefined
           return response.reply "I would, but you're not in a team..."
-        
+
         teamId = res.user.team.id
-        
+
         otherUser = {}
         for _, user of robot.brain.data.users
           if user.name == otherUsername
             otherUser = user
             break
-        
-        addUserToTeam = (teamId, otherUserId, emailAddress) => 
+
+        addUserToTeam = (teamId, otherUserId, emailAddress) =>
           robot.hack24client.addUserToTeam(teamId, otherUserId, emailAddress)
             .then (res) ->
               if res.statusCode is 400
                 return response.reply "Sorry, #{otherUsername} is already in another team and must leave that team first."
-                
+
               if res.statusCode is 403
                 return response.reply "Sorry, you don't have permission to add people to your team."
-                
+
               response.reply 'Done!'
 
         emailAddress = robot.brain.data.users[userId].email_address
-        
+
         return robot.hack24client.getUser(otherUser.id)
-          .then (res) =>          
+          .then (res) =>
             if res.ok
               return addUserToTeam teamId, otherUser.id, emailAddress
 
@@ -245,7 +245,7 @@ module.exports = (robot) ->
         noun = if res.user.team.members.length == 1 then 'member' else 'members'
         motto = if res.user.team.motto is null then "They don't yet have a motto!" else "They say: #{res.user.team.motto}"
 
-        response.reply "\"#{res.user.team.name}\" has #{res.user.team.members.length} #{noun}: #{memberList.join(', ')}\r\n#{motto}" 
+        response.reply "\"#{res.user.team.name}\" has #{res.user.team.members.length} #{noun}: #{memberList.join(', ')}\r\n#{motto}"
       .catch (err) ->
         console.log("ERROR: " + err)
         response.reply 'I\'m sorry Sir, there appears to be a big problem!'
