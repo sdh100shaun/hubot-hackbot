@@ -120,7 +120,7 @@ describe '@hubot add @username to my team', ->
       @getUserStub = sinon.stub().returns Promise.resolve
         ok: true
         user:
-          team: null
+          team: {}
       
       @room.robot.hack24client =
         getUser: @getUserStub
