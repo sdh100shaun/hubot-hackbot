@@ -1,6 +1,6 @@
 {
   "name": "hubot-hackbot",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Andrew Seward <abseward@googlemail.com>",
   "contributors": [
     "David Wood <david.p.wood@gmail.com> (http://codesleuth.co.uk/)",
@@ -13,6 +13,10 @@
   },
   "engines": {
     "node": "5.4.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TechNottingham/hubot-hackbot"
   },
   "devDependencies": {
     "body-parser": "^1.15.0",

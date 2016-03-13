@@ -14,6 +14,7 @@
 #   hubot find teams like <query> - displays up to three teams matching the specified query
 #   hubot tell me about team <team name> - displays information about the specific team
 #   hubot add @<username> to my team - adds @<username> to your team
+#   hubot tell me about my team - displays information about your team
 #
 # Author:
 #   David Wood <david.p.wood@gmail.com>
