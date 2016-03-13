@@ -25,6 +25,7 @@ describe '@hubot tell me about my team', ->
         user:
           id: @userId
           team:
+            id: 'some team id'
             name: @teamName
             motto: @motto
             members: [{
@@ -68,6 +69,7 @@ describe '@hubot tell me about my team', ->
         user:
           id: @userId
           team:
+            id: 'johnny-fives'
             name: @teamName
             motto: null
             members: [{

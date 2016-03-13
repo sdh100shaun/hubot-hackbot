@@ -99,7 +99,7 @@ describe '@hubot our motto is X', ->
         ok: true
         user:
           id: @userId
-          team: null
+          team: {}
 
       @room.robot.hack24client =
         getUser: @getUserStub

@@ -172,7 +172,7 @@ module.exports = (robot) ->
     robot.hack24client.getUser(userId)
       .then (res) ->
 
-        if (!res.ok and res.statusCode is 404) or res.user.team is null
+        if (!res.ok and res.statusCode is 404) or res.user.team.id is undefined
           return response.reply "You're not in a team! :goberserk:"
 
         email_address = robot.brain.data.users[userId].email_address
@@ -198,7 +198,7 @@ module.exports = (robot) ->
       
     robot.hack24client.getUser(userId)
       .then (res) ->
-        if res.user.team == null
+        if res.user.team.id is undefined
           return response.reply "I would, but you're not in a team..."
         
         teamId = res.user.team.id
@@ -238,7 +238,7 @@ module.exports = (robot) ->
 
     robot.hack24client.getUser(userId)
       .then (res) ->
-        if (!res.ok and res.statusCode is 404) or res.user.team.name is undefined
+        if (!res.ok and res.statusCode is 404) or res.user.team.id is undefined
           return response.reply "You're not in a team! :goberserk:"
 
         memberList = res.user.team.members.map((member) => member.name)
