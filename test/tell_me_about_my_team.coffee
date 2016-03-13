@@ -106,7 +106,7 @@ describe '@hubot tell me about my team', ->
         ok: true
         user:
           id: @userId
-          team: null
+          team: {}
       
       @room.robot.hack24client =
         getUser: @getUserStub
