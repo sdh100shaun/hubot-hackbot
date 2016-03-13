@@ -1,7 +1,7 @@
 expect = require('chai').expect
 
 Helper = require 'hubot-test-helper'
-helper = new Helper('../scripts/hack24api.coffee')
+helper = new Helper('../src/hackbot.coffee')
 
 describe 'Can see the API', ->
 

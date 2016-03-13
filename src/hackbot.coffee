@@ -2,16 +2,21 @@
 #   Self service team and user administration scripts.
 #
 # Configuration:
-#   HACK24API_URL
+#   HACKBOT_PASSWORD: required
+#   HACK24API_URL: required
 #
 # Commands:
 #   hubot can you see the api? - checks if the API is visible
 #   hubot what are your prime directives? - cites hubot's prime directives
 #   hubot my id - echos the ID hubot knows you as
 #   hubot create team <team name> - tries to create team with name <team name> and adds you to it
+#   hubot leave my team - removes you from your current team
+#   hubot find teams like <query> - displays up to three teams matching the specified query
+#   hubot tell me about team <team name> - displays information about the specific team
+#   hubot add @<username> to my team - adds @<username> to your team
 #
 # Author:
-#   codesleuth
+#   David Wood <david.p.wood@gmail.com>
 #
 
 {Client} = require '../lib/client'
@@ -22,6 +27,7 @@ slugify = (name) -> slug(name, { lower: true })
 module.exports = (robot) ->
 
   robot.hack24client = new Client robot
+
 
   robot.respond /can you see the api\??/i, (response) =>
     response.reply "I'll have a quick look for you Sir..."
@@ -184,7 +190,7 @@ module.exports = (robot) ->
         console.log("ERROR: " + err)
         response.reply 'I\'m sorry Sir, there appears to be a big problem!'
 
-        
+
   robot.respond /add @(.+) to my team/, (response) ->
     otherUsername = response.match[1]
     userId = response.message.user.id
