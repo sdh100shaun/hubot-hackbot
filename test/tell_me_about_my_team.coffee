@@ -171,7 +171,7 @@ describe '@hubot tell me about my team', ->
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
         [@userId, "@hubot tell me about my team"],
-        ['hubot', "@#{@userId} I'm sorry Sir, there appears to be a big problem!"]
+        ['hubot', "@#{@userId} I'm sorry, there appears to be a big problem!"]
       ]
     
     after ->

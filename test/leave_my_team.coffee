@@ -169,7 +169,7 @@ describe '@hubot leave my team', ->
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
         ['sarah', '@hubot leave my team'],
-        ['hubot', '@sarah I\'m sorry Sir, there appears to be a big problem!']
+        ['hubot', '@sarah I\'m sorry, there appears to be a big problem!']
       ]
     
     after ->
@@ -195,7 +195,7 @@ describe '@hubot leave my team', ->
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
         ['sarah', '@hubot leave my team'],
-        ['hubot', '@sarah I\'m sorry Sir, there appears to be a big problem!']
+        ['hubot', '@sarah I\'m sorry, there appears to be a big problem!']
       ]
     
     after ->

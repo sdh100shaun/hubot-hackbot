@@ -31,16 +31,16 @@ module.exports = (robot) ->
 
 
   robot.respond /can you see the api\??/i, (response) =>
-    response.reply "I'll have a quick look for you Sir..."
+    response.reply "I'll have a quick look for you..."
     robot.hack24client.checkApi()
       .then (res) ->
         if res.ok
           response.reply 'I see her!'
         else
-          response.reply "I'm sorry Sir, there appears to be a problem; something about \"#{res.statusCode}\""
+          response.reply "I'm sorry, there appears to be a problem; something about \"#{res.statusCode}\""
       .catch (err) ->
         console.error "API check failed: #{err.message}"
-        response.reply 'I\'m sorry Sir, there appears to be a big problem!'
+        response.reply 'I\'m sorry, there appears to be a big problem!'
 
   robot.respond /what are your prime directives\??/i, (response) ->
     response.reply "1. Serve the public trust\n2. Protect the innocent hackers\n3. Uphold the Code of Conduct\n4. [Classified]"
@@ -97,7 +97,7 @@ module.exports = (robot) ->
             response.reply 'Sorry, I can\'t create your team :frowning:'
 
     .catch (err) ->
-        response.reply 'I\'m sorry Sir, there appears to be a big problem!'
+        response.reply 'I\'m sorry, there appears to be a big problem!'
 
 
   robot.respond /tell me about team (.*)/i, (response) ->
@@ -122,7 +122,7 @@ module.exports = (robot) ->
         response.reply "\"#{res.team.name}\" has #{res.team.members.length} #{noun}: #{memberList.join(', ')}\r\n#{motto}"
       .catch (err) ->
         console.log("ERROR: " + err)
-        response.reply 'I\'m sorry Sir, there appears to be a big problem!'
+        response.reply 'I\'m sorry, there appears to be a big problem!'
 
 
   robot.respond /leave my team/i, (response) ->
@@ -146,7 +146,7 @@ module.exports = (robot) ->
             response.reply "Sorry, I tried, but something went wrong."
 
       .catch (err) ->
-        response.reply 'I\'m sorry Sir, there appears to be a big problem!'
+        response.reply 'I\'m sorry, there appears to be a big problem!'
 
 
   robot.respond /find teams like (.*)/i, (response) ->
@@ -161,7 +161,7 @@ module.exports = (robot) ->
         response.reply "Found #{res.teams.length} teams; here's a few: #{names.join(', ')}"
 
       .catch (err) ->
-        response.reply 'I\'m sorry Sir, there appears to be a big problem!'
+        response.reply 'I\'m sorry, there appears to be a big problem!'
 
 
   robot.respond /our motto is (.*)/i, (response) ->
@@ -189,7 +189,7 @@ module.exports = (robot) ->
 
       .catch (err) ->
         console.log("ERROR: " + err)
-        response.reply 'I\'m sorry Sir, there appears to be a big problem!'
+        response.reply 'I\'m sorry, there appears to be a big problem!'
 
 
   robot.respond /add @([a-z0-9.-_]+)\s+to my team/, (response) ->
@@ -248,4 +248,4 @@ module.exports = (robot) ->
         response.reply "\"#{res.user.team.name}\" has #{res.user.team.members.length} #{noun}: #{memberList.join(', ')}\r\n#{motto}"
       .catch (err) ->
         console.log("ERROR: " + err)
-        response.reply 'I\'m sorry Sir, there appears to be a big problem!'
+        response.reply 'I\'m sorry, there appears to be a big problem!'
