@@ -23,7 +23,7 @@ describe 'Can see the API', ->
     it 'should reply to the user that the API is available', ->
         expect(@room.messages).to.eql [
           ['bob', '@hubot can you see the api?'],
-          ['hubot', "@bob I'll have a quick look for you Sir..."],
+          ['hubot', "@bob I'll have a quick look for you..."],
           ['hubot', '@bob I see her!']
         ]
 
@@ -46,8 +46,8 @@ describe 'Can see the API', ->
     it 'should reply to the user that he cannot see the API', ->
         expect(@room.messages).to.eql [
           ['bob', '@hubot can you see the api?'],
-          ['hubot', "@bob I'll have a quick look for you Sir..."],
-          ['hubot', '@bob I\'m sorry Sir, there appears to be a problem; something about "99"']
+          ['hubot', "@bob I'll have a quick look for you..."],
+          ['hubot', '@bob I\'m sorry, there appears to be a problem; something about "99"']
         ]
 
   describe 'hubot is unable to see the API because of a http error', ->
@@ -67,6 +67,6 @@ describe 'Can see the API', ->
     it 'should reply to the user that he cannot see the API because of a big problem', ->
       expect(@room.messages).to.eql [
         ['bob', '@hubot can you see the api?'],
-        ['hubot', "@bob I'll have a quick look for you Sir..."],
-        ['hubot', '@bob I\'m sorry Sir, there appears to be a big problem!']
+        ['hubot', "@bob I'll have a quick look for you..."],
+        ['hubot', '@bob I\'m sorry, there appears to be a big problem!']
       ]

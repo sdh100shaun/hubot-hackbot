@@ -380,7 +380,7 @@ describe '@hubot create team X', ->
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
         [@userId, "@hubot create team #{@teamName}"],
-        ['hubot', "@#{@userId} I'm sorry Sir, there appears to be a big problem!"]
+        ['hubot', "@#{@userId} I'm sorry, there appears to be a big problem!"]
       ]
     
     after ->
@@ -410,7 +410,7 @@ describe '@hubot create team X', ->
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
         [@userId, "@hubot create team #{@teamName}"],
-        ['hubot', "@#{@userId} I'm sorry Sir, there appears to be a big problem!"]
+        ['hubot', "@#{@userId} I'm sorry, there appears to be a big problem!"]
       ]
     
     after ->
@@ -442,7 +442,7 @@ describe '@hubot create team X', ->
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
         [@userId, "@hubot create team #{@teamName}"],
-        ['hubot', "@#{@userId} I'm sorry Sir, there appears to be a big problem!"]
+        ['hubot', "@#{@userId} I'm sorry, there appears to be a big problem!"]
       ]
     
     after ->
@@ -472,7 +472,7 @@ describe '@hubot create team X', ->
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
         [@userId, "@hubot create team #{@teamName}"],
-        ['hubot', "@#{@userId} I'm sorry Sir, there appears to be a big problem!"]
+        ['hubot', "@#{@userId} I'm sorry, there appears to be a big problem!"]
       ]
     
     after ->
