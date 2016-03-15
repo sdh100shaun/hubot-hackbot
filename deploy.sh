@@ -13,6 +13,7 @@ git clone https://${GH_REF} --branch=master --single-branch deploy
 
   git config user.name "Travis-CI"
   git config user.email "david.p.wood+travis@gmail.com"
+  git checkout -B staging
   git commit --allow-empty -m "Deploy hubot-hackbot build ${TRAVIS_BUILD_NUMBER} (commit ${TRAVIS_COMMIT})"
   git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" staging > /dev/null 2>&1
 )
