@@ -2,6 +2,15 @@ language: node_js
 node_js:
   - "node"
   - "5.4"
+
 cache:
   directories:
     - node_modules
+
+after_success:
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash deploy.sh
+
+env:
+  global:
+    - GH_REF: github.com/TechNottingham/Hackbot.git
+    - secure: "aXWsOih3TY/6tMwDfUeD0wfi4OiTpbv0s06SNfQMOjXnOSY3AJ7r8c7Inm4ZHjKjpkfKCD3u7IafJik2bIWNEbtBowD9IC0r0yCi1qbieHWDLzu8wn+EWoXkkzAWVxa6LT4U6tOJ8ewyvBSjldmX77oAunZoE3ZNa2O3XWGaJ1arZ/FCbpZkX3BeCMfE/r2Ti3xifPcr0nuscD6GZFa6Hlr5FyvyxvLxCMKgK1LNpN+eRGyyLpnlFh57Hbckv/0SSCTruriLcDaekyJXQ+u7++PMauayIQzbTtzNvyv+EWMn3svOm7eMzCRzGaTGRxdMB/dCLnCJLmxbvnmjxitzEKzmWuHJl3/4HYbdDjUVWGaPwVmr2S8Z/5cHsvDqRGvm+3umT70T0WqP0Xam62kxb6sYX3d4XLBAx/d+9tv+nkwyiNJPtS26ZUmtJM0Jkbavq5Nd+CzWzv/ir1Lr984e+ZAv19vtCso4VuZy16B/A9EVlRy9Oe1/m11BM0HvkzOqX3e46TrMM/QfXNcNxfM+ptEJ5Rkn/PA3ifeqnU+eJPi9MyunS8NJqhnsi9j3Ye03xywSWSB2pU0OdsBSPc8+Smnr8PWe7zLcEt0jKs8TWZfUaz0ZI7FbsYbmHEvdneaAHWZy8H8/o5Vui2x9DiKfd54o3FCwQaKIlKQhAoiBybY="
