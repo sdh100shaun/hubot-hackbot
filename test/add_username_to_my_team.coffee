@@ -16,7 +16,7 @@ describe '@hubot add @username to my team', ->
       @userId = 'micah'
       @userEmail = 'micah.micah~micah'
       @otherUserId = 'polly'
-      @otherUserUsername = 'pollygrafanaasa'
+      @otherUserUsername = 'abcdefghijklmnopqrstuvwxyz.-_0123456789'
       @existingTeamId = 'ocean-mongrels'
       @existingTeamName = 'Ocean Mongrels'
 
@@ -64,9 +64,8 @@ describe '@hubot add @username to my team', ->
 
     after ->
       @room.destroy()
-describe '@hubot add @username to my team with extra trailing space', ->
 
-  describe 'when in a team', ->
+  describe 'when username has a trailing space', ->
 
     before (done) ->
       @room = helper.createRoom()
@@ -122,6 +121,7 @@ describe '@hubot add @username to my team with extra trailing space', ->
 
     after ->
       @room.destroy()
+      
   describe 'when not an attendee', ->
 
     before (done) ->
