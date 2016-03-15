@@ -10,8 +10,6 @@ git clone https://${GH_REF} --branch=master --single-branch deploy
 
 (
   cd deploy
-  
-  npm install TechNottingham/hubot-hackbot#master --save
 
   git config user.name "Travis-CI"
   git config user.email "david.p.wood+travis@gmail.com"
