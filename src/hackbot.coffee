@@ -192,7 +192,7 @@ module.exports = (robot) ->
         response.reply 'I\'m sorry, there appears to be a big problem!'
 
 
-  robot.respond /add @([a-z0-9.-_]+)\s+to my team/, (response) ->
+  robot.respond /add @([a-z0-9.\-_]+)\s+to my team/, (response) ->
     otherUsername = response.match[1]
     userId = response.message.user.id
 
