@@ -10,7 +10,7 @@ describe '@hubot tell me about my team', ->
 
   describe 'when in a team with a motto', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'jerry'
@@ -39,7 +39,7 @@ describe '@hubot tell me about my team', ->
       @room.robot.hack24client =
         getUser: @getUserStub
       
-      @room.user.say(@userId, "@hubot tell me about my team").then done
+      @room.user.say(@userId, "@hubot tell me about my team")
 
     it 'should fetch the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -55,7 +55,7 @@ describe '@hubot tell me about my team', ->
 
   describe 'when in a team without a motto', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'jerry'
@@ -83,7 +83,7 @@ describe '@hubot tell me about my team', ->
       @room.robot.hack24client =
         getUser: @getUserStub
       
-      @room.user.say(@userId, "@hubot tell me about my team").then done
+      @room.user.say(@userId, "@hubot tell me about my team")
 
     it 'should fetch the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -99,7 +99,7 @@ describe '@hubot tell me about my team', ->
 
   describe 'when not in a team', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'jerry'
@@ -113,7 +113,7 @@ describe '@hubot tell me about my team', ->
       @room.robot.hack24client =
         getUser: @getUserStub
       
-      @room.user.say(@userId, "@hubot tell me about my team").then done
+      @room.user.say(@userId, "@hubot tell me about my team")
 
     it 'should fetch the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -129,7 +129,7 @@ describe '@hubot tell me about my team', ->
 
   describe 'when user is unknown', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'jerry'
@@ -141,7 +141,7 @@ describe '@hubot tell me about my team', ->
       @room.robot.hack24client =
         getUser: @getUserStub
       
-      @room.user.say(@userId, "@hubot tell me about my team").then done
+      @room.user.say(@userId, "@hubot tell me about my team")
 
     it 'should fetch the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -157,7 +157,7 @@ describe '@hubot tell me about my team', ->
 
   describe 'when getUser errors', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'jerry'
@@ -166,7 +166,7 @@ describe '@hubot tell me about my team', ->
         getUser: ->
           Promise.reject new Error('unknown')
       
-      @room.user.say(@userId, "@hubot tell me about my team").then done
+      @room.user.say(@userId, "@hubot tell me about my team")
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [

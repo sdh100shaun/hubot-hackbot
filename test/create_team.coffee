@@ -10,7 +10,7 @@ describe '@hubot create team X', ->
 
   describe 'when user already exists and not in a team', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'bob'
@@ -33,7 +33,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -52,7 +52,7 @@ describe '@hubot create team X', ->
 
   describe 'when user already exists and not a registered attendee', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'bob'
@@ -76,7 +76,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -89,7 +89,7 @@ describe '@hubot create team X', ->
 
   describe 'when user already exists and is already in a team', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'barry'
@@ -111,7 +111,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'sadadd'
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -127,7 +127,7 @@ describe '@hubot create team X', ->
 
   describe 'when user already exists and team already exists', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'jerry'
@@ -150,7 +150,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -169,7 +169,7 @@ describe '@hubot create team X', ->
 
   describe 'when user does not already exist and team does not already exist', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -194,7 +194,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -216,7 +216,7 @@ describe '@hubot create team X', ->
 
   describe 'when user does not already exist and not a registered attendee', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -239,7 +239,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -252,7 +252,7 @@ describe '@hubot create team X', ->
 
   describe 'when user does not already exist and create user returns an unexpected code', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'hannah'
@@ -274,7 +274,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -293,7 +293,7 @@ describe '@hubot create team X', ->
 
   describe 'when user does not already exist and creating the team returns an unexpected code', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -316,7 +316,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'another.email.address'
 
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -329,7 +329,7 @@ describe '@hubot create team X', ->
 
   describe 'when user already exists and creating the team returns an unexpected code', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -349,7 +349,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'some.email.address'
 
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     after ->
       @room.destroy()
@@ -362,7 +362,7 @@ describe '@hubot create team X', ->
 
   describe 'when getUser fails', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -375,7 +375,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'bark'
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
@@ -388,7 +388,7 @@ describe '@hubot create team X', ->
 
   describe 'when user does not exist and createUser fails', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -405,7 +405,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'bark'
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
@@ -418,7 +418,7 @@ describe '@hubot create team X', ->
 
   describe 'when created user and createTeam fails', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -437,7 +437,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'bark'
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
@@ -450,7 +450,7 @@ describe '@hubot create team X', ->
 
   describe 'when user already exists and createTeam fails', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -467,7 +467,7 @@ describe '@hubot create team X', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'bark'
       
-      @room.user.say(@userId, "@hubot create team #{@teamName}").then done
+      @room.user.say(@userId, "@hubot create team #{@teamName}")
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
