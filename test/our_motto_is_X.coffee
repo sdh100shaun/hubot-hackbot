@@ -10,7 +10,7 @@ describe '@hubot our motto is X', ->
 
   describe 'when user in a team', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       @userId = 'jerry'
       @userEmail = 'jerry@jerry.jerry'
@@ -35,7 +35,7 @@ describe '@hubot our motto is X', ->
         getUser: @getUserStub
         updateMotto: @updateMottoStub
 
-      @room.user.say(@userId, "@hubot our motto is #{@motto}").then done
+      @room.user.say(@userId, "@hubot our motto is #{@motto}")
 
     it 'should fetch the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -54,7 +54,7 @@ describe '@hubot our motto is X', ->
 
   describe 'when team exists without permission', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       @userId = 'jerry'
       @motto = 'We are great'
@@ -76,7 +76,7 @@ describe '@hubot our motto is X', ->
         getUser: @getUserStub
         updateMotto: @updateMottoStub
 
-      @room.user.say(@userId, "@hubot our motto is #{@motto}").then done
+      @room.user.say(@userId, "@hubot our motto is #{@motto}")
 
     it 'should tell the user they do not have permission', ->
       expect(@room.messages).to.eql [
@@ -89,7 +89,7 @@ describe '@hubot our motto is X', ->
 
   describe 'when user not in a team', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       @userId = 'jerry'
 
@@ -104,7 +104,7 @@ describe '@hubot our motto is X', ->
       @room.robot.hack24client =
         getUser: @getUserStub
 
-      @room.user.say(@userId, '@hubot our motto is We are great').then done
+      @room.user.say(@userId, '@hubot our motto is We are great')
 
     it 'should tell the user the motto is changed', ->
       expect(@room.messages).to.eql [
@@ -117,7 +117,7 @@ describe '@hubot our motto is X', ->
 
   describe 'when user unknown', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       @userId = 'jerry'
 
@@ -130,7 +130,7 @@ describe '@hubot our motto is X', ->
       @room.robot.hack24client =
         getUser: @getUserStub
 
-      @room.user.say(@userId, '@hubot our motto is We are great').then done
+      @room.user.say(@userId, '@hubot our motto is We are great')
 
     it 'should tell the user the motto is changed', ->
       expect(@room.messages).to.eql [

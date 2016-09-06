@@ -10,7 +10,7 @@ describe '@hubot add @username to my team', ->
 
   describe 'when in a team', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
 
       @userId = 'micah'
@@ -45,7 +45,7 @@ describe '@hubot add @username to my team', ->
         id: @otherUserId
         name: @otherUserUsername
 
-      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team").then done
+      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team")
 
     it 'should get the current user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -67,7 +67,7 @@ describe '@hubot add @username to my team', ->
 
   describe 'when username has a trailing space', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
 
       @userId = 'micah'
@@ -102,7 +102,7 @@ describe '@hubot add @username to my team', ->
         id: @otherUserId
         name: @otherUserUsername
 
-      @room.user.say(@userId, "@hubot add @#{@otherUserUsername}  to my team").then done
+      @room.user.say(@userId, "@hubot add @#{@otherUserUsername}  to my team")
 
     it 'should get the current user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -124,7 +124,7 @@ describe '@hubot add @username to my team', ->
       
   describe 'when not an attendee', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
 
       @userId = 'micah'
@@ -154,7 +154,7 @@ describe '@hubot add @username to my team', ->
       @room.robot.brain.data.users[@otherUserId] =
         name: @otherUserUsername
 
-      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team").then done
+      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team")
 
     it 'should tell the user that they do not have permission', ->
       expect(@room.messages).to.eql [
@@ -167,7 +167,7 @@ describe '@hubot add @username to my team', ->
 
   describe 'when not in a team', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
 
       @userId = 'micah'
@@ -185,7 +185,7 @@ describe '@hubot add @username to my team', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
 
-      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team").then done
+      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team")
 
     it 'shouldtell the user that they are not in a team', ->
       expect(@room.messages).to.eql [
@@ -198,7 +198,7 @@ describe '@hubot add @username to my team', ->
 
   describe 'when user is not already a member', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
 
       @userId = 'micah'
@@ -237,7 +237,7 @@ describe '@hubot add @username to my team', ->
         id: @otherUserId
         name: @otherUserUsername
 
-      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team").then done
+      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team")
 
     it 'should get the current user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -262,7 +262,7 @@ describe '@hubot add @username to my team', ->
 
   describe 'when other user already in a team', ->
 
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
 
       @userId = 'micah'
@@ -298,7 +298,7 @@ describe '@hubot add @username to my team', ->
         id: @otherUserId
         name: @otherUserUsername
 
-      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team").then done
+      @room.user.say(@userId, "@hubot add @#{@otherUserUsername} to my team")
 
     it 'should tell the user that the other user may already be in a team', ->
       expect(@room.messages).to.eql [

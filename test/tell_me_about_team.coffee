@@ -10,7 +10,7 @@ describe '@hubot tell me about team X', ->
 
   describe 'when team exists with members and a motto', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'jerry'
@@ -35,7 +35,7 @@ describe '@hubot tell me about team X', ->
       @room.robot.hack24client =
         getTeam: @getTeamStub
       
-      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ").then done
+      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ")
 
     it 'should fetch the team by slug (teamid)', ->
       expect(@getTeamStub).to.have.been.calledWith(@teamId)
@@ -51,7 +51,7 @@ describe '@hubot tell me about team X', ->
 
   describe 'when team exists with one member and no motto', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'megan'
@@ -70,7 +70,7 @@ describe '@hubot tell me about team X', ->
       @room.robot.hack24client =
         getTeam: @getTeamStub
       
-      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ").then done
+      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ")
 
     it 'should tell the user the team information', ->
       expect(@room.messages).to.eql [
@@ -83,7 +83,7 @@ describe '@hubot tell me about team X', ->
 
   describe 'when team exists with the user as the only member and a motto', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'frank'
@@ -103,7 +103,7 @@ describe '@hubot tell me about team X', ->
       @room.robot.hack24client =
         getTeam: @getTeamStub
       
-      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ").then done
+      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ")
 
     it 'should tell the user the team information', ->
       expect(@room.messages).to.eql [
@@ -116,7 +116,7 @@ describe '@hubot tell me about team X', ->
 
   describe 'when team exists with the user as the only member and no motto', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'frank'
@@ -135,7 +135,7 @@ describe '@hubot tell me about team X', ->
       @room.robot.hack24client =
         getTeam: @getTeamStub
       
-      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ").then done
+      @room.user.say(@userId, "@hubot tell me about team     #{@teamName}         ")
 
     it 'should tell the user the team information', ->
       expect(@room.messages).to.eql [
@@ -148,7 +148,7 @@ describe '@hubot tell me about team X', ->
 
   describe 'when team exists with no members', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
         
       @getTeamStub = sinon.stub().returns Promise.resolve
@@ -161,7 +161,7 @@ describe '@hubot tell me about team X', ->
       @room.robot.hack24client =
         getTeam: @getTeamStub
       
-      @room.user.say('sarah', '@hubot tell me about team     my cRAZY team name         ').then done
+      @room.user.say('sarah', '@hubot tell me about team     my cRAZY team name         ')
 
     it 'should fetch the team by slug (teamid)', ->
       expect(@getTeamStub).to.have.been.calledWith('my-crazy-team-name')
@@ -177,7 +177,7 @@ describe '@hubot tell me about team X', ->
 
   describe 'when team does not exist', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @getTeamStub = sinon.stub().returns Promise.resolve
@@ -187,7 +187,7 @@ describe '@hubot tell me about team X', ->
       @room.robot.hack24client =
         getTeam: @getTeamStub
       
-      @room.user.say('sarah', '@hubot tell me about team  :smile:').then done
+      @room.user.say('sarah', '@hubot tell me about team  :smile:')
 
     it 'should fetch the team by slug (teamid)', ->
       expect(@getTeamStub).to.have.been.calledWith('smile')
@@ -203,7 +203,7 @@ describe '@hubot tell me about team X', ->
 
   describe 'when get team fails', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
         
       @room.robot.hack24client =
@@ -211,7 +211,7 @@ describe '@hubot tell me about team X', ->
           Promise.resolve
             ok: false
       
-      @room.user.say('sarah', '@hubot tell me about team     my crazy team name         ').then done
+      @room.user.say('sarah', '@hubot tell me about team     my crazy team name         ')
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [

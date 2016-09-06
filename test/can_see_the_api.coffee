@@ -7,7 +7,7 @@ describe 'Can see the API', ->
 
   describe 'hubot can see the API', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @room.robot.hack24client =
@@ -15,7 +15,7 @@ describe 'Can see the API', ->
           Promise.resolve
             ok: true
       
-      @room.user.say('bob', '@hubot can you see the api?').then done
+      @room.user.say('bob', '@hubot can you see the api?')
 
     after ->
       @room.destroy()
@@ -29,7 +29,7 @@ describe 'Can see the API', ->
 
   describe 'hubot is unable to see the API', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @room.robot.hack24client =
@@ -38,7 +38,7 @@ describe 'Can see the API', ->
             ok: false
             statusCode: 99
       
-      @room.user.say('bob', '@hubot can you see the api?').then done
+      @room.user.say('bob', '@hubot can you see the api?')
 
     after ->
       @room.destroy()
@@ -52,14 +52,14 @@ describe 'Can see the API', ->
 
   describe 'hubot is unable to see the API because of a http error', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @room.robot.hack24client =
         checkApi: ->
           Promise.reject new Error('unknown')
       
-      @room.user.say('bob', '@hubot can you see the api?').then done
+      @room.user.say('bob', '@hubot can you see the api?')
       
     after ->
       @room.destroy()

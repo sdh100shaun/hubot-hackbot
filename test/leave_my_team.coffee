@@ -10,7 +10,7 @@ describe '@hubot leave my team', ->
 
   describe 'when in a team', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'micah'
@@ -35,7 +35,7 @@ describe '@hubot leave my team', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, '@hubot leave my team').then done
+      @room.user.say(@userId, '@hubot leave my team')
 
     it 'should get the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -54,7 +54,7 @@ describe '@hubot leave my team', ->
 
   describe 'when not a registered attendee', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'micah'
@@ -80,7 +80,7 @@ describe '@hubot leave my team', ->
       @room.robot.brain.data.users[@userId] =
         email_address: @userEmail
       
-      @room.user.say(@userId, '@hubot leave my team').then done
+      @room.user.say(@userId, '@hubot leave my team')
 
     it 'should tell the user that they have left the team', ->
       expect(@room.messages).to.eql [
@@ -93,7 +93,7 @@ describe '@hubot leave my team', ->
 
   describe 'when not in a team', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -110,7 +110,7 @@ describe '@hubot leave my team', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'asdlkjalkdsjas'
       
-      @room.user.say(@userId, '@hubot leave my team').then done
+      @room.user.say(@userId, '@hubot leave my team')
 
     it 'should get the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -126,7 +126,7 @@ describe '@hubot leave my team', ->
 
   describe 'when user does not exist', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @userId = 'sarah'
@@ -141,7 +141,7 @@ describe '@hubot leave my team', ->
       @room.robot.brain.data.users[@userId] =
         email_address: 'sdfsfdsfsdf'
       
-      @room.user.say(@userId, '@hubot leave my team').then done
+      @room.user.say(@userId, '@hubot leave my team')
 
     it 'should get the user', ->
       expect(@getUserStub).to.have.been.calledWith(@userId)
@@ -157,14 +157,14 @@ describe '@hubot leave my team', ->
 
   describe 'when getUser fails', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @room.robot.hack24client =
         getUser: ->
           Promise.reject new Error('unknown')
       
-      @room.user.say('sarah', '@hubot leave my team').then done
+      @room.user.say('sarah', '@hubot leave my team')
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [
@@ -177,7 +177,7 @@ describe '@hubot leave my team', ->
 
   describe 'when removeTeamMember fails', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
       
       @room.robot.hack24client =
@@ -190,7 +190,7 @@ describe '@hubot leave my team', ->
         removeTeamMember: ->
           Promise.reject new Error('when removeTeamMember fails')
       
-      @room.user.say('sarah', '@hubot leave my team').then done
+      @room.user.say('sarah', '@hubot leave my team')
 
     it 'should tell the user that there is a problem', ->
       expect(@room.messages).to.eql [

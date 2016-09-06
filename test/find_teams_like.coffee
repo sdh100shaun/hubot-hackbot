@@ -10,7 +10,7 @@ describe '@hubot find teams like X', ->
 
   describe 'when matching teams found', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
         
       @findTeamsStub = sinon.stub().returns Promise.resolve
@@ -32,7 +32,7 @@ describe '@hubot find teams like X', ->
       @room.robot.hack24client =
         findTeams: @findTeamsStub
       
-      @room.user.say('paolo', '@hubot find teams like hacking hack').then done
+      @room.user.say('paolo', '@hubot find teams like hacking hack')
 
     it 'should find teams matching the search', ->
       expect(@findTeamsStub).to.have.been.calledWith('hacking hack')
@@ -48,7 +48,7 @@ describe '@hubot find teams like X', ->
 
   describe 'when no matching teams found', ->
   
-    before (done) ->
+    before () ->
       @room = helper.createRoom()
         
       @findTeamsStub = sinon.stub().returns Promise.resolve
@@ -58,7 +58,7 @@ describe '@hubot find teams like X', ->
       @room.robot.hack24client =
         findTeams: @findTeamsStub
       
-      @room.user.say('paolo', '@hubot find teams like hacking hack').then done
+      @room.user.say('paolo', '@hubot find teams like hacking hack')
 
     it 'should tell the user that no teams were found', ->
       expect(@room.messages).to.eql [
