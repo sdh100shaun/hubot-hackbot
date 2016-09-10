@@ -8,7 +8,7 @@
   ],
   "description": "Hackbot is here to help you hack",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register -R dot",
+    "test": "mocha --compilers coffee:coffee-script/register --require source-map-support/register -R dot --recursive src",
     "test:watch": "mocha --compilers coffee:coffee-script/register -R dot -w"
   },
   "engines": {
@@ -22,12 +22,13 @@
     "body-parser": "^1.15.0",
     "chai": "^3.5.0",
     "coffee-script": "^1.10.0",
-    "express": "^3.21.2",
+    "express": "^4.14.0",
     "hubot-test-helper": "^1.5.0",
     "mocha": "^3.0.2",
     "scoped-http-client": "^0.11.0",
     "sinon": "^1.17.5",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "source-map-support": "^0.4.2"
   },
   "dependencies": {
     "body-parser": "^1.15.2",

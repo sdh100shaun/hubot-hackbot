@@ -1,7 +1,7 @@
 Helper = require 'hubot-test-helper'
 expect = require('chai').expect
 
-helper = new Helper('../src/hackbot.coffee')
+helper = new Helper('../hackbot.coffee')
 
 describe '@hubot prime directives', ->
     

@@ -1,7 +1,7 @@
 chai = require 'chai'
 expect = chai.expect
 
-{Client} = require '../lib/client'
+{Client} = require '../client'
 
 express = require 'express'
 

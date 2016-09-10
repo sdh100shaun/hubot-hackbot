@@ -4,7 +4,7 @@ sinon = require 'sinon'
 chai.use require 'sinon-chai'
 
 Helper = require 'hubot-test-helper'
-helper = new Helper('../src/hackbot.coffee')
+helper = new Helper('../hackbot.coffee')
 
 describe '@hubot leave my team', ->
 

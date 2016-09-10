@@ -20,7 +20,7 @@
 #   David Wood <david.p.wood@gmail.com>
 #
 
-{Client} = require '../lib/client'
+{Client} = require './client'
 slug = require 'slug'
 
 slugify = (name) -> slug(name, { lower: true })
