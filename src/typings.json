@@ -1,0 +1,14 @@
+{
+  "dependencies": {},
+  "globalDependencies": {
+    "node": "registry:env/node#6.0.0+20160902022231"
+  },
+  "devDependencies": {
+    "body-parser": "registry:npm/body-parser#1.15.2+20160815132839",
+    "chai": "registry:npm/chai#3.5.0+20160723033700",
+    "express": "registry:npm/express#4.14.0+20160815112707"
+  },
+  "globalDevDependencies": {
+    "mocha": "registry:env/mocha#2.2.5+20160723033700"
+  }
+}

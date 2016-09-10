@@ -8,8 +8,10 @@
   ],
   "description": "Hackbot is here to help you hack",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register --require source-map-support/register -R dot --recursive src",
-    "test:watch": "mocha --compilers coffee:coffee-script/register -R dot -w"
+    "clean": "rimraf build",
+    "prebuild": "npm run clean",
+    "build": "tsc -p src",
+    "test": "mocha -R dot --require source-map-support/register --recursive build"
   },
   "engines": {
     "node": "5.4.x"
@@ -19,21 +21,23 @@
     "url": "https://github.com/TechNottingham/hubot-hackbot"
   },
   "devDependencies": {
-    "body-parser": "^1.15.0",
+    "body-parser": "^1.15.2",
     "chai": "^3.5.0",
     "coffee-script": "^1.10.0",
     "express": "^4.14.0",
     "hubot-test-helper": "^1.5.0",
     "mocha": "^3.0.2",
+    "rimraf": "^2.5.4",
     "scoped-http-client": "^0.11.0",
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0",
-    "source-map-support": "^0.4.2"
+    "source-map-support": "^0.4.2",
+    "typescript": "^1.8.10"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
-    "express": "^4.14.0",
     "slug": "^0.9.1",
+    "source-map-support": "^0.4.2",
     "yayson": "^2.0.1"
   }
 }
