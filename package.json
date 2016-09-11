@@ -12,7 +12,7 @@
     "clean": "rimraf build",
     "prebuild": "npm run clean",
     "build": "tsc -p src",
-    "test": "mocha -R dot --require source-map-support/register --recursive build"
+    "test": "mocha -R dot --compilers coffee:coffee-script/register --require source-map-support/register --recursive build"
   },
   "engines": {
     "node": "5.4.x"

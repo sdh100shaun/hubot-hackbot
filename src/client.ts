@@ -1,12 +1,9 @@
 import * as HttpClient from 'scoped-http-client';
 import * as Yayson from 'yayson';
+import { Robot } from 'hubot';
 
 const getAuth = (emailAddress: string) => `${emailAddress}:${process.env.HACKBOT_PASSWORD}`;
 const Store = Yayson().Store;
-
-interface Robot {
-  http: HttpClient.ScopedClientConstructor;
-}
 
 export interface ApiResponse {
   ok: boolean;
