@@ -29,6 +29,14 @@ export interface UserResponse extends ApiResponse {
   user: User;
 }
 
+export interface TeamResponse extends ApiResponse {
+  team: Team;
+}
+
+export interface TeamsResponse extends ApiResponse {
+  teams: Team[];
+}
+
 export class Client {
   private baseUrl: string;
   private httpClient: HttpClient.ScopedClientConstructor;
@@ -76,7 +84,7 @@ export class Client {
   }
 
   public createUser(userId: string, userName: string, emailAddress: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<ApiResponse>((resolve, reject) => {
       const body = JSON.stringify({
         data: {
           type: 'users',
@@ -127,8 +135,7 @@ export class Client {
 
           if (result.ok) {
             const store = new Store();
-            const user = store.sync<User>(JSON.parse(body));
-            result.user = user;
+            result.user = store.sync<User>(JSON.parse(body));
           }
 
           resolve(result);
@@ -137,7 +144,7 @@ export class Client {
   }
 
   public getTeam(teamId: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<TeamResponse>((resolve, reject) => {
       this.createClient(`/teams/${encodeURIComponent(teamId)}`)
         .get()((err, res, body) => {
           if (err) return reject(err);
@@ -145,13 +152,12 @@ export class Client {
           const result = {
             ok: res.statusCode == 200,
             statusCode: res.statusCode,
-            team: <Object>undefined
+            team: <Team>undefined
           };
 
           if (result.ok) {
             const store = new Store();
-            const team = store.sync(JSON.parse(body));
-            result.team = team;
+            result.team = store.sync<Team>(JSON.parse(body));
           }
 
           resolve(result)
@@ -160,7 +166,7 @@ export class Client {
   }
 
   public removeTeamMember(teamId: string, userId: string, emailAddress: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<ApiResponse>((resolve, reject) => {
       const body = JSON.stringify({
         data: [{
           type: 'users',
@@ -183,7 +189,7 @@ export class Client {
   }
 
   public findTeams(filter: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<TeamsResponse>((resolve, reject) => {
       this.createClient(`/teams?filter[name]=${encodeURIComponent(filter)}`)
         .get()((err, res, body) => {
           if (err) return reject(err);
@@ -191,12 +197,12 @@ export class Client {
           const result = {
             ok: res.statusCode == 200,
             statusCode: res.statusCode,
-            teams: <Object[]>undefined
+            teams: <Team[]>undefined
           };
 
           if (result.ok) {
             const store = new Store();
-            result.teams = store.sync<Object[]>(JSON.parse(body));
+            result.teams = store.sync<Team[]>(JSON.parse(body));
           }
 
           resolve(result)
@@ -205,7 +211,7 @@ export class Client {
   }
 
   public addUserToTeam(teamId: string, userId: string, emailAddress: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<ApiResponse>((resolve, reject) => {
       const body = JSON.stringify({
         data: [{
           type: 'users',
@@ -228,7 +234,7 @@ export class Client {
   }
 
   public updateMotto(teamMotto: string, teamId: string, emailAddress: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<ApiResponse>((resolve, reject) => {
       const body = JSON.stringify({
         data: {
           type: 'teams',

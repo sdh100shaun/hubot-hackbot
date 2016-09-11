@@ -4,7 +4,7 @@ import {Socket} from 'net';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
-import {Client, ApiResponse, UserResponse} from '../hackapi-client';
+import {Client, ApiResponse, UserResponse, TeamResponse, TeamsResponse} from '../client';
 
 const apiJsonParser = bodyParser.json({ type: 'application/vnd.api+json' });
 
@@ -118,7 +118,7 @@ describe('Hack24 API Client', () => {
 
           teamName = 'Pineapple Express'
           userId = 'U12345'
-          const email_address = 'some@guy.com'
+          const email_address = 'someguy.com'
 
           expectedAuth = `Basic ${new Buffer(`${email_address}:${pass}`).toString('base64')}`
 
@@ -381,747 +381,1049 @@ describe('Hack24 API Client', () => {
         expect(result.user.team.members[1].name).to.equal(otherUserName)
       });
     });
-  });
-});
-/*
-
-
-  
 
     describe('when user exists and not in a team', () => {
-  
+
+      let server: Server;
+      let userId: string;
+      let userName: string;
+      let accept: string | string[];
+      let result: UserResponse;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        @userId = 'U12345'
-        @userName = 'Barry'
-        
-        api.get "/users/#{@userId}", (req: express.Request, res: express.Response) => {
-          @accept = req.headers['accept']
-          res.status(200).send
-            data:
-              type: 'users'
-              id: @userId
-              attributes:
-                name: @userName
-              relationships:
-                team:
+
+        const api = express()
+
+        userId = 'U12345'
+        userName = 'Barry'
+
+        api.get(`/users/${userId}`, (req: express.Request, res: express.Response) => {
+          accept = req.headers['accept']
+          res.status(200).json({
+            data: {
+              type: 'users',
+              id: userId,
+              attributes: {
+                name: userName
+              },
+              relationships: {
+                team: {
                   data: null
-        
+                }
+              }
+            }
+          });
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.getUser(@userId)
+
+        server = api.listen(12345, () => {
+          client.getUser(userId)
             .then((res) => {
+              result = res;
               done()
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 200 OK', () => {
-          expect(@result.statusCode).to.equal(200)
+        expect(result.statusCode).to.equal(200)
+      });
 
       it('should resolve with OK', () => {
-          expect(@result.ok).to.be.true
+        expect(result.ok).to.be.true
+      });
 
       it('should request with accept application/vnd.api+json', () => {
-          expect(@accept).to.equal('application/vnd.api+json')
+        expect(accept).to.equal('application/vnd.api+json')
+      });
 
       it('should return the expected user', () => {
-          expect(@result.user.id).to.equal(@userId)
-          expect(@result.user.name).to.equal(@userName)
+        expect(result.user.id).to.equal(userId)
+        expect(result.user.name).to.equal(userName)
+      });
 
       it('should return a null team', () => {
-          expect(@result.user.team).to.equal(null)
+        expect(result.user.team).to.equal(null)
+      });
+    });
 
     describe('when user does not exist', () => {
-  
+
+      let server: Server;
+      let result: UserResponse;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.get "/users/#{@userId}", (req: express.Request, res: express.Response) => {
-          res.status(404).send
+
+        const api = express()
+
+        api.get('/users/some_guy', (req: express.Request, res: express.Response) => {
+          res.status(404).json({
             errors: [{
-              status: '404'
+              status: '404',
               title: 'Resource not found.'
             }]
-        
+          });
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
+
+        server = api.listen(12345, () => {
           client.getUser('U12345')
             .then((res) => {
+              result = res;
               done()
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 404 Not Found', () => {
-          expect(@result.statusCode).to.equal(404)
+        expect(result.statusCode).to.equal(404);
+      });
 
       it('should resolve with not OK', () => {
-          expect(@result.ok).to.be.false
+        expect(result.ok).to.be.false;
+      });
 
       it('should resolve without setting the user', () => {
-          expect(@result.user).to.equal(undefined)
+        expect(result.user).to.equal(undefined)
+      });
+    });
 
     describe('when request errors', () => {
-  
+
+      let server: Server;
+      let error: Error;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.get('/users/:userId', (req: express.Request, res: express.Response) => {
-          res.socket.destroy()
+
+        const api = express()
+
+        api.get('/users/:userId', (req: express.Request, res: ResponseWithSocket) => {
+          res.socket.destroy();
+        });
 
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.getUser('some user') 
+
+        server = api.listen(12345, () => {
+          client.getUser('some user')
             .then(() => {
-              done(new Error('Promise resolved'))
+              done(new Error('Promise resolved'));
+            })
             .catch((err) => {
+              error = err;
               done()
-      
+            })
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should reject with an error', () => {
-        expect(@err.message).to.equal('socket hang up')
-
+        expect(error.message).to.equal('socket hang up');
+      });
+    });
+  });
 
   describe('#getTeam', () => {
 
     describe('when team exists', () => {
-    
+
+      let server: Server;
+      let teamId: string;
+      let teamName: string;
+      let firstUserId: string;
+      let firstUserName: string;
+      let secondUserId: string;
+      let secondUserName: string;
+      let accept: string | string[];
+      let result: TeamResponse;
+
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        @teamId = 'clicky-keys'
-        @teamName = 'Clicky Keys'
-        @firstUserId = 'U12345'
-        @firstUserName = 'Barry'
-        @secondUserId = 'U67890'
-        @secondUserName = 'Zackary'
-        
-        api.get "/teams/#{@teamId}", (req: express.Request, res: express.Response) => {
-          @accept = req.headers['accept']
-          res.status(200).send
-            data:
-              type: 'teams'
-              id: @teamId
-              attributes:
-                name: @teamName
-              relationships:
-                members:
+        process.env.HACK24API_URL = 'http://localhost:12345';
+
+        const api = express()
+
+        teamId = 'clicky-keys'
+        teamName = 'Clicky Keys'
+        firstUserId = 'U12345'
+        firstUserName = 'Barry'
+        secondUserId = 'U67890'
+        secondUserName = 'Zackary'
+
+        api.get(`/teams/${teamId}`, (req: express.Request, res: express.Response) => {
+          accept = req.headers['accept']
+          res.status(200).json({
+            data: {
+              type: 'teams',
+              id: teamId,
+              attributes: { name: teamName },
+              relationships: {
+                members: {
                   data: [{
-                    type: 'users'
-                    id: @firstUserId
-                  },{
-                    type: 'users'
-                    id: @secondUserId
-                  }]
+                    type: 'users',
+                    id: firstUserId
+                  }, {
+                      type: 'users',
+                      id: secondUserId
+                    }]
+                }
+              }
+            },
             included: [{
-              type: 'users'
-              id: @firstUserId
-              attributes:
-                name: @firstUserName
-              relationships:
-                team:
+              type: 'users',
+              id: firstUserId,
+              attributes: { name: firstUserName },
+              relationships: {
+                team: {
                   data: {
-                    type: 'teams'
-                    id: @teamId
+                    type: 'teams',
+                    id: teamId
                   }
-            },{
-              type: 'users'
-              id: @secondUserId
-              attributes:
-                name: @secondUserName
-              relationships:
-                team:
-                  data: {
-                    type: 'teams'
-                    id: @teamId
+                }
+              }
+            }, {
+                type: 'users',
+                id: secondUserId,
+                attributes: { name: secondUserName },
+                relationships: {
+                  team: {
+                    data: {
+                      type: 'teams',
+                      id: teamId
+                    }
                   }
-            }]
-        
+                }
+              }]
+          });
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.getTeam(@teamId)
+
+        server = api.listen(12345, () => {
+          client.getTeam(teamId)
             .then((res) => {
-              done()
+              result = res;
+              done();
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 200 OK', () => {
-          expect(@result.statusCode).to.equal(200)
+        expect(result.statusCode).to.equal(200);
+      });
 
       it('should resolve with OK', () => {
-          expect(@result.ok).to.be.true
+        expect(result.ok).to.be.true;
+      });
 
       it('should request with accept application/vnd.api+json', () => {
-          expect(@accept).to.equal('application/vnd.api+json')
+        expect(accept).to.equal('application/vnd.api+json');
+      });
 
       it('should return the expected team', () => {
-          expect(@result.team.id).to.equal(@teamId)
-          expect(@result.team.name).to.equal(@teamName)
+        expect(result.team.id).to.equal(teamId)
+        expect(result.team.name).to.equal(teamName);
+      });
 
       it('should return the expected members relationships', () => {
-          expect(@result.team.members.length).to.equal(2)
-          expect(@result.team.members[0].id).to.equal(@firstUserId)
-          expect(@result.team.members[0].name).to.equal(@firstUserName)
-          expect(@result.team.members[1].id).to.equal(@secondUserId)
-          expect(@result.team.members[1].name).to.equal(@secondUserName)
+        expect(result.team.members.length).to.equal(2)
+        expect(result.team.members[0].id).to.equal(firstUserId)
+        expect(result.team.members[0].name).to.equal(firstUserName)
+        expect(result.team.members[1].id).to.equal(secondUserId)
+        expect(result.team.members[1].name).to.equal(secondUserName);
+      });
+    });
 
     describe('when team does not exist', () => {
-    
+
+      let server: Server;
+      let result: TeamResponse;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
+
+        const api = express()
+
         api.get('/teams/:teamId', (req: express.Request, res: express.Response) => {
-          res.status(404).send
+          res.status(404).json({
             errors: [{
-              status: '404'
+              status: '404',
               title: 'Resource not found.'
             }]
-        
+          });
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
+
+        server = api.listen(12345, () => {
           client.getTeam('some team')
             .then((res) => {
-              done()
+              result = res;
+              done();
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 404 Not Found', () => {
-          expect(@result.statusCode).to.equal(404)
+        expect(result.statusCode).to.equal(404);
+      });
 
       it('should resolve with not OK', () => {
-          expect(@result.ok).to.be.false
+        expect(result.ok).to.be.false;
+      });
 
       it('should resolve without setting the team', () => {
-          expect(@result.team).to.equal(undefined)
+        expect(result.team).to.equal(undefined);
+      });
+    });
 
     describe('when http error', () => {
-    
+
+      let server: Server;
+      let error: Error;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.get('/teams/:teamId', (req: express.Request, res: express.Response) => {
-          res.socket.destroy()
+
+        const api = express()
+
+        api.get('/teams/:teamId', (req: express.Request, res: ResponseWithSocket) => {
+          res.socket.destroy();
+        });
 
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.getTeam('some user') 
+
+        server = api.listen(12345, () => {
+          client.getTeam('some user')
             .then(() => {
-              done(new Error('Promise resolved'))
+              done(new Error('Promise resolved'));
+            })
             .catch((err) => {
-              done()
-      
+              error = err;
+              done();
+            });
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should reject with an error', () => {
-        expect(@err.message).to.equal('socket hang up')
-
+        expect(error.message).to.equal('socket hang up');
+      });
+    });
+  });
 
   describe('#createUser', () => {
 
     describe('when created successfully', () => {
-    
+
+      let server: Server;
+      let pass: string;
+      let userId: string;
+      let userName: string;
+      let expectedAuth: string;
+      let contentType: string | string[];
+      let accept: string | string[];
+      let authorization: string | string[];
+      let body: any;
+      let result: ApiResponse;
+
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345'
-        pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks'
-        
-        api = express()
-        
-        @userId = 'U12345'
-        @userName = 'Pineapple Express'
-        email_address = 'lkjasdkljasd@gfhjdgf.daskjd'
-        
-        @expectedAuth = "Basic #{new Buffer("#{email_address}:#{pass}").toString('base64')}"
-        
-        api.post('/users', apiJsonParser, (req: express.Request, res: express.Response) => {
-          @contentType = req.headers['content-type']
-          @accept = req.headers['accept']
-          @authorization = req.headers['authorization']
-          @body = req.body
-          res.status(201).send()
-        
+        process.env.HACK24API_URL = 'http://localhost:12345';
+        pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks';
+
+        const api = express();
+
+        userId = 'U12345';
+        userName = 'Pineapple Express';
+        const email_address = 'lkjasdkljasdgfhjdgf.daskjd';
+
+        expectedAuth = `Basic ${new Buffer(`${email_address}:${pass}`).toString('base64')}`;
+
+        api.post('/users', apiJsonParser, (req: RequestWithBody, res: express.Response) => {
+          contentType = req.headers['content-type'];
+          accept = req.headers['accept'];
+          authorization = req.headers['authorization'];
+          body = req.body;
+          res.sendStatus(201);
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.createUser(@userId, @userName, email_address) 
+
+        server = api.listen(12345, () => {
+          client.createUser(userId, userName, email_address)
             .then((res) => {
+              result = res;
               done()
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 201 Created', () => {
-          expect(@result.statusCode).to.equal(201)
+        expect(result.statusCode).to.equal(201);
+      });
 
       it('should resolve with OK', () => {
-          expect(@result.ok).to.be.true
+        expect(result.ok).to.be.true;
+      });
 
       it('should request with accept application/vnd.api+json', () => {
-          expect(@accept).to.equal('application/vnd.api+json')
+        expect(accept).to.equal('application/vnd.api+json');
+      });
 
       it('should request with content-type application/vnd.api+json', () => {
-          expect(@contentType).to.equal('application/vnd.api+json')
+        expect(contentType).to.equal('application/vnd.api+json');
+      });
 
       it('should request with the expected authorization', () => {
-          expect(@authorization).to.equal(@expectedAuth)
+        expect(authorization).to.equal(expectedAuth);
+      });
 
       it('should request to create the expected user', () => {
-          expect(@body.data.type).to.equal('users')
-          expect(@body.data.id).to.equal(@userId)
-          expect(@body.data.attributes.name).to.equal(@userName)
+        expect(body.data.type).to.equal('users')
+        expect(body.data.id).to.equal(userId)
+        expect(body.data.attributes.name).to.equal(userName);
+      });
+    });
 
     describe('when user exists', () => {
-    
+
+      let server: Server;
+      let result: ApiResponse;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
+
+        const api = express()
+
         api.post('/users', apiJsonParser, (req: express.Request, res: express.Response) => {
-          res.status(409).send
+          res.status(409).json({
             errors: [{
               status: '409',
               title: 'Resource ID already exists.'
             }]
-        
+          });
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.createUser('raghght', 'Alien Race') 
+
+        server = api.listen(12345, () => {
+          client.createUser('raghght', 'Alien Race', undefined)
             .then((res) => {
+              result = res;
               done()
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 409 Conflict', () => {
-          expect(@result.statusCode).to.equal(409)
+        expect(result.statusCode).to.equal(409);
+      });
 
       it('should resolve with not OK', () => {
-          expect(@result.ok).to.be.false
-          
+        expect(result.ok).to.be.false;
+      });
+    });
+
     describe('when request errors', () => {
-  
+
+      let server: Server;
+      let error: Error;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.use (req, res) ->
-          res.socket.destroy()
+
+        const api = express()
+
+        api.use((req: express.Request, res: ResponseWithSocket) => {
+          res.socket.destroy();
+        });
 
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.createUser('some user') 
+
+        server = api.listen(12345, () => {
+          client.createUser('some user', undefined, undefined)
             .then(() => {
-              done(new Error('Promise resolved'))
+              done(new Error('Promise resolved'));
+            })
             .catch((err) => {
-              done()
-      
+              error = err;
+              done();
+            });
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should reject with an error', () => {
-        expect(@err.message).to.equal('socket hang up')
-
+        expect(error.message).to.equal('socket hang up');
+      });
+    });
+  });
 
   describe('#removeTeamMember', () => {
-  
+
     describe('when request succeeds', () => {
-  
+
+      let server: Server;
+      let teamId: string;
+      let userId: string;
+      let expectedAuth: string;
+      let contentType: string | string[];
+      let accept: string | string[];
+      let authorization: string | string[];
+      let body: any;
+      let result: ApiResponse;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        pass = process.env.HACKBOT_PASSWORD = 'sky'
-        
-        api = express()
-        
-        @teamId = 'swan-song'
-        @userId = 'U12345'
-        emailAddress = 'asdas@asd0-9098'
-        
-        @expectedAuth = "Basic #{new Buffer("#{emailAddress}:#{pass}").toString('base64')}"
-        
-        api.delete "/teams/#{@teamId}/members", apiJsonParser, (req: express.Request, res: express.Response) => {
-          @contentType = req.headers['content-type']
-          @accept = req.headers['accept']
-          @authorization = req.headers['authorization']
-          @body = req.body
-          res.status(204).send()
-        
+        const pass = process.env.HACKBOT_PASSWORD = 'sky'
+
+        const api = express()
+
+        teamId = 'swan-song'
+        userId = 'U12345'
+        const emailAddress = 'asdasasd0-9098'
+
+        expectedAuth = `Basic ${new Buffer(`${emailAddress}:${pass}`).toString('base64')}`
+
+        api.delete(`/teams/${teamId}/members`, apiJsonParser, (req: RequestWithBody, res: express.Response) => {
+          contentType = req.headers['content-type']
+          accept = req.headers['accept']
+          authorization = req.headers['authorization']
+          body = req.body
+          res.sendStatus(204);
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.removeTeamMember(@teamId, @userId, emailAddress) 
+
+        server = api.listen(12345, () => {
+          client.removeTeamMember(teamId, userId, emailAddress)
             .then((res) => {
-              done()
+              result = res;
+              done();
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 204 No Content', () => {
-          expect(@result.statusCode).to.equal(204)
+        expect(result.statusCode).to.equal(204);
+      });
 
       it('should resolve with OK', () => {
-          expect(@result.ok).to.be.true
+        expect(result.ok).to.be.true;
+      });
 
       it('should request with accept application/vnd.api+json', () => {
-          expect(@accept).to.equal('application/vnd.api+json')
+        expect(accept).to.equal('application/vnd.api+json');
+      });
 
       it('should request with content-type application/vnd.api+json', () => {
-          expect(@contentType).to.equal('application/vnd.api+json')
+        expect(contentType).to.equal('application/vnd.api+json');
+      });
 
       it('should request with the expected authorization', () => {
-          expect(@authorization).to.equal(@expectedAuth)
+        expect(authorization).to.equal(expectedAuth);
+      });
 
       it('should request only one resource object to be removed', () => {
-          expect(@body.data.length).to.equal(1)
+        expect(body.data.length).to.equal(1);
+      });
 
       it('should request that a user be removed', () => {
-          expect(@body.data[0].type).to.equal('users')
+        expect(body.data[0].type).to.equal('users');
+      });
 
       it('should request the expected user to be removed', () => {
-          expect(@body.data[0].id).to.equal(@userId)
-          
+        expect(body.data[0].id).to.equal(userId);
+      });
+    });
+
     describe('when request errors', () => {
-  
+
+      let server: Server;
+      let error: Error;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.use (req, res) ->
-          res.socket.destroy()
+
+        const api = express()
+
+        api.use((req: express.Request, res: ResponseWithSocket) => {
+          res.socket.destroy();
+        });
 
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.removeTeamMember('some team', 'some user') 
+
+        server = api.listen(12345, () => {
+          client.removeTeamMember('some team', 'some user', undefined)
             .then(() => {
-              done(new Error('Promise resolved'))
+              done(new Error('Promise resolved'));
+            })
             .catch((err) => {
+              error = err;
               done()
-      
+            });
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should reject with an error', () => {
-        expect(@err.message).to.equal('socket hang up')
+        expect(error.message).to.equal('socket hang up');
+      });
+    });
+  });
 
 
   describe('#findTeams', () => {
 
     describe('when teams found', () => {
-    
+
+      let server: Server;
+      let accept: string | string[];
+      let filterNameValue: string;
+      let result: TeamsResponse;
+      let firstTeam: { id: string; name: string; };
+      let secondTeam: { id: string; name: string; };
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        @filter = 'hacking hack'
-        @firstTeam =
-          id: 'hack-hackers-hacking-hacks'
+
+        const api = express()
+
+        const filter = 'hacking hack'
+        firstTeam = {
+          id: 'hack-hackers-hacking-hacks',
           name: 'Hack Hackers Hacking Hacks'
-        @secondTeam =
-          id: 'hackers-hacking-hack-hacks'
+        };
+        secondTeam = {
+          id: 'hackers-hacking-hack-hacks',
           name: 'Hackers Hacking Hack Hacks'
-          
-        
-        api.get "/teams", (req: express.Request, res: express.Response) => {
-          @accept = req.headers['accept']
-          @filterNameValue = req.query.filter.name
-          res.status(200).send
+        };
+
+        api.get('/teams', (req: express.Request, res: express.Response) => {
+          accept = req.headers['accept']
+          filterNameValue = req.query.filter.name
+          res.status(200).json({
             data: [{
-              type: 'teams'
-              id: @firstTeam.id
-              attributes:
-                name: @firstTeam.name
-            },{
-              type: 'teams'
-              id: @secondTeam.id
-              attributes:
-                name: @secondTeam.name
-            }]
-        
+              type: 'teams',
+              id: firstTeam.id,
+              attributes: { name: firstTeam.name }
+            }, {
+                type: 'teams',
+                id: secondTeam.id,
+                attributes: { name: secondTeam.name }
+              }]
+          });
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.findTeams(@filter)
+
+        server = api.listen(12345, () => {
+          client.findTeams(filter)
             .then((res) => {
-              done()
+              result = res;
+              done();
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 200 OK', () => {
-          expect(@result.statusCode).to.equal(200)
+        expect(result.statusCode).to.equal(200);
+      });
 
       it('should resolve with OK', () => {
-          expect(@result.ok).to.be.true
+        expect(result.ok).to.be.true;
+      });
 
       it('should request with accept application/vnd.api+json', () => {
-          expect(@accept).to.equal('application/vnd.api+json')
+        expect(accept).to.equal('application/vnd.api+json');
+      });
 
       it('should return two teams', () => {
-          expect(@result.teams.length).to.equal(2)
+        expect(result.teams.length).to.equal(2);
+      });
 
       it('should return both teams', () => {
-          expect(@result.teams[0].id).to.equal(@firstTeam.id)
-          expect(@result.teams[0].name).to.equal(@firstTeam.name)
-          expect(@result.teams[1].id).to.equal(@secondTeam.id)
-          expect(@result.teams[1].name).to.equal(@secondTeam.name)
+        expect(result.teams[0].id).to.equal(firstTeam.id)
+        expect(result.teams[0].name).to.equal(firstTeam.name)
+        expect(result.teams[1].id).to.equal(secondTeam.id)
+        expect(result.teams[1].name).to.equal(secondTeam.name);
+      });
+    });
 
     describe('when http error', () => {
-    
+
+      let server: Server;
+      let error: Error;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.get('/teams', (req: express.Request, res: express.Response) => {
-          res.socket.destroy()
+
+        const api = express()
+
+        api.get('/teams', (req: express.Request, res: ResponseWithSocket) => {
+          res.socket.destroy();
+        });
 
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.findTeams('some filter') 
+
+        server = api.listen(12345, () => {
+          client.findTeams('some filter')
             .then(() => {
-              done(new Error('Promise resolved'))
+              done(new Error('Promise resolved'));
+            })
             .catch((err) => {
-              done()
-      
-      after((done) => {
-        server.close(done);
+              error = err;
+              done();
+            });
+        });
 
-      it('should reject with an error', () => {
-        expect(@err.message).to.equal('socket hang up')
+        after((done) => {
+          server.close(done);
+        });
 
+        it('should reject with an error', () => {
+          expect(error.message).to.equal('socket hang up');
+        });
+      });
+    });
+  });
 
   describe('#addUserToTeam', () => {
-    
+
     describe('when succeeds', () => {
-      
+
+      let server: Server;
+      let userId: string;
+      let userName: string;
+      let teamId: string;
+      let expectedAuth: string;
+      let contentType: string | string[];
+      let accept: string | string[];
+      let authorization: string | string[];
+      let body: any;
+      let teamIdParam: string;
+      let result: ApiResponse;
+
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345'
-        pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks'
-        
-        api = express()
-        
-        @userId = 'U12345'
-        @userName = 'Pineapple Dicxpress'
-        @teamId = 'fruity'
-        email_address = 'lkjasdkljasd@gfhjdgf.daskjd'
-        
-        @expectedAuth = "Basic #{new Buffer("#{email_address}:#{pass}").toString('base64')}"
-        
-        api.post('/teams/:teamId/members', apiJsonParser, (req: express.Request, res: express.Response) => {
-          @contentType = req.headers['content-type']
-          @accept = req.headers['accept']
-          @authorization = req.headers['authorization']
-          @body = req.body
-          @teamIdParam = req.params.teamId
-          res.status(201).send()
-        
+        process.env.HACK24API_URL = 'http://localhost:12345';
+        const pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks';
+
+        const api = express();
+
+        userId = 'U12345';
+        userName = 'Pineapple Dicxpress';
+        teamId = 'fruity';
+        const email_address = 'lkjasdkljasdgfhjdgf.daskjd';
+
+        expectedAuth = `Basic ${new Buffer(`${email_address}:${pass}`).toString('base64')}`;
+
+        api.post('/teams/:teamId/members', apiJsonParser, (req: RequestWithBody, res: express.Response) => {
+          contentType = req.headers['content-type'];
+          accept = req.headers['accept'];
+          authorization = req.headers['authorization'];
+          body = req.body;
+          teamIdParam = req.params['teamId'];
+          res.sendStatus(201);
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.addUserToTeam(@teamId, @userId, email_address)
+
+        server = api.listen(12345, () => {
+          client.addUserToTeam(teamId, userId, email_address)
             .then((res) => {
-              done()
+              result = res;
+              done();
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 201 Created', () => {
-        expect(@result.statusCode).to.equal(201)
+        expect(result.statusCode).to.equal(201);
+      });
 
       it('should resolve with OK', () => {
-        expect(@result.ok).to.be.true
+        expect(result.ok).to.be.true;
+      });
 
       it('should request with accept application/vnd.api+json', () => {
-        expect(@accept).to.equal('application/vnd.api+json')
+        expect(accept).to.equal('application/vnd.api+json');
+      });
 
       it('should request with content-type application/vnd.api+json', () => {
-        expect(@contentType).to.equal('application/vnd.api+json')
+        expect(contentType).to.equal('application/vnd.api+json');
+      });
 
       it('should request with the expected authorization', () => {
-        expect(@authorization).to.equal(@expectedAuth)
+        expect(authorization).to.equal(expectedAuth);
+      });
 
       it('should request with the expected team ID', () => {
-        expect(@teamIdParam).to.equal(@teamId)
+        expect(teamIdParam).to.equal(teamId);
+      });
 
       it('should request to create the expected user', () => {
-        expect(@body.data[0].type).to.equal('users')
-        expect(@body.data[0].id).to.equal(@userId)
-          
+        expect(body.data[0].type).to.equal('users');
+        expect(body.data[0].id).to.equal(userId);
+      });
+    });
+
     describe('when request errors', () => {
-  
+
+      let server: Server;
+      let error: Error;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.use (req, res) ->
-          res.socket.destroy()
+
+        const api = express();
+
+        api.use((req: express.Request, res: ResponseWithSocket) => {
+          res.socket.destroy();
+        });
 
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.addUserToTeam('some team', 'some user', 'some email') 
+
+        server = api.listen(12345, () => {
+          client.addUserToTeam('some team', 'some user', 'some email')
             .then(() => {
-              done(new Error('Promise resolved'))
+              done(new Error('Promise resolved'));
+            })
             .catch((err) => {
-              done()
-      
+              error = err;
+              done();
+            });
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should reject with an error', () => {
-        expect(@err.message).to.equal('socket hang up')
-
+        expect(error.message).to.equal('socket hang up');
+      });
+    });
+  });
 
   describe('#updateMotto', () => {
-    
+
     describe('when team exists', () => {
-      
+
+      let server: Server;
+      let motto: string;
+      let teamId: string;
+      let expectedAuth: string;
+      let contentType: string | string[];
+      let accept: string | string[];
+      let authorization: string | string[];
+      let body: any;
+      let teamIdParam: string;
+      let result: ApiResponse;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks'
-        
-        api = express()
-        
-        @motto = 'No TV and no beer make Homer something something'
-        @teamId = 'duff'
-        email_address = 'lkjasdkljasd@gfhjdgf.daskjd'
-        
-        @expectedAuth = "Basic #{new Buffer("#{email_address}:#{pass}").toString('base64')}"
-        
-        api.patch '/teams/:teamId', apiJsonParser, (req: express.Request, res: express.Response) => {
-          @contentType = req.headers['content-type']
-          @accept = req.headers['accept']
-          @authorization = req.headers['authorization']
-          @body = req.body
-          @teamIdParam = req.params.teamId
-          res.status(204).send()
-        
+        const pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks'
+
+        const api = express();
+
+        motto = 'No TV and no beer make Homer something something'
+        teamId = 'duff'
+        const email_address = 'lkjasdkljasdgfhjdgf.daskjd'
+
+        expectedAuth = `Basic ${new Buffer(`${email_address}:${pass}`).toString('base64')}`
+
+        api.patch('/teams/:teamId', apiJsonParser, (req: RequestWithBody, res: express.Response) => {
+          contentType = req.headers['content-type']
+          accept = req.headers['accept']
+          authorization = req.headers['authorization']
+          body = req.body
+          teamIdParam = req.params['teamId']
+          res.sendStatus(204);
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.updateMotto(@motto, @teamId, email_address)
+
+        server = api.listen(12345, () => {
+          client.updateMotto(motto, teamId, email_address)
             .then((res) => {
+              result = res;
               done()
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 204 No Content', () => {
-        expect(@result.statusCode).to.equal(204)
+        expect(result.statusCode).to.equal(204);
+      });
 
       it('should resolve with OK', () => {
-        expect(@result.ok).to.be.true
+        expect(result.ok).to.be.true;
+      });
 
       it('should request with accept application/vnd.api+json', () => {
-        expect(@accept).to.equal('application/vnd.api+json')
+        expect(accept).to.equal('application/vnd.api+json');
+      });
 
       it('should request with content-type application/vnd.api+json', () => {
-        expect(@contentType).to.equal('application/vnd.api+json')
+        expect(contentType).to.equal('application/vnd.api+json');
+      });
 
       it('should request with the expected authorization', () => {
-        expect(@authorization).to.equal(@expectedAuth)
+        expect(authorization).to.equal(expectedAuth);
+      });
 
       it('should request with the expected team ID', () => {
-        expect(@teamIdParam).to.equal(@teamId)
+        expect(teamIdParam).to.equal(teamId);
+      });
 
       it('should request to update the expected team', () => {
-        expect(@body.data.type).to.equal('teams')
-        expect(@body.data.id).to.equal(@teamId)
-    
+        expect(body.data.type).to.equal('teams')
+        expect(body.data.id).to.equal(teamId);
+      });
+    });
+
     describe('when team not found', () => {
-      
+
+      let server: Server;
+      let result: ApiResponse;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks'
-        
-        api = express()
-        
-        email_address = 'lkjasdkljasd@gfhjdgf.daskjd'
-        
-        api.patch '/teams/:teamId', apiJsonParser, (req: express.Request, res: express.Response) => {
-          res.status(404).send()
-        
+        const pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks'
+
+        const api = express()
+
+        const email_address = 'lkjasdkljasdgfhjdgf.daskjd'
+
+        api.patch('/teams/:teamId', apiJsonParser, (req: express.Request, res: express.Response) => {
+          res.sendStatus(404);
+        });
+
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
-          client.updateMotto('chips', 'fish', 'alkjdajh@sfdsdf.co.uk')
+
+        server = api.listen(12345, () => {
+          client.updateMotto('chips', 'fish', 'alkjdajhsfdsdf.co.uk')
             .then((res) => {
+              result = res;
               done()
+            })
             .catch(done);
-      
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should resolve with status code 404 Not Found', () => {
-        expect(@result.statusCode).to.equal(404)
+        expect(result.statusCode).to.equal(404);
+      });
 
       it('should resolve with not OK', () => {
-        expect(@result.ok).to.be.false
+        expect(result.ok).to.be.false;
+      });
+    });
 
     describe('when request errors', () => {
-  
+
+      let server: Server;
+      let error: Error;
+
       before((done) => {
         process.env.HACK24API_URL = 'http://localhost:12345'
-        
-        api = express()
-        
-        api.use (req, res) ->
+
+        const api = express()
+
+        api.use((req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy()
+        });
 
         const client = new Client();
-        
-        @server = api.listen(12345, () => {
+
+        server = api.listen(12345, () => {
           client.updateMotto('some motto', 'some team id', 'some email address')
             .then(() => {
-              done(new Error('Promise resolved'))
+              done(new Error('Promise resolved'));
+            })
             .catch((err) => {
+              error = err;
               done()
-      
+            });
+        });
+      });
+
       after((done) => {
         server.close(done);
+      });
 
       it('should reject with an error', () => {
-        expect(@err.message).to.equal('socket hang up')
-*/
+        expect(error.message).to.equal('socket hang up');
+      });
+    });
+  });
+});
