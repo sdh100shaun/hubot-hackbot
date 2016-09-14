@@ -27,7 +27,7 @@ import { UserData } from 'hubot';
 
 const slugify = (name: string) => slug(name, { lower: true });
 
-interface RobotWithHack24Client extends Robot {
+export interface RobotWithHack24Client extends Robot {
   hack24client: Client;
 }
 

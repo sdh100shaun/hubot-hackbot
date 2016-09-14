@@ -1,4 +1,6 @@
 declare module 'hubot-test-helper' {
+  import { Robot } from 'hubot';
+
   class Helper {
     constructor(scriptsPaths: string);
     createRoom(options?: Helper.CreateRoomOptions): Helper.Room;
@@ -17,6 +19,7 @@ declare module 'hubot-test-helper' {
       destroy(): void;
       user: User;
       messages: [string, string][];
+      robot: Robot;
     }
   }
 

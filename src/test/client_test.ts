@@ -1,10 +1,10 @@
-import {Server} from 'http';
-import {expect} from 'chai';
-import {Socket} from 'net';
+import { Server } from 'http';
+import { expect } from 'chai';
+import { Socket } from 'net';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 
-import {Client, ApiResponse, UserResponse, TeamResponse, TeamsResponse} from '../client';
+import { Client, ApiResponse, UserResponse, TeamResponse, TeamsResponse } from '../client';
 
 const apiJsonParser = bodyParser.json({ type: 'application/vnd.api+json' });
 
