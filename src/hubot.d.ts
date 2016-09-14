@@ -61,6 +61,8 @@ declare module "hubot" {
 
   export interface UserData {
     email_address: string;
+    name: string;
+    id: string;
   }
 
   export interface BrainData {

@@ -1,5 +1,5 @@
 declare module 'slug' {
-  function slug(string: string, opts: slug.Options): void;
+  function slug(string: string, opts: slug.Options): string;
   namespace slug {
     interface Options {
       mode?: 'pretty' | 'rfc3986';

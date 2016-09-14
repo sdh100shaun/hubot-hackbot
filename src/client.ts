@@ -20,6 +20,7 @@ interface Team {
   id: string;
   name: string;
   members: User[];
+  motto?: string;
 }
 
 export interface UserResponse extends ApiResponse {
