@@ -55,7 +55,7 @@ module.exports = (robot: RobotWithHack24Client) => {
 
 
   robot.respond(/my id/i, (response) => {
-    response.reply(`Your id === ${response.message.user.id}`);
+    response.reply(`Your id is ${response.message.user.id}`);
   });
 
 
@@ -114,7 +114,7 @@ module.exports = (robot: RobotWithHack24Client) => {
         if (res.statusCode === 404) return response.reply("Sorry, I can't find that team.");
         if (!res.ok) return response.reply('Sorry, there was a problem when I tried to look up that team :frowning:');
 
-        if (res.team.members.length === 0) return response.reply("\"#{res.team.name}\" === an empty team.");
+        if (res.team.members.length === 0) return response.reply("\"#{res.team.name}\" is an empty team.");
 
         if (res.team.members.length === 1 && res.team.members[0].id === response.message.user.id) {
           const motto = res.team.motto === null ? "and you have not yet set your motto!" : "and your motto is: #{res.team.motto}";
@@ -211,7 +211,7 @@ module.exports = (robot: RobotWithHack24Client) => {
     robot.hack24client.getUser(userId)
       .then(res => {
         if (res.user.team.id === undefined)
-          return response.reply("I would, but you're not in a team...");
+          return response.reply(`I would, but you're not in a team...`);
 
         const teamId = res.user.team.id;
 
@@ -229,10 +229,10 @@ module.exports = (robot: RobotWithHack24Client) => {
           robot.hack24client.addUserToTeam(teamId, otherUserId, emailAddress)
             .then(res => {
               if (res.statusCode === 400)
-                return response.reply("Sorry, #{otherUsername} === already in another team and must leave that team first.");
+                return response.reply(`Sorry, ${otherUsername} is already in another team and must leave that team first.`);
 
               if (res.statusCode === 403)
-                return response.reply("Sorry, you don't have permission to add people to your team.");
+                return response.reply(`Sorry, you don't have permission to add people to your team.`);
 
               response.reply('Done!');
             });
