@@ -142,41 +142,41 @@ describe('Hack24 API Client', () => {
             })
             .catch(done);
         });
+      });
 
-        after((done) => {
-          server.close(done);
-        });
+      after((done) => {
+        server.close(done);
+      });
 
-        it('should resolve with status code 201 Created', () => {
-          expect(response.statusCode).to.equal(201);
-        });
+      it('should resolve with status code 201 Created', () => {
+        expect(response.statusCode).to.equal(201);
+      });
 
-        it('should resolve with OK', () => {
-          expect(response.ok).to.be.true;
-        });
+      it('should resolve with OK', () => {
+        expect(response.ok).to.be.true;
+      });
 
-        it('should request with accept application/vnd.api+json', () => {
-          expect(accept).to.equal('application/vnd.api+json');
-        });
+      it('should request with accept application/vnd.api+json', () => {
+        expect(accept).to.equal('application/vnd.api+json');
+      });
 
-        it('should request with content-type application/vnd.api+json', () => {
-          expect(contentType).to.equal('application/vnd.api+json');
-        });
+      it('should request with content-type application/vnd.api+json', () => {
+        expect(contentType).to.equal('application/vnd.api+json');
+      });
 
-        it('should request with the expected authorization', () => {
-          expect(authorization).to.equal(expectedAuth);
-        });
+      it('should request with the expected authorization', () => {
+        expect(authorization).to.equal(expectedAuth);
+      });
 
-        it('should request to create the expected team', () => {
-          expect(body.data.type).to.equal('teams')
-          expect(body.data.attributes.name).to.equal(teamName);
-        });
+      it('should request to create the expected team', () => {
+        expect(body.data.type).to.equal('teams')
+        expect(body.data.attributes.name).to.equal(teamName);
+      });
 
-        it('should request to add the user relationship', () => {
-          expect(body.data.relationships.members.data.length).to.equal(1)
-          expect(body.data.relationships.members.data[0].type).to.equal('users')
-          expect(body.data.relationships.members.data[0].id).to.equal(userId);
-        });
+      it('should request to add the user relationship', () => {
+        expect(body.data.relationships.members.data.length).to.equal(1)
+        expect(body.data.relationships.members.data[0].type).to.equal('users')
+        expect(body.data.relationships.members.data[0].id).to.equal(userId);
       });
     });
 
@@ -1132,13 +1132,14 @@ describe('Hack24 API Client', () => {
             });
         });
 
-        after((done) => {
-          server.close(done);
-        });
+      });
 
-        it('should reject with an error', () => {
-          expect(error.message).to.equal('socket hang up');
-        });
+      after((done) => {
+        server.close(done);
+      });
+
+      it('should reject with an error', () => {
+        expect(error.message).to.equal('socket hang up');
       });
     });
   });
