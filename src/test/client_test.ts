@@ -96,85 +96,86 @@ describe('Hack24 API Client', () => {
       });
     });
 
-    describe('#createTeam', () => {
+  });
 
-      describe('when request succeeds', () => {
+  describe('#createTeam', () => {
 
-        let server: Server;
-        let teamName: string;
-        let userId: string;
-        let expectedAuth: string;
-        let contentType: string | string[];
-        let accept: string | string[];
-        let authorization: string | string[];
-        let body: any;
-        let response: ApiResponse;
+    describe('when request succeeds', () => {
 
-        before((done) => {
-          process.env.HACK24API_URL = 'http://localhost:12345';
-          const pass = process.env.HACKBOT_PASSWORD = '65456465464654';
+      let server: Server;
+      let teamName: string;
+      let userId: string;
+      let expectedAuth: string;
+      let contentType: string | string[];
+      let accept: string | string[];
+      let authorization: string | string[];
+      let body: any;
+      let response: ApiResponse;
 
-          const api = express();
+      before((done) => {
+        process.env.HACK24API_URL = 'http://localhost:12345';
+        const pass = process.env.HACKBOT_PASSWORD = '65456465464654';
 
-          teamName = 'Pineapple Express'
-          userId = 'U12345'
-          const email_address = 'someguy.com'
+        const api = express();
 
-          expectedAuth = `Basic ${new Buffer(`${email_address}:${pass}`).toString('base64')}`
+        teamName = 'Pineapple Express'
+        userId = 'U12345'
+        const email_address = 'someguy.com'
 
-          api.post('/teams', apiJsonParser, (req: RequestWithBody, res: express.Response) => {
-            contentType = req.headers['content-type'];
-            accept = req.headers['accept'];
-            authorization = req.headers['authorization'];
-            body = req.body;
-            res.sendStatus(201);
-          });
+        expectedAuth = `Basic ${new Buffer(`${email_address}:${pass}`).toString('base64')}`
 
-          const client = new Client();
+        api.post('/teams', apiJsonParser, (req: RequestWithBody, res: express.Response) => {
+          contentType = req.headers['content-type'];
+          accept = req.headers['accept'];
+          authorization = req.headers['authorization'];
+          body = req.body;
+          res.sendStatus(201);
+        });
 
-          server = api.listen(12345, () => {
-            client.createTeam(teamName, userId, email_address)
-              .then((res) => {
-                response = res;
-                done();
-              })
-              .catch(done);
-          });
+        const client = new Client();
 
-          after((done) => {
-            server.close(done);
-          });
+        server = api.listen(12345, () => {
+          client.createTeam(teamName, userId, email_address)
+            .then((res) => {
+              response = res;
+              done();
+            })
+            .catch(done);
+        });
 
-          it('should resolve with status code 201 Created', () => {
-            expect(response.statusCode).to.equal(201);
-          });
+        after((done) => {
+          server.close(done);
+        });
 
-          it('should resolve with OK', () => {
-            expect(response.ok).to.be.true;
-          });
+        it('should resolve with status code 201 Created', () => {
+          expect(response.statusCode).to.equal(201);
+        });
 
-          it('should request with accept application/vnd.api+json', () => {
-            expect(accept).to.equal('application/vnd.api+json');
-          });
+        it('should resolve with OK', () => {
+          expect(response.ok).to.be.true;
+        });
 
-          it('should request with content-type application/vnd.api+json', () => {
-            expect(contentType).to.equal('application/vnd.api+json');
-          });
+        it('should request with accept application/vnd.api+json', () => {
+          expect(accept).to.equal('application/vnd.api+json');
+        });
 
-          it('should request with the expected authorization', () => {
-            expect(authorization).to.equal(expectedAuth);
-          });
+        it('should request with content-type application/vnd.api+json', () => {
+          expect(contentType).to.equal('application/vnd.api+json');
+        });
 
-          it('should request to create the expected team', () => {
-            expect(body.data.type).to.equal('teams')
-            expect(body.data.attributes.name).to.equal(teamName);
-          });
+        it('should request with the expected authorization', () => {
+          expect(authorization).to.equal(expectedAuth);
+        });
 
-          it('should request to add the user relationship', () => {
-            expect(body.data.relationships.members.data.length).to.equal(1)
-            expect(body.data.relationships.members.data[0].type).to.equal('users')
-            expect(body.data.relationships.members.data[0].id).to.equal(userId);
-          });
+        it('should request to create the expected team', () => {
+          expect(body.data.type).to.equal('teams')
+          expect(body.data.attributes.name).to.equal(teamName);
+        });
+
+        it('should request to add the user relationship', () => {
+          expect(body.data.relationships.members.data.length).to.equal(1)
+          expect(body.data.relationships.members.data[0].type).to.equal('users')
+          expect(body.data.relationships.members.data[0].id).to.equal(userId);
         });
       });
     });
@@ -1021,7 +1022,6 @@ describe('Hack24 API Client', () => {
       });
     });
   });
-
 
   describe('#findTeams', () => {
 
