@@ -6,7 +6,7 @@
 //   HACK24API_URL: required
 //
 // Commands:
-//   hubot can you see the api? - checks if the API === visible
+//   hubot can you see the api? - checks if the API is visible
 //   hubot what are your prime directives? - cites hubot's prime directives
 //   hubot my id - echos the ID hubot knows you as
 //   hubot create team <team name> - tries to create team with name <team name> and adds you to it
@@ -37,7 +37,7 @@ module.exports = (robot: RobotWithHack24Client) => {
 
 
   robot.respond(/can you see the api\??/i, (response) => {
-    response.reply("I'll have a quick look for you...");
+    response.reply(`I'll have a quick look for you...`);
     robot.hack24client.checkApi()
       .then((res) => {
         if (res.ok) return response.reply('I see her!');
@@ -50,7 +50,9 @@ module.exports = (robot: RobotWithHack24Client) => {
   });
 
   robot.respond(/what are your prime directives\??/i, (response) => {
-    response.reply("1. Serve the public trust\n2. Protect the innocent hackers\n3. Uphold the Code of Conduct\n4. [Classified]");
+    response.reply(`1. Serve the public trust
+2. Protect the innocent hackers
+3. Uphold the Code of Conduct\n4. [Classified]`);
   });
 
 
@@ -78,12 +80,12 @@ module.exports = (robot: RobotWithHack24Client) => {
                     if (res.ok) return response.reply(`Welcome to team ${teamName}!`);
                     if (res.statusCode === 409) return response.reply('Sorry, but that team already exists!');
 
-                    response.reply("Sorry, I can't create your team :frowning:");
+                    response.reply(`Sorry, I can't create your team :frowning:`);
                   });
 
-              if (res.statusCode === 403) return response.reply("Sorry, you don't have permission to create a team.");
+              if (res.statusCode === 403) return response.reply(`Sorry, you don't have permission to create a team.`);
 
-              response.reply("Sorry, I can't create your user account :frowning:");
+              response.reply(`Sorry, I can't create your user account :frowning:`);
             });
         }
 
@@ -94,14 +96,14 @@ module.exports = (robot: RobotWithHack24Client) => {
         robot.hack24client.createTeam(teamName, userId, email_address)
           .then((res) => {
             if (res.ok) return response.reply(`Welcome to team ${teamName}!`);
-            if (res.statusCode === 403) return response.reply("Sorry, you don't have permission to create a team.");
+            if (res.statusCode === 403) return response.reply(`Sorry, you don't have permission to create a team.`);
             if (res.statusCode === 409) return response.reply('Sorry, but that team already exists!');
 
-            response.reply("Sorry, I can't create your team :frowning:");
+            response.reply(`Sorry, I can't create your team :frowning:`);
           });
       })
       .catch((err) => {
-        response.reply("I'm sorry, there appears to be a big problem!");
+        response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });
 
@@ -111,25 +113,25 @@ module.exports = (robot: RobotWithHack24Client) => {
 
     robot.hack24client.getTeam(teamId)
       .then(res => {
-        if (res.statusCode === 404) return response.reply("Sorry, I can't find that team.");
+        if (res.statusCode === 404) return response.reply(`Sorry, I can't find that team.`);
         if (!res.ok) return response.reply('Sorry, there was a problem when I tried to look up that team :frowning:');
 
-        if (res.team.members.length === 0) return response.reply("\"#{res.team.name}\" is an empty team.");
+        if (res.team.members.length === 0) return response.reply(`"${res.team.name}" is an empty team.`);
 
         if (res.team.members.length === 1 && res.team.members[0].id === response.message.user.id) {
-          const motto = res.team.motto === null ? "and you have not yet set your motto!" : "and your motto is: #{res.team.motto}";
-          return response.reply("You are the only member of \"#{res.team.name}\" #{motto}");
+          const motto = res.team.motto === null ? `and you have not yet set your motto!` : `and your motto is: ${res.team.motto}`;
+          return response.reply(`You are the only member of "${res.team.name}" ${motto}`);
         }
 
         const memberList = res.team.members.map(member => member.name);
         const noun = res.team.members.length === 1 ? 'member' : 'members';
-        const motto = res.team.motto === null ? "They don't yet have a motto!" : "They say: #{res.team.motto}";
+        const motto = res.team.motto === null ? `They don't yet have a motto!` : `They say: ${res.team.motto}`;
 
-        response.reply("\"#{res.team.name}\" has #{res.team.members.length} #{noun}: #{memberList.join(', ')}\r\n#{motto}");
+        response.reply(`"${res.team.name}" has ${res.team.members.length} ${noun}: ${memberList.join(', ')}\r\n${motto}`);
       })
       .catch(err => { 
-        console.log("ERROR: " + err);
-        response.reply('I\'m sorry, there appears to be a big problem!');
+        console.log(`ERROR: ` + err);
+        response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });
 
@@ -139,20 +141,20 @@ module.exports = (robot: RobotWithHack24Client) => {
 
     robot.hack24client.getUser(userId)
       .then(res => {
-        if (!res.ok || res.user.team.id === undefined) return response.reply('You\'re not in a team! :goberserk:');
+        if (!res.ok || res.user.team.id === undefined) return response.reply(`You're not in a team! :goberserk:`);
 
         const email_address = robot.brain.data.users[userId].email_address;
 
         return robot.hack24client.removeTeamMember(res.user.team.id, userId, email_address)
           .then(_res => {
-            if (_res.ok) return response.reply("OK, you've been removed from team \"#{res.user.team.name}\"");
-            if (_res.statusCode === 403) return response.reply("Sorry, you don't have permission to leave your team.");
+            if (_res.ok) return response.reply(`OK, you've been removed from team "${res.user.team.name}"`);
+            if (_res.statusCode === 403) return response.reply(`Sorry, you don't have permission to leave your team.`);
 
-            response.reply("Sorry, I tried, but something went wrong.");
+            response.reply(`Sorry, I tried, but something went wrong.`);
         });
       })
       .catch(err => {
-        response.reply('I\'m sorry, there appears to be a big problem!');
+        response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });
 
@@ -164,16 +166,16 @@ module.exports = (robot: RobotWithHack24Client) => {
       .then(res => {
         if (res.teams.length === 0) return response.reply('None found.');
 
-        const names = res.teams.slice(0, 2).map(team => team.name);
-        response.reply("Found #{res.teams.length} teams; here's a few: #{names.join(', ')}");
+        const names = res.teams.slice(0, 3).map(team => team.name);
+        response.reply(`Found ${res.teams.length} teams; here's a few: ${names.join(', ')}`);
       })
       .catch(err => {
-        response.reply('I\'m sorry, there appears to be a big problem!');
+        response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });
 
 
-  robot.respond(/our motto === (.*)/i, response => {
+  robot.respond(/our motto is (.*)/i, response => {
     const userId = response.message.user.id;
     const userName = response.message.user.name;
     const motto = response.match[1];
@@ -182,24 +184,24 @@ module.exports = (robot: RobotWithHack24Client) => {
       .then(res => {
 
         if ((!res.ok && res.statusCode === 404) || res.user.team.id === undefined)
-          return response.reply("You're not in a team! :goberserk:");
+          return response.reply(`You're not in a team! :goberserk:`);
 
         const email_address = robot.brain.data.users[userId].email_address
 
         robot.hack24client.updateMotto(motto, res.user.team.id, email_address)
           .then(updateMottoResponse => {
             if (updateMottoResponse.ok)
-              return response.reply("So it is! As #{res.user.team.name} say: #{motto}");
+              return response.reply(`So it is! As ${res.user.team.name} say: ${motto}`);
 
             if (updateMottoResponse.statusCode === 403)
               return response.reply('Sorry, only team members can change the motto.');
 
-            response.reply("Sorry, I tried, but something went wrong.");
+            response.reply(`Sorry, I tried, but something went wrong.`);
           });
       })
       .catch(err => {
-        console.log("ERROR: " + err);
-        response.reply('I\'m sorry, there appears to be a big problem!');
+        console.log(`ERROR: ` + err);
+        response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });
 
@@ -258,17 +260,17 @@ module.exports = (robot: RobotWithHack24Client) => {
     robot.hack24client.getUser(userId)
       .then(res => {
         if ((!res.ok && res.statusCode === 404) || res.user.team.id === undefined)
-          return response.reply("You're not in a team! :goberserk:");
+          return response.reply(`You're not in a team! :goberserk:`);
 
         const memberList = res.user.team.members.map((member) => member.name);
         const noun = res.user.team.members.length === 1 ? 'member' : 'members';
-        const motto = res.user.team.motto === null ? "They don't yet have a motto!" : "They say: #{res.user.team.motto}";
+        const motto = res.user.team.motto === null ? `They don't yet have a motto!` : `They say: ${res.user.team.motto}`;
 
-        response.reply("\"#{res.user.team.name}\" has #{res.user.team.members.length} #{noun}: #{memberList.join(', ')}\r\n#{motto}");
+        response.reply(`"${res.user.team.name}" has ${res.user.team.members.length} ${noun}: ${memberList.join(', ')}\r\n${motto}`);
       })
       .catch(err => {
-        console.log("ERROR: " + err);
-        response.reply('I\'m sorry, there appears to be a big problem!');
+        console.log(`ERROR: ` + err);
+        response.reply(`I'm sorry, there appears to be a big problem!`);
       })
   });
 };

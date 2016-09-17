@@ -1,7 +1,7 @@
-import * as Helper from 'hubot-test-helper';
 import { expect } from 'chai';
 
-const helper = new Helper('../hackbot.js')
+import * as Helper from 'hubot-test-helper';
+const helper = new Helper('../hackbot.js');
 
 describe('@hubot my id', () => {
 
@@ -19,7 +19,7 @@ describe('@hubot my id', () => {
     room.user.say('bob', '@hubot my id').then(() => {
       expect(room.messages).to.eql([
         ['bob', '@hubot my id'],
-        ['hubot', "@bob Your id is bob"]
+        ['hubot', `@bob Your id is bob`]
       ]);
     });
   });

@@ -109,7 +109,7 @@ describe('@hubot create team X', () => {
         createTeam: $createTeamStub
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: $userEmail
       };
       
@@ -163,7 +163,7 @@ describe('@hubot create team X', () => {
         getUser: $getUserStub
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: 'sadadd'
       };
       
@@ -221,7 +221,7 @@ describe('@hubot create team X', () => {
         createTeam: $createTeamStub
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: $userEmail
       };
       
@@ -282,7 +282,7 @@ describe('@hubot create team X', () => {
         createTeam: $createTeamStub
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: $userEmail
       };
       
@@ -346,7 +346,7 @@ describe('@hubot create team X', () => {
         createUser: $createUserStub
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: $userEmail
       };
       
@@ -398,7 +398,7 @@ describe('@hubot create team X', () => {
         createUser: $createUserStub
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: $userEmail
       };
       
@@ -445,7 +445,7 @@ describe('@hubot create team X', () => {
         createTeam: () => Promise.resolve({ ok: false, statusCode: 503 })
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: 'another.email.address'
       };
 
@@ -488,7 +488,7 @@ describe('@hubot create team X', () => {
         createTeam: () => Promise.resolve({ ok: false, statusCode: 503 })
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: 'some.email.address'
       };
 
@@ -525,7 +525,7 @@ describe('@hubot create team X', () => {
         getUser: () => Promise.reject(new Error('unknown'))
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: 'bark'
       };
       
@@ -563,7 +563,7 @@ describe('@hubot create team X', () => {
         createUser: () => Promise.reject(new Error('unknown'))
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: 'bark'
       };
       
@@ -602,7 +602,7 @@ describe('@hubot create team X', () => {
         createTeam: () => Promise.reject(new Error('unknown'))
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: 'bark'
       };
       
@@ -640,7 +640,7 @@ describe('@hubot create team X', () => {
         createTeam: () => Promise.reject(new Error('unknown'))
       };
         
-      $room.robot.brain.data.users[$userId] = <UserData> {
+      robot.brain.data.users[$userId] = <UserData> {
         email_address: 'bark'
       };
       
