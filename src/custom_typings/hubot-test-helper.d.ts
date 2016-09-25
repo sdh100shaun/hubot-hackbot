@@ -1,12 +1,9 @@
 declare module 'hubot-test-helper' {
   import { Robot } from 'hubot';
 
-  class Helper {
-    constructor(scriptsPaths: string);
-    createRoom(options?: Helper.CreateRoomOptions): Helper.Room;
-  }
+  var hth: hth.Helper;
 
-  namespace Helper {
+  namespace hth {
     interface CreateRoomOptions { }
 
     interface User {
@@ -15,7 +12,12 @@ declare module 'hubot-test-helper' {
       leave(userName: string): Promise<void>;
     }
 
-    class Room {
+    interface Helper {
+      new (scriptsPaths: string): Helper;
+      createRoom(options?: CreateRoomOptions): Room;
+    }
+
+    interface Room {
       destroy(): void;
       user: User;
       messages: [string, string][];
@@ -23,5 +25,5 @@ declare module 'hubot-test-helper' {
     }
   }
 
-  export = Helper;
+  export = hth;
 }

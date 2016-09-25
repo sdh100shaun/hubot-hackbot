@@ -35,7 +35,7 @@ export interface TeamsResponse extends ApiResponse {
   teams: Team[];
 }
 
-export class Client {
+export default class Client {
   private baseUrl: string;
   private httpClient: HttpClient.ScopedClientConstructor;
 
