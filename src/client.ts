@@ -133,7 +133,7 @@ export default class Client {
 
           if (result.ok) {
             const store = new Store();
-            result.user = store.sync<User>(JSON.parse(body));
+            result.user = store.sync(JSON.parse(body));
           }
 
           resolve(result);
@@ -155,7 +155,7 @@ export default class Client {
 
           if (result.ok) {
             const store = new Store();
-            result.team = store.sync<Team>(JSON.parse(body));
+            result.team = store.sync(JSON.parse(body));
           }
 
           resolve(result)
@@ -200,7 +200,7 @@ export default class Client {
 
           if (result.ok) {
             const store = new Store();
-            result.teams = store.sync<Team[]>(JSON.parse(body));
+            result.teams = store.sync(JSON.parse(body));
           }
 
           resolve(result)
