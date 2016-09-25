@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { RobotWithClient } from '../hackbot';
-import { UserData } from 'hubot';
 import * as Helper from 'hubot-test-helper';
 
 describe('@hubot tell me about my team', () => {
@@ -14,8 +13,8 @@ describe('@hubot tell me about my team', () => {
 
   function setUp() {
     room = helper.createRoom();
-    robot = <RobotWithClient>room.robot;
-  };
+    robot = <RobotWithClient> room.robot;
+  }
 
   function tearDown() {
     room.destroy();
@@ -35,12 +34,12 @@ describe('@hubot tell me about my team', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
-      teamName = 'Pointy Wizards'
-      firstTeamMember = 'Jerry'
-      secondTeamMember = 'Bob'
-      thirdTeamMember = 'Perry'
-      motto = 'Pikes and spikes hurt on bikes'
+      userId = 'jerry';
+      teamName = 'Pointy Wizards';
+      firstTeamMember = 'Jerry';
+      secondTeamMember = 'Bob';
+      thirdTeamMember = 'Perry';
+      motto = 'Pikes and spikes hurt on bikes';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
@@ -51,14 +50,14 @@ describe('@hubot tell me about my team', () => {
             name: teamName,
             motto: motto,
             members: [{
-              name: firstTeamMember
-            },{
-              name: secondTeamMember
-            },{
-              name: thirdTeamMember
-            }]
-          }
-        }
+              name: firstTeamMember,
+            }, {
+              name: secondTeamMember,
+            }, {
+              name: thirdTeamMember,
+            }],
+          },
+        },
       }));
 
       return room.user.say(userId, `@hubot tell me about my team`);
@@ -71,7 +70,10 @@ describe('@hubot tell me about my team', () => {
     it('should tell the user the team information', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot tell me about my team`],
-        ['hubot', `@${userId} "${teamName}" has 3 members: ${firstTeamMember}, ${secondTeamMember}, ${thirdTeamMember}\r\nThey say: ${motto}`]
+        [
+          'hubot',
+          `@${userId} "${teamName}" has 3 members: ${firstTeamMember}, ${secondTeamMember}, ${thirdTeamMember}\r\nThey say: ${motto}`,
+        ],
       ]);
     });
   });
@@ -89,11 +91,11 @@ describe('@hubot tell me about my team', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
-      teamName = 'Pointy Wizards'
-      firstTeamMember = 'Jerry'
-      secondTeamMember = 'Bob'
-      thirdTeamMember = 'Perry'
+      userId = 'jerry';
+      teamName = 'Pointy Wizards';
+      firstTeamMember = 'Jerry';
+      secondTeamMember = 'Bob';
+      thirdTeamMember = 'Perry';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
@@ -104,14 +106,14 @@ describe('@hubot tell me about my team', () => {
             name: teamName,
             motto: null,
             members: [{
-              name: firstTeamMember
-            },{
-              name: secondTeamMember
-            },{
-              name: thirdTeamMember
-            }]
-          }
-        }
+              name: firstTeamMember,
+            }, {
+              name: secondTeamMember,
+            }, {
+              name: thirdTeamMember,
+            }],
+          },
+        },
       }));
 
       return room.user.say(userId, `@hubot tell me about my team`);
@@ -124,7 +126,10 @@ describe('@hubot tell me about my team', () => {
     it('should tell the user the team information', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot tell me about my team`],
-        ['hubot', `@${userId} "${teamName}" has 3 members: ${firstTeamMember}, ${secondTeamMember}, ${thirdTeamMember}\r\nThey don't yet have a motto!`]
+        ['hubot',
+          `@${userId} "${teamName}" has 3 members: ${firstTeamMember}, ${secondTeamMember}, ${thirdTeamMember}\r\n` +
+          "They don't yet have a motto!",
+        ],
       ]);
     });
   });
@@ -138,14 +143,14 @@ describe('@hubot tell me about my team', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
+      userId = 'jerry';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           id: userId,
-          team: {}
-        }
+          team: {},
+        },
       }));
 
       return room.user.say(userId, `@hubot tell me about my team`);
@@ -158,7 +163,7 @@ describe('@hubot tell me about my team', () => {
     it('should tell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot tell me about my team`],
-        ['hubot', `@${userId} You're not in a team! :goberserk:`]
+        ['hubot', `@${userId} You're not in a team! :goberserk:`],
       ]);
     });
   });
@@ -172,11 +177,11 @@ describe('@hubot tell me about my team', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
+      userId = 'jerry';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: false,
-        statusCode: 404
+        statusCode: 404,
       }));
 
       return room.user.say(userId, `@hubot tell me about my team`);
@@ -189,7 +194,7 @@ describe('@hubot tell me about my team', () => {
     it('should tell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot tell me about my team`],
-        ['hubot', `@${userId} You're not in a team! :goberserk:`]
+        ['hubot', `@${userId} You're not in a team! :goberserk:`],
       ]);
     });
   });
@@ -202,7 +207,7 @@ describe('@hubot tell me about my team', () => {
     let userId: string;
 
     before(() => {
-      userId = 'jerry'
+      userId = 'jerry';
 
       sinon.stub(robot.client, 'getUser').returns(Promise.reject(new Error('unknown')));
 
@@ -212,7 +217,7 @@ describe('@hubot tell me about my team', () => {
     it('should tell the user that there is a problem', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot tell me about my team`],
-        ['hubot', `@${userId} I'm sorry, there appears to be a big problem!`]
+        ['hubot', `@${userId} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });

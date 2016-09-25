@@ -17,7 +17,7 @@ describe('@hubot my id', () => {
   it('should tell the user their identifier', () => {
     expect(room.messages).to.eql([
       ['bob', '@hubot my id'],
-      ['hubot', `@bob Your id is bob`]
+      ['hubot', `@bob Your id is bob`],
     ]);
   });
 });

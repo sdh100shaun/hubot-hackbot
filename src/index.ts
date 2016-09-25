@@ -20,7 +20,6 @@
 //   David Wood <david.p.wood@gmail.com>
 //
 
-import { Robot } from 'hubot';
 import Client from './client';
 import { RobotWithClient } from './hackbot';
 

@@ -13,8 +13,8 @@ describe('@hubot find teams like X', () => {
 
   function setUp() {
     room = helper.createRoom();
-    robot = <RobotWithClient>room.robot;
-  };
+    robot = <RobotWithClient> room.robot;
+  }
 
   function tearDown() {
     room.destroy();
@@ -34,8 +34,8 @@ describe('@hubot find teams like X', () => {
           { name: 'Hack Hackers Hacking Hacks' },
           { name: 'Hackers Hacking Hack Hacks' },
           { name: 'Another Team' },
-          { name: 'b' }
-        ]
+          { name: 'b' },
+        ],
       }));
 
       return room.user.say('paolo', '@hubot find teams like hacking hack');
@@ -48,7 +48,7 @@ describe('@hubot find teams like X', () => {
     it('should tell the user which teams were found', () => {
       expect(room.messages).to.eql([
         ['paolo', '@hubot find teams like hacking hack'],
-        ['hubot', `@paolo Found 4 teams; here's a few: Hack Hackers Hacking Hacks, Hackers Hacking Hack Hacks, Another Team`]
+        ['hubot', `@paolo Found 4 teams; here's a few: Hack Hackers Hacking Hacks, Hackers Hacking Hack Hacks, Another Team`],
       ]);
     });
   });
@@ -61,7 +61,7 @@ describe('@hubot find teams like X', () => {
     before(() => {
       sinon.stub(robot.client, 'findTeams').returns(Promise.resolve({
         ok: true,
-        teams: []
+        teams: [],
       }));
 
       return room.user.say('paolo', '@hubot find teams like hacking hack');
@@ -70,7 +70,7 @@ describe('@hubot find teams like X', () => {
     it('should tell the user that no teams were found', () => {
       expect(room.messages).to.eql([
         ['paolo', '@hubot find teams like hacking hack'],
-        ['hubot', '@paolo None found.']
+        ['hubot', '@paolo None found.'],
       ]);
     });
   });

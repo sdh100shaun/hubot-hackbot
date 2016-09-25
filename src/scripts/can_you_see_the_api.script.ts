@@ -7,7 +7,9 @@ export default (robot: RobotWithClient) => {
     robot.client
       .checkApi()
       .then((res) => {
-        if (res.ok) return response.reply('I see her!');
+        if (res.ok) {
+          return response.reply('I see her!');
+        }
         response.reply(`I'm sorry, there appears to be a problem; something about "${res.statusCode}"`);
       })
       .catch((err) => {

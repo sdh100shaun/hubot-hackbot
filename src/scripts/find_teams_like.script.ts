@@ -7,7 +7,9 @@ export default (robot: RobotWithClient) => {
 
     robot.client.findTeams(nameFilter)
       .then(res => {
-        if (res.teams.length === 0) return response.reply('None found.');
+        if (res.teams.length === 0) {
+          return response.reply('None found.');
+        }
 
         const names = res.teams.slice(0, 3).map(team => team.name);
         response.reply(`Found ${res.teams.length} teams; here's a few: ${names.join(', ')}`);

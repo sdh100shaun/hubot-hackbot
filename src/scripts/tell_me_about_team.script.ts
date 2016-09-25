@@ -8,10 +8,16 @@ export default (robot: RobotWithClient) => {
 
     robot.client.getTeam(teamId)
       .then(res => {
-        if (res.statusCode === 404) return response.reply(`Sorry, I can't find that team.`);
-        if (!res.ok) return response.reply('Sorry, there was a problem when I tried to look up that team :frowning:');
+        if (res.statusCode === 404) {
+          return response.reply(`Sorry, I can't find that team.`);
+        }
+        if (!res.ok) {
+          return response.reply('Sorry, there was a problem when I tried to look up that team :frowning:');
+        }
 
-        if (res.team.members.length === 0) return response.reply(`"${res.team.name}" is an empty team.`);
+        if (res.team.members.length === 0) {
+          return response.reply(`"${res.team.name}" is an empty team.`);
+        }
 
         if (res.team.members.length === 1 && res.team.members[0].id === response.message.user.id) {
           const motto = res.team.motto === null ? `and you have not yet set your motto!` : `and your motto is: ${res.team.motto}`;
@@ -25,7 +31,6 @@ export default (robot: RobotWithClient) => {
         response.reply(`"${res.team.name}" has ${res.team.members.length} ${noun}: ${memberList.join(', ')}\r\n${motto}`);
       })
       .catch(err => {
-        console.log(`ERROR: ` + err);
         response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });

@@ -14,8 +14,8 @@ describe('@hubot our motto is', () => {
 
   function setUp() {
     room = helper.createRoom();
-    robot = <RobotWithClient>room.robot;
-  };
+    robot = <RobotWithClient> room.robot;
+  }
 
   function tearDown() {
     room.destroy();
@@ -35,33 +35,26 @@ describe('@hubot our motto is', () => {
     let updateMottoStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
-      userEmail = 'jerry@jerry.jerry'
-      teamId = 'my-crazy-team-name'
-      teamName = 'My Crazy Team Name'
-      motto = 'We are great'
-
-      const robot = <RobotWithClient> room.robot;
+      userId = 'jerry';
+      userEmail = 'jerry@jerry.jerry';
+      teamId = 'my-crazy-team-name';
+      teamName = 'My Crazy Team Name';
+      motto = 'We are great';
 
       robot.brain.data.users[userId] = <UserData> { email_address: userEmail };
 
-      getUserStub = sinon.stub().returns(Promise.resolve({
+      getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           id: userId,
           team: {
             id: teamId,
-            name: teamName
-          }
-        }
+            name: teamName,
+          },
+        },
       }));
 
-      updateMottoStub = sinon.stub().returns(Promise.resolve({ ok: true }));
-
-      robot.client = <any> {
-        getUser: getUserStub,
-        updateMotto: updateMottoStub
-      };
+      updateMottoStub = sinon.stub(robot.client, 'updateMotto').returns(Promise.resolve({ ok: true }));
 
       return room.user.say(userId, `@hubot our motto is ${motto}`);
     });
@@ -77,7 +70,7 @@ describe('@hubot our motto is', () => {
     it('should tell the user the new motto', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot our motto is ${motto}`],
-        ['hubot', `@${userId} So it is! As ${teamName} say: ${motto}`]
+        ['hubot', `@${userId} So it is! As ${teamName} say: ${motto}`],
       ]);
     });
   });
@@ -93,30 +86,23 @@ describe('@hubot our motto is', () => {
     let updateMottoStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
-      motto = 'We are great'
-
-      const robot = <RobotWithClient> room.robot;
+      userId = 'jerry';
+      motto = 'We are great';
 
       robot.brain.data.users[userId] = <UserData> { email_address: 'jerry@jerry.jerry' };
 
-      getUserStub = sinon.stub().returns(Promise.resolve({
+      getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           id: userId,
-          team: { id: 'my-crazy-team-name' }
-        }
+          team: { id: 'my-crazy-team-name' },
+        },
       }));
 
-      updateMottoStub = sinon.stub().returns(Promise.resolve({
+      updateMottoStub = sinon.stub(robot.client, 'updateMotto').returns(Promise.resolve({
         ok: false,
-        statusCode: 403
+        statusCode: 403,
       }));
-
-      robot.client = <any> {
-        getUser: getUserStub,
-        updateMotto: updateMottoStub
-      };
 
       return room.user.say(userId, `@hubot our motto is ${motto}`);
     });
@@ -124,7 +110,7 @@ describe('@hubot our motto is', () => {
     it('should tell the user they do not have permission', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot our motto is ${motto}`],
-        ['hubot', `@${userId} Sorry, only team members can change the motto.`]
+        ['hubot', `@${userId} Sorry, only team members can change the motto.`],
       ]);
     });
   });
@@ -138,23 +124,17 @@ describe('@hubot our motto is', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
-
-      const robot = <RobotWithClient> room.robot;
+      userId = 'jerry';
 
       robot.brain.data.users[userId] = <UserData> { email_address: 'jerry@jerry.jerry' };
 
-      getUserStub = sinon.stub().returns(Promise.resolve({
+      getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           id: userId,
-          team: {}
-        }
+          team: {},
+        },
       }));
-
-      robot.client = <any> {
-        getUser: getUserStub
-      };
 
       return room.user.say(userId, '@hubot our motto is We are great');
     });
@@ -162,7 +142,7 @@ describe('@hubot our motto is', () => {
     it('should tell the user the motto is changed', () => {
       expect(room.messages).to.eql([
         [userId, '@hubot our motto is We are great'],
-        ['hubot', `@${userId} You're not in a team! :goberserk:`]
+        ['hubot', `@${userId} You're not in a team! :goberserk:`],
       ]);
     });
   });
@@ -176,20 +156,14 @@ describe('@hubot our motto is', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'jerry'
-
-      const robot = <RobotWithClient> room.robot;
+      userId = 'jerry';
 
       robot.brain.data.users[userId] = <UserData> { email_address: 'jerry@jerry.jerry' };
 
-      getUserStub = sinon.stub().returns(Promise.resolve({
+      getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: false,
-        statusCode: 404
+        statusCode: 404,
       }));
-
-      robot.client = <any> {
-        getUser: getUserStub
-      };
 
       return room.user.say(userId, '@hubot our motto is We are great');
     });
@@ -197,7 +171,7 @@ describe('@hubot our motto is', () => {
     it('should tell the user the motto is changed', () => {
       expect(room.messages).to.eql([
         [userId, '@hubot our motto is We are great'],
-        ['hubot', `@${userId} You're not in a team! :goberserk:`]
+        ['hubot', `@${userId} You're not in a team! :goberserk:`],
       ]);
     });
   });

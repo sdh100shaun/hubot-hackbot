@@ -14,8 +14,8 @@ describe('@hubot leave my team', () => {
 
   function setUp() {
     room = helper.createRoom();
-    robot = <RobotWithClient>room.robot;
-  };
+    robot = <RobotWithClient> room.robot;
+  }
 
   function tearDown() {
     room.destroy();
@@ -34,25 +34,25 @@ describe('@hubot leave my team', () => {
     let removeTeamMemberStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'micah'
-      userEmail = 'micah.micah~micah'
-      existingTeamId = 'ocean-mongrels'
-      existingTeamName = 'Ocean Mongrels'
+      userId = 'micah';
+      userEmail = 'micah.micah~micah';
+      existingTeamId = 'ocean-mongrels';
+      existingTeamName = 'Ocean Mongrels';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           team: {
             id: existingTeamId,
-            name: existingTeamName
-          }
-        }
+            name: existingTeamName,
+          },
+        },
       }));
 
       removeTeamMemberStub = sinon.stub(robot.client, 'removeTeamMember').returns(Promise.resolve({ ok: true }));
 
-      robot.brain.data.users[userId] = <UserData>{
-        email_address: userEmail
+      robot.brain.data.users[userId] = <UserData> {
+        email_address: userEmail,
       };
 
       return room.user.say(userId, '@hubot leave my team');
@@ -69,7 +69,7 @@ describe('@hubot leave my team', () => {
     it('should tell the user that they have left the team', () => {
       expect(room.messages).to.eql([
         [userId, '@hubot leave my team'],
-        ['hubot', `@${userId} OK, you've been removed from team "${existingTeamName}"`]
+        ['hubot', `@${userId} OK, you've been removed from team "${existingTeamName}"`],
       ]);
     });
   });
@@ -87,28 +87,28 @@ describe('@hubot leave my team', () => {
     let removeTeamMemberStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'micah'
-      userEmail = 'micah.micah~micah'
-      existingTeamId = 'ocean-mongrels'
-      existingTeamName = 'Ocean Mongrels'
+      userId = 'micah';
+      userEmail = 'micah.micah~micah';
+      existingTeamId = 'ocean-mongrels';
+      existingTeamName = 'Ocean Mongrels';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           team: {
             id: existingTeamId,
-            name: existingTeamName
-          }
-        }
+            name: existingTeamName,
+          },
+        },
       }));
 
       removeTeamMemberStub = sinon.stub(robot.client, 'removeTeamMember').returns(Promise.resolve({
         ok: false,
-        statusCode: 403
+        statusCode: 403,
       }));
 
-      robot.brain.data.users[userId] = <UserData>{
-        email_address: userEmail
+      robot.brain.data.users[userId] = <UserData> {
+        email_address: userEmail,
       };
 
       return room.user.say(userId, '@hubot leave my team');
@@ -117,7 +117,7 @@ describe('@hubot leave my team', () => {
     it('should tell the user that they have left the team', () => {
       expect(room.messages).to.eql([
         [userId, '@hubot leave my team'],
-        ['hubot', `@${userId} Sorry, you don't have permission to leave your team.`]
+        ['hubot', `@${userId} Sorry, you don't have permission to leave your team.`],
       ]);
     });
   });
@@ -131,19 +131,19 @@ describe('@hubot leave my team', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'sarah'
+      userId = 'sarah';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           team: {
-            id: undefined
-          }
-        }
+            id: undefined,
+          },
+        },
       }));
 
-      robot.brain.data.users[userId] = <UserData>{
-        email_address: 'asdlkjalkdsjas'
+      robot.brain.data.users[userId] = <UserData> {
+        email_address: 'asdlkjalkdsjas',
       };
 
       return room.user.say(userId, '@hubot leave my team');
@@ -156,7 +156,7 @@ describe('@hubot leave my team', () => {
     it('should tell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
         [userId, '@hubot leave my team'],
-        ['hubot', `@${userId} You're not in a team! :goberserk:`]
+        ['hubot', `@${userId} You're not in a team! :goberserk:`],
       ]);
     });
   });
@@ -170,15 +170,15 @@ describe('@hubot leave my team', () => {
     let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'sarah'
+      userId = 'sarah';
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: false,
-        statusCode: 404
+        statusCode: 404,
       }));
 
-      robot.brain.data.users[userId] = <UserData>{
-        email_address: 'sdfsfdsfsdf'
+      robot.brain.data.users[userId] = <UserData> {
+        email_address: 'sdfsfdsfsdf',
       };
 
       return room.user.say(userId, '@hubot leave my team');
@@ -191,7 +191,7 @@ describe('@hubot leave my team', () => {
     it('should tell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
         [userId, '@hubot leave my team'],
-        ['hubot', `@${userId} You're not in a team! :goberserk:`]
+        ['hubot', `@${userId} You're not in a team! :goberserk:`],
       ]);
     });
   });
@@ -210,7 +210,7 @@ describe('@hubot leave my team', () => {
     it('should tell the user that there is a problem', () => {
       expect(room.messages).to.eql([
         ['sarah', '@hubot leave my team'],
-        ['hubot', '@sarah I\'m sorry, there appears to be a big problem!']
+        ['hubot', '@sarah I\'m sorry, there appears to be a big problem!'],
       ]);
     });
   });
@@ -224,8 +224,8 @@ describe('@hubot leave my team', () => {
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
-          team: { id: '234324' }
-        }
+          team: { id: '234324' },
+        },
       }));
 
       sinon.stub(robot.client, 'removeTeamMember').returns(Promise.reject(new Error('when removeTeamMember fails')));
@@ -236,7 +236,7 @@ describe('@hubot leave my team', () => {
     it('should tell the user that there is a problem', () => {
       expect(room.messages).to.eql([
         ['sarah', '@hubot leave my team'],
-        ['hubot', '@sarah I\'m sorry, there appears to be a big problem!']
+        ['hubot', '@sarah I\'m sorry, there appears to be a big problem!'],
       ]);
     });
   });

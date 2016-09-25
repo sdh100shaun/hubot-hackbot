@@ -2,8 +2,11 @@ import * as HttpClient from 'scoped-http-client';
 import * as Yayson from 'yayson';
 import { Robot } from 'hubot';
 
-const getAuth = (emailAddress: string) => `${emailAddress}:${process.env.HACKBOT_PASSWORD}`;
 const Store = Yayson().Store;
+
+function getAuth(emailAddress: string) {
+  return `${emailAddress}:${process.env.HACKBOT_PASSWORD}`;
+}
 
 export interface ApiResponse {
   ok: boolean;
@@ -44,38 +47,34 @@ export default class Client {
     this.httpClient = robot ? robot.http.bind(robot) : HttpClient.create;
   }
 
-  private createClient(pathAndQuery: string, opts?: HttpClient.ClientOptions) {
-    return this.httpClient(`${this.baseUrl}${pathAndQuery}`, opts)
-      .header('Accept', 'application/vnd.api+json')
-      .header('Content-Type', 'application/vnd.api+json');
-  }
-
   public createTeam(teamName: string, userId: string, emailAddress: string) {
     return new Promise<ApiResponse>((resolve, reject) => {
       const body = JSON.stringify({
         data: {
           type: 'teams',
           attributes: {
-            name: teamName
+            name: teamName,
           },
           relationships: {
             members: {
               data: [{
                 type: 'users',
-                id: userId
-              }]
-            }
-          }
-        }
+                id: userId,
+              }],
+            },
+          },
+        },
       });
 
       this.createClient('/teams', { auth: getAuth(emailAddress) })
-        .post(body)((err, res, body) => {
-          if (err) return reject(err);
+        .post(body)((err, res) => {
+          if (err) {
+            return reject(err);
+          }
 
           resolve({
-            ok: res.statusCode == 201,
-            statusCode: res.statusCode
+            ok: res.statusCode === 201,
+            statusCode: res.statusCode,
           });
         });
     });
@@ -88,18 +87,20 @@ export default class Client {
           type: 'users',
           id: userId,
           attributes: {
-            name: userName
-          }
-        }
+            name: userName,
+          },
+        },
       });
 
       this.createClient('/users', { auth: getAuth(emailAddress) })
-        .post(body)((err, res, body) => {
-          if (err) return reject(err);
+        .post(body)((err, res) => {
+          if (err) {
+            return reject(err);
+          }
 
           resolve({
-            ok: res.statusCode == 201,
-            statusCode: res.statusCode
+            ok: res.statusCode === 201,
+            statusCode: res.statusCode,
           });
         });
     });
@@ -108,12 +109,14 @@ export default class Client {
   public checkApi() {
     return new Promise<ApiResponse>((resolve, reject) => {
       this.httpClient(`${this.baseUrl}/api`)
-        .get()((err, res, body) => {
-          if (err) return reject(err);
+        .get()((err, res) => {
+          if (err) {
+            return reject(err);
+          }
 
           resolve({
-            ok: res.statusCode == 200,
-            statusCode: res.statusCode
+            ok: res.statusCode === 200,
+            statusCode: res.statusCode,
           });
         });
     });
@@ -123,12 +126,14 @@ export default class Client {
     return new Promise<UserResponse>((resolve, reject) => {
       this.createClient(`/users/${userId}`)
         .get()((err, res, body) => {
-          if (err) return reject(err);
+          if (err) {
+            return reject(err);
+          }
 
           const result = {
-            ok: res.statusCode == 200,
+            ok: res.statusCode === 200,
             statusCode: res.statusCode,
-            user: <User>undefined
+            user: <User> undefined,
           };
 
           if (result.ok) {
@@ -145,12 +150,14 @@ export default class Client {
     return new Promise<TeamResponse>((resolve, reject) => {
       this.createClient(`/teams/${encodeURIComponent(teamId)}`)
         .get()((err, res, body) => {
-          if (err) return reject(err);
+          if (err) {
+            return reject(err);
+          }
 
           const result = {
-            ok: res.statusCode == 200,
+            ok: res.statusCode === 200,
             statusCode: res.statusCode,
-            team: <Team>undefined
+            team: <Team> undefined,
           };
 
           if (result.ok) {
@@ -158,7 +165,7 @@ export default class Client {
             result.team = store.sync(JSON.parse(body));
           }
 
-          resolve(result)
+          resolve(result);
         });
     });
   }
@@ -168,17 +175,19 @@ export default class Client {
       const body = JSON.stringify({
         data: [{
           type: 'users',
-          id: userId
-        }]
+          id: userId,
+        }],
       });
 
       this.createClient(`/teams/${encodeURIComponent(teamId)}/members`, { auth: getAuth(emailAddress) })
-        .delete(body)((err, res, body) => {
-          if (err) return reject(err);
+        .delete(body)((err, res) => {
+          if (err) {
+            return reject(err);
+          }
 
           const result = {
-            ok: res.statusCode == 204,
-            statusCode: res.statusCode
+            ok: res.statusCode === 204,
+            statusCode: res.statusCode,
           };
 
           resolve(result);
@@ -190,12 +199,14 @@ export default class Client {
     return new Promise<TeamsResponse>((resolve, reject) => {
       this.createClient(`/teams?filter[name]=${encodeURIComponent(filter)}`)
         .get()((err, res, body) => {
-          if (err) return reject(err);
+          if (err) {
+            return reject(err);
+          }
 
           const result = {
-            ok: res.statusCode == 200,
+            ok: res.statusCode === 200,
             statusCode: res.statusCode,
-            teams: <Team[]>undefined
+            teams: <Team[]> undefined,
           };
 
           if (result.ok) {
@@ -203,7 +214,7 @@ export default class Client {
             result.teams = store.sync(JSON.parse(body));
           }
 
-          resolve(result)
+          resolve(result);
         });
     });
   }
@@ -213,17 +224,19 @@ export default class Client {
       const body = JSON.stringify({
         data: [{
           type: 'users',
-          id: userId
-        }]
+          id: userId,
+        }],
       });
 
       this.createClient(`/teams/${teamId}/members`, { auth: getAuth(emailAddress) })
-        .post(body)((err, res, body) => {
-          if (err) return reject(err);
+        .post(body)((err, res) => {
+          if (err) {
+            return reject(err);
+          }
 
           const result = {
             ok: true,
-            statusCode: res.statusCode
+            statusCode: res.statusCode,
           };
 
           resolve(result);
@@ -238,20 +251,28 @@ export default class Client {
           type: 'teams',
           id: teamId,
           attributes: {
-            motto: teamMotto
-          }
-        }
+            motto: teamMotto,
+          },
+        },
       });
 
       this.createClient(`/teams/${encodeURIComponent(teamId)}`, { auth: getAuth(emailAddress) })
-        .patch(body)((err, res, body) => {
-          if (err) return reject(err);
+        .patch(body)((err, res) => {
+          if (err) {
+            return reject(err);
+          }
 
           resolve({
             ok: res.statusCode >= 200 && res.statusCode < 300,
-            statusCode: res.statusCode
+            statusCode: res.statusCode,
           });
         });
     });
+  }
+
+  private createClient(pathAndQuery: string, opts?: HttpClient.ClientOptions) {
+    return this.httpClient(`${this.baseUrl}${pathAndQuery}`, opts)
+      .header('Accept', 'application/vnd.api+json')
+      .header('Content-Type', 'application/vnd.api+json');
   }
 }

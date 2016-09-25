@@ -17,7 +17,7 @@ describe('@hubot prime directives', () => {
   it('should tell the user hubot\'s prime directives', () => {
     expect(room.messages).to.eql([
       ['bob', '@hubot what are your prime directives?'],
-      ['hubot', `@bob 1. Serve the public trust\n2. Protect the innocent hackers\n3. Uphold the Code of Conduct\n4. [Classified]`]
+      ['hubot', `@bob 1. Serve the public trust\n2. Protect the innocent hackers\n3. Uphold the Code of Conduct\n4. [Classified]`],
     ]);
   });
 });

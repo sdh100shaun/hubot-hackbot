@@ -4,7 +4,7 @@ import { RobotWithClient } from '../hackbot';
 import * as Helper from 'hubot-test-helper';
 
 describe('Can see the API', () => {
-  
+
   let helper: Helper.Helper;
   let room: Helper.Room;
   let robot: RobotWithClient;
@@ -13,9 +13,9 @@ describe('Can see the API', () => {
 
   function setUp() {
     room = helper.createRoom();
-    robot = <RobotWithClient>room.robot;
-  };
-  
+    robot = <RobotWithClient> room.robot;
+  }
+
   function tearDown() {
     room.destroy();
   }
@@ -34,7 +34,7 @@ describe('Can see the API', () => {
       expect(room.messages).to.eql([
         ['bob', '@hubot can you see the api?'],
         ['hubot', `@bob I'll have a quick look for you...`],
-        ['hubot', '@bob I see her!']
+        ['hubot', '@bob I see her!'],
       ]);
     });
   });
@@ -53,7 +53,7 @@ describe('Can see the API', () => {
       expect(room.messages).to.eql([
         ['bob', '@hubot can you see the api?'],
         ['hubot', `@bob I'll have a quick look for you...`],
-        ['hubot', `@bob I'm sorry, there appears to be a problem; something about "99"`]
+        ['hubot', `@bob I'm sorry, there appears to be a problem; something about "99"`],
       ]);
     });
   });
@@ -72,7 +72,7 @@ describe('Can see the API', () => {
       expect(room.messages).to.eql([
         ['bob', '@hubot can you see the api?'],
         ['hubot', `@bob I'll have a quick look for you...`],
-        ['hubot', '@bob I\'m sorry, there appears to be a big problem!']
+        ['hubot', '@bob I\'m sorry, there appears to be a big problem!'],
       ]);
     });
   });
