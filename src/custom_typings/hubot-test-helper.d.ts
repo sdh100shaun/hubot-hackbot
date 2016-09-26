@@ -1,12 +1,12 @@
 declare module 'hubot-test-helper' {
-  import { Robot } from 'hubot';
+  import { Robot, User as HubotUser } from 'hubot';
 
   var hth: hth.Helper;
 
   namespace hth {
     interface CreateRoomOptions { }
 
-    interface User {
+    interface User extends HubotUser {
       say(userName: string, message: string): Promise<void>;
       enter(userName: string): Promise<void>;
       leave(userName: string): Promise<void>;

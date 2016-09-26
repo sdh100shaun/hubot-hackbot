@@ -26,14 +26,13 @@ describe('Hack24 API Client', () => {
       let response: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
         const api = express();
 
         api.get('/api', (req: express.Request, res: express.Response) => {
           res.sendStatus(200);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'asddsa');
 
         server = api.listen(12345, () => {
           client.checkApi()
@@ -64,15 +63,13 @@ describe('Hack24 API Client', () => {
       let error: any;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.use((req: express.Request, res: express.Response) => {
           (<ResponseWithSocket> res).socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'asddsa');
 
         server = api.listen(12345, () => {
           client.checkApi()
@@ -112,8 +109,7 @@ describe('Hack24 API Client', () => {
       let response: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-        const pass = process.env.HACKBOT_PASSWORD = '65456465464654';
+        const pass = '65456465464654';
 
         const api = express();
 
@@ -131,7 +127,7 @@ describe('Hack24 API Client', () => {
           res.sendStatus(201);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', pass);
 
         server = api.listen(12345, () => {
           client.createTeam(teamName, userId, emailAddress)
@@ -185,15 +181,13 @@ describe('Hack24 API Client', () => {
       let result: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.post('/teams', apiJsonParser, (req: express.Request, res: express.Response) => {
           res.sendStatus(409);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.createTeam('Pineapple Express', 'U12345', undefined)
@@ -224,15 +218,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.post('/teams', (req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.createTeam('some team', 'some user', undefined)
@@ -271,8 +263,6 @@ describe('Hack24 API Client', () => {
       let result: UserResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         userId = 'U12345';
@@ -338,7 +328,7 @@ describe('Hack24 API Client', () => {
           });
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.getUser(userId)
@@ -391,8 +381,6 @@ describe('Hack24 API Client', () => {
       let result: UserResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         userId = 'U12345';
@@ -416,7 +404,7 @@ describe('Hack24 API Client', () => {
           });
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.getUser(userId)
@@ -460,8 +448,6 @@ describe('Hack24 API Client', () => {
       let result: UserResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.get('/users/some_guy', (req: express.Request, res: express.Response) => {
@@ -473,7 +459,7 @@ describe('Hack24 API Client', () => {
           });
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.getUser('U12345')
@@ -508,15 +494,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.get('/users/:userId', (req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.getUser('some user')
@@ -555,8 +539,6 @@ describe('Hack24 API Client', () => {
       let result: TeamResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         teamId = 'clicky-keys';
@@ -613,7 +595,7 @@ describe('Hack24 API Client', () => {
           });
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.getTeam(teamId)
@@ -661,8 +643,6 @@ describe('Hack24 API Client', () => {
       let result: TeamResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.get('/teams/:teamId', (req: express.Request, res: express.Response) => {
@@ -674,7 +654,7 @@ describe('Hack24 API Client', () => {
           });
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.getTeam('some team')
@@ -709,15 +689,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.get('/teams/:teamId', (req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.getTeam('some user')
@@ -757,8 +735,7 @@ describe('Hack24 API Client', () => {
       let result: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-        pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks';
+        pass = 'slkjfsjkfjks';
 
         const api = express();
 
@@ -776,7 +753,7 @@ describe('Hack24 API Client', () => {
           res.sendStatus(201);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', pass);
 
         server = api.listen(12345, () => {
           client.createUser(userId, userName, emailAddress)
@@ -825,8 +802,6 @@ describe('Hack24 API Client', () => {
       let result: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.post('/users', apiJsonParser, (req: express.Request, res: express.Response) => {
@@ -838,7 +813,7 @@ describe('Hack24 API Client', () => {
           });
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.createUser('raghght', 'Alien Race', undefined)
@@ -869,15 +844,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.use((req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.createUser('some user', undefined, undefined)
@@ -916,8 +889,7 @@ describe('Hack24 API Client', () => {
       let result: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-        const pass = process.env.HACKBOT_PASSWORD = 'sky';
+        const pass = 'sky';
 
         const api = express();
 
@@ -935,7 +907,7 @@ describe('Hack24 API Client', () => {
           res.sendStatus(204);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', pass);
 
         server = api.listen(12345, () => {
           client.removeTeamMember(teamId, userId, emailAddress)
@@ -990,15 +962,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.use((req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.removeTeamMember('some team', 'some user', undefined)
@@ -1034,8 +1004,6 @@ describe('Hack24 API Client', () => {
       let secondTeam: { id: string; name: string; };
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         const filter = 'hacking hack';
@@ -1064,7 +1032,7 @@ describe('Hack24 API Client', () => {
           });
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.findTeams(filter)
@@ -1110,15 +1078,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.get('/teams', (req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.findTeams('some filter')
@@ -1160,8 +1126,7 @@ describe('Hack24 API Client', () => {
       let result: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-        const pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks';
+        const pass = 'slkjfsjkfjks';
 
         const api = express();
 
@@ -1181,7 +1146,7 @@ describe('Hack24 API Client', () => {
           res.sendStatus(201);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', pass);
 
         server = api.listen(12345, () => {
           client.addUserToTeam(teamId, userId, emailAddress)
@@ -1233,15 +1198,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.use((req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.addUserToTeam('some team', 'some user', 'some email')
@@ -1281,8 +1244,7 @@ describe('Hack24 API Client', () => {
       let result: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-        const pass = process.env.HACKBOT_PASSWORD = 'slkjfsjkfjks';
+        const pass = 'slkjfsjkfjks';
 
         const api = express();
 
@@ -1301,7 +1263,7 @@ describe('Hack24 API Client', () => {
           res.sendStatus(204);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', pass);
 
         server = api.listen(12345, () => {
           client.updateMotto(motto, teamId, emailAddress)
@@ -1353,15 +1315,13 @@ describe('Hack24 API Client', () => {
       let result: ApiResponse;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.patch('/teams/:teamId', apiJsonParser, (req: express.Request, res: express.Response) => {
           res.sendStatus(404);
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.updateMotto('chips', 'fish', 'alkjdajhsfdsdf.co.uk')
@@ -1392,15 +1352,13 @@ describe('Hack24 API Client', () => {
       let error: Error;
 
       before((done) => {
-        process.env.HACK24API_URL = 'http://localhost:12345';
-
         const api = express();
 
         api.use((req: express.Request, res: ResponseWithSocket) => {
           res.socket.destroy();
         });
 
-        const client = new Client();
+        const client = new Client('http://localhost:12345', 'adsa');
 
         server = api.listen(12345, () => {
           client.updateMotto('some motto', 'some team id', 'some email address')

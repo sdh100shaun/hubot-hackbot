@@ -206,20 +206,20 @@ describe('@hubot tell me about my team', () => {
 
     let userId: string;
     let error: Error;
-    let loggerErrorStub: sinon.SinonStub;
+    let emitStub: sinon.SinonStub;
 
     before(() => {
       userId = 'jerry';
       error = new Error('when getUser errors');
 
       sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
-      loggerErrorStub = sinon.stub(robot.logger, 'error');
+      emitStub = sinon.stub(robot, 'emit');
 
       return room.user.say(userId, `@hubot tell me about my team`);
     });
 
-    it('should log the error', () => {
-      expect(loggerErrorStub).to.have.been.calledWith(error.stack);
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should tell the user that there is a problem', () => {

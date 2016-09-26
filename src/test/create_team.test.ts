@@ -431,7 +431,7 @@ describe('@hubot create team X', () => {
     let userId: string;
     let teamName: string;
     let error: Error;
-    let loggerErrorStub: sinon.SinonSpy;
+    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userId = 'sarah';
@@ -439,7 +439,7 @@ describe('@hubot create team X', () => {
       error = new Error('when getUser fails');
 
       sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
-      loggerErrorStub = sinon.stub(robot.logger, 'error');
+      emitStub = sinon.stub(robot, 'emit');
 
       robot.brain.data.users[userId] = <UserData> {
         email_address: 'bark',
@@ -448,8 +448,8 @@ describe('@hubot create team X', () => {
       return room.user.say(userId, `@hubot create team ${teamName}`);
     });
 
-    it('should log the error', () => {
-      expect(loggerErrorStub).to.have.been.calledWith(error.stack);
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should tell the user that there is a problem', () => {
@@ -468,7 +468,7 @@ describe('@hubot create team X', () => {
     let userId: string;
     let teamName: string;
     let error: Error;
-    let loggerErrorStub: sinon.SinonSpy;
+    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userId = 'sarah';
@@ -477,7 +477,7 @@ describe('@hubot create team X', () => {
 
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({ ok: false, statusCode: 404 }));
       sinon.stub(robot.client, 'createUser').returns(Promise.reject(error));
-      loggerErrorStub = sinon.stub(robot.logger, 'error');
+      emitStub = sinon.stub(robot, 'emit');
 
       robot.brain.data.users[userId] = <UserData> {
         email_address: 'bark',
@@ -486,8 +486,8 @@ describe('@hubot create team X', () => {
       return room.user.say(userId, `@hubot create team ${teamName}`);
     });
 
-    it('should log the error', () => {
-      expect(loggerErrorStub).to.have.been.calledWith(error.stack);
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should tell the user that there is a problem', () => {
@@ -506,7 +506,7 @@ describe('@hubot create team X', () => {
     let userId: string;
     let teamName: string;
     let error: Error;
-    let loggerErrorStub: sinon.SinonSpy;
+    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userId = 'sarah';
@@ -516,7 +516,7 @@ describe('@hubot create team X', () => {
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({ ok: true, user: { team: {} } }));
       sinon.stub(robot.client, 'createUser').returns({ ok: true });
       sinon.stub(robot.client, 'createTeam').returns(Promise.reject(error));
-      loggerErrorStub = sinon.stub(robot.logger, 'error');
+      emitStub = sinon.stub(robot, 'emit');
 
       robot.brain.data.users[userId] = <UserData> {
         email_address: 'bark',
@@ -525,8 +525,8 @@ describe('@hubot create team X', () => {
       return room.user.say(userId, `@hubot create team ${teamName}`);
     });
 
-    it('should log the error', () => {
-      expect(loggerErrorStub).to.have.been.calledWith(error.stack);
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should tell the user that there is a problem', () => {
@@ -545,7 +545,7 @@ describe('@hubot create team X', () => {
     let userId: string;
     let teamName: string;
     let error: Error;
-    let loggerErrorStub: sinon.SinonSpy;
+    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userId = 'sarah';
@@ -554,7 +554,7 @@ describe('@hubot create team X', () => {
 
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({ ok: true, user: { team: {} } }));
       sinon.stub(robot.client, 'createTeam').returns(Promise.reject(error));
-      loggerErrorStub = sinon.stub(robot.logger, 'error');
+      emitStub = sinon.stub(robot, 'emit');
 
       robot.brain.data.users[userId] = <UserData> {
         email_address: 'bark',
@@ -563,8 +563,8 @@ describe('@hubot create team X', () => {
       return room.user.say(userId, `@hubot create team ${teamName}`);
     });
 
-    it('should log the error', () => {
-      expect(loggerErrorStub).to.have.been.calledWith(error.stack);
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should tell the user that there is a problem', () => {

@@ -1,5 +1,6 @@
 declare module "hubot" {
   import { Application as ExpressApp } from 'express';
+  import { EventEmitter } from 'events';
 
   interface IHttpResponse {
     statusCode: number;
@@ -16,9 +17,10 @@ declare module "hubot" {
   }
 
   interface IEnvelope {
-    room: string;
-    user: User;
-    message: Message;
+    room?: string;
+    id?: string;
+    user?: User;
+    message?: Message;
   }
 
   export class User {
@@ -28,6 +30,8 @@ declare module "hubot" {
   }
 
   export class Message {
+    constructor (user: User);
+
     user: User;
     text: string;
     id: string;
@@ -87,6 +91,9 @@ declare module "hubot" {
 
   export class Adapter {
     constructor(robot: Robot);
+
+    send(envelope: IEnvelope, ...messages: string[]): void;
+    reply(envelope: IEnvelope, ...messages: Message[]): void;
   }
 
   class Log {
@@ -107,6 +114,7 @@ declare module "hubot" {
     router: ExpressApp;
     logger: Log;
     name: string;
+    events: EventEmitter;
 
     constructor(adapterPath: string, adapter: string, httpd: boolean, name?: string, alias?: boolean);
 
@@ -116,5 +124,7 @@ declare module "hubot" {
     messageRoom(room: string, msg: string): void;
     error(handler: (err: Error, res: Response) => void): void;
     emit(event: string, ...args: any[]): boolean;
+    onUncaughtException(err: Error): void;
+    on(event: string, listener: (arg: any) => void): void;
   }
 }

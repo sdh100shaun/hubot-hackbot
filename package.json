@@ -52,5 +52,8 @@
   ],
   "bugs": {
     "url": "https://github.com/TechNottingham/hubot-hackbot/issues"
+  },
+  "optionalDependencies": {
+    "hubot-slack": "^4.1.0"
   }
 }

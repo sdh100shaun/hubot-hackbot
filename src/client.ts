@@ -4,10 +4,6 @@ import { Robot } from 'hubot';
 
 const Store = Yayson().Store;
 
-function getAuth(emailAddress: string) {
-  return `${emailAddress}:${process.env.HACKBOT_PASSWORD}`;
-}
-
 export interface ApiResponse {
   ok: boolean;
   statusCode: number;
@@ -39,11 +35,9 @@ export interface TeamsResponse extends ApiResponse {
 }
 
 export default class Client {
-  private baseUrl: string;
   private httpClient: HttpClient.ScopedClientConstructor;
 
-  constructor(robot?: Robot) {
-    this.baseUrl = process.env.HACK24API_URL;
+  constructor(private baseUrl: string, private hackbotPassword: string, robot?: Robot) {
     this.httpClient = robot ? robot.http.bind(robot) : HttpClient.create;
   }
 
@@ -66,7 +60,7 @@ export default class Client {
         },
       });
 
-      this.createClient('/teams', { auth: getAuth(emailAddress) })
+      this.createClient('/teams', { auth: this.getAuth(emailAddress) })
         .post(body)((err, res) => {
           if (err) {
             return reject(err);
@@ -92,7 +86,7 @@ export default class Client {
         },
       });
 
-      this.createClient('/users', { auth: getAuth(emailAddress) })
+      this.createClient('/users', { auth: this.getAuth(emailAddress) })
         .post(body)((err, res) => {
           if (err) {
             return reject(err);
@@ -179,7 +173,7 @@ export default class Client {
         }],
       });
 
-      this.createClient(`/teams/${encodeURIComponent(teamId)}/members`, { auth: getAuth(emailAddress) })
+      this.createClient(`/teams/${encodeURIComponent(teamId)}/members`, { auth: this.getAuth(emailAddress) })
         .delete(body)((err, res) => {
           if (err) {
             return reject(err);
@@ -228,7 +222,7 @@ export default class Client {
         }],
       });
 
-      this.createClient(`/teams/${teamId}/members`, { auth: getAuth(emailAddress) })
+      this.createClient(`/teams/${teamId}/members`, { auth: this.getAuth(emailAddress) })
         .post(body)((err, res) => {
           if (err) {
             return reject(err);
@@ -256,7 +250,7 @@ export default class Client {
         },
       });
 
-      this.createClient(`/teams/${encodeURIComponent(teamId)}`, { auth: getAuth(emailAddress) })
+      this.createClient(`/teams/${encodeURIComponent(teamId)}`, { auth: this.getAuth(emailAddress) })
         .patch(body)((err, res) => {
           if (err) {
             return reject(err);
@@ -268,6 +262,10 @@ export default class Client {
           });
         });
     });
+  }
+
+  private getAuth(emailAddress: string) {
+    return `${emailAddress}:${this.hackbotPassword}`;
   }
 
   private createClient(pathAndQuery: string, opts?: HttpClient.ClientOptions) {
