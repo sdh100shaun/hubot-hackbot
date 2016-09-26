@@ -1,0 +1,17 @@
+{
+  "dependencies": {},
+  "globalDependencies": {
+    "node": "registry:env/node#6.0.0+20160902022231",
+    "yayson": "registry:dt/yayson#2.0.1+20160925152110"
+  },
+  "devDependencies": {
+    "body-parser": "registry:npm/body-parser#1.15.2+20160815132839",
+    "chai": "registry:npm/chai#3.5.0+20160723033700",
+    "express": "registry:npm/express#4.14.0+20160815112707",
+    "sinon": "registry:npm/sinon#1.16.0+20160723033700",
+    "sinon-chai": "registry:npm/sinon-chai#2.8.0+20160310030142"
+  },
+  "globalDevDependencies": {
+    "mocha": "registry:env/mocha#2.2.5+20160723033700"
+  }
+}
