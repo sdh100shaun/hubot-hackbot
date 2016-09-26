@@ -126,5 +126,7 @@ declare module "hubot" {
     emit(event: string, ...args: any[]): boolean;
     onUncaughtException(err: Error): void;
     on(event: string, listener: (arg: any) => void): void;
+    send(envelope: IEnvelope, ...messages: string[]): void;
+    reply(envelope: IEnvelope, ...messages: Message[]): void;
   }
 }

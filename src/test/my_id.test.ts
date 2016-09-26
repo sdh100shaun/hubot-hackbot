@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as Helper from 'hubot-test-helper';
 
-describe('@hubot my id', () => {
+describe.skip('@hubot my id', () => {
 
   let room: Helper.Room;
 
