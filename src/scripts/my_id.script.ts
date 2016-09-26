@@ -4,12 +4,8 @@ export default (robot: Robot) => {
 
   robot.respond(/my id/i, (response) => {
     const user: { [key: string]: string } = <any> response.message.user;
-
-    for (let x in user) {
-      if (user.hasOwnProperty(x)) {
-        robot.send(user, `${x}: ${user[x]}`);
-      }
-    }
+    const msg = Object.keys(user).reduce((agg, key) => agg += `\r\n${key}: ${user[key]}`, 'This is you:');
+    robot.send({ room: response.message.user.name }, msg);
   });
 
 };
