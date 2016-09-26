@@ -3,9 +3,11 @@ import { Robot } from 'hubot';
 export default (robot: Robot) => {
 
   robot.respond(/my id/i, (response) => {
-    for (let x in response.message.user) {
-      if (response.message.user.hasOwnProperty(x)) {
-        robot.send(response.message.user, `${x}: `);
+    const user: { [key: string]: string } = <any> response.message.user;
+
+    for (let x in user) {
+      if (user.hasOwnProperty(x)) {
+        robot.send(user, `${x}: ${user[x]}`);
       }
     }
   });
