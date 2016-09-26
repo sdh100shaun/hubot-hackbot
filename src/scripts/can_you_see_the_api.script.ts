@@ -13,7 +13,7 @@ export default (robot: RobotWithClient) => {
         response.reply(`I'm sorry, there appears to be a problem; something about "${res.statusCode}"`);
       })
       .catch((err) => {
-        console.error(`API check failed: ${err.message}`);
+        robot.emit('error', err, response);
         response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });

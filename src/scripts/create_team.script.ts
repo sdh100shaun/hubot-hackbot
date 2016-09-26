@@ -41,7 +41,7 @@ export default (robot: RobotWithClient) => {
           return response.reply(`You're already a member of ${res.user.team.name}!`);
         }
 
-        robot.client.createTeam(teamName, userId, emailAddress)
+        return robot.client.createTeam(teamName, userId, emailAddress)
           .then(createTeamResponse => {
             if (createTeamResponse.ok) {
               return response.reply(`Welcome to team ${teamName}!`);
@@ -57,6 +57,7 @@ export default (robot: RobotWithClient) => {
           });
       })
       .catch((err) => {
+        robot.emit('error', err, response);
         response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });

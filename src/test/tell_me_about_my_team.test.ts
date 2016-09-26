@@ -70,9 +70,9 @@ describe('@hubot tell me about my team', () => {
     it('should tell the user the team information', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot tell me about my team`],
-        [
-          'hubot',
-          `@${userId} "${teamName}" has 3 members: ${firstTeamMember}, ${secondTeamMember}, ${thirdTeamMember}\r\nThey say: ${motto}`,
+        ['hubot',
+          `@${userId} "${teamName}" has 3 members: ${firstTeamMember},` +
+          ` ${secondTeamMember}, ${thirdTeamMember}\r\nThey say: ${motto}`,
         ],
       ]);
     });
@@ -205,13 +205,21 @@ describe('@hubot tell me about my team', () => {
     after(tearDown);
 
     let userId: string;
+    let error: Error;
+    let loggerErrorStub: sinon.SinonStub;
 
     before(() => {
       userId = 'jerry';
+      error = new Error('when getUser errors');
 
-      sinon.stub(robot.client, 'getUser').returns(Promise.reject(new Error('unknown')));
+      sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
+      loggerErrorStub = sinon.stub(robot.logger, 'error');
 
       return room.user.say(userId, `@hubot tell me about my team`);
+    });
+
+    it('should log the error', () => {
+      expect(loggerErrorStub).to.have.been.calledWith(error.stack);
     });
 
     it('should tell the user that there is a problem', () => {

@@ -30,7 +30,9 @@ export default (robot: RobotWithClient) => {
     const otherUsername = response.match[1];
     const userId = response.message.user.id;
 
-    robot.client.getUser(userId)
+    robot
+      .client
+      .getUser(userId)
       .then(userResponse => {
         if (userResponse.user.team.id === undefined) {
           return response.reply(`I would, but you're not in a team...`);
@@ -63,6 +65,10 @@ export default (robot: RobotWithClient) => {
                 .then(() => addUserToTeam(robot, response, teamId, otherUser.id, otherUsername, emailAddress));
             }
           });
+      })
+      .catch(err => {
+        robot.emit('error', err, response);
+        response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });
 

@@ -15,6 +15,7 @@ export default (robot: RobotWithClient) => {
         response.reply(`Found ${res.teams.length} teams; here's a few: ${names.join(', ')}`);
       })
       .catch(err => {
+        robot.emit('error', err, response);
         response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });
