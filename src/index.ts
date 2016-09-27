@@ -38,6 +38,8 @@ import TellMeAboutMyTeamScript from './scripts/tell_me_about_my_team.script';
 import TellMeAboutTeamScript from './scripts/tell_me_about_team.script';
 
 function load(robot: RobotWithClient) {
+  robot.logger.info(Config);
+
   robot.client = new Client(Config.api_url, Config.api_password, robot);
 
   ErrorScript(robot);
