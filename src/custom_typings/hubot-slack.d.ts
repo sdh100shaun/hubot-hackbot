@@ -1,5 +1,5 @@
 declare module "hubot-slack" {
-  import { Adapter, Robot as Hubot, Response, IEnvelope } from 'hubot';
+  import { Adapter, Robot as Hubot, Response as HubotResponse, IEnvelope } from 'hubot';
   import { MemoryDataStore } from '@slack/client';
 
   // see https://api.slack.com/docs/attachments
@@ -61,17 +61,19 @@ declare module "hubot-slack" {
     reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
   }
 
+  export interface Response extends HubotResponse {
+    send(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+    reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+  }
+
   interface Robot extends Hubot {
     adapter: SlackBot;
 
     respond(regex: RegExp, options: any, callback: (res: Response) => void): void;
     respond(regex: RegExp, callback: (res: Response) => void): void;
+    error(handler: (err: Error, res: Response) => void): void;
     send(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
     reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
-  }
-
-  export interface Response {
-    reply(msg: ICustomMessageData): void;
   }
 
   export function use(robot: Hubot): SlackBot;

@@ -55,7 +55,8 @@ declare module "hubot" {
 
     constructor(robot: Robot, message: Message, match: RegExpMatchArray);
 
-    reply(msg: string): void;
+    send(...strings: string[]): void;
+    reply(...strings: string[]): void;
   }
 
   export interface IBrain {
