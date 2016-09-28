@@ -1,5 +1,4 @@
 import { Robot } from 'hubot-slack';
-import { MemoryDataStore } from '@slack/client';
 
 export default (robot: Robot) => {
 
@@ -25,8 +24,7 @@ export default (robot: Robot) => {
 
   robot.respond(/whois (.+)/i, (response) => {
     const userName = response.match[1];
-    const adapter: any = robot.adapter;
-    const dataStore: MemoryDataStore = adapter.client.rtm.dataStore;
+    const dataStore = robot.adapter.client.rtm.dataStore;
 
     const user = dataStore.getUserByName(userName);
 
