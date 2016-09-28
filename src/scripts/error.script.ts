@@ -1,37 +1,33 @@
-import { Robot, IEnvelope } from 'hubot';
-import { ISlackAdapter, ICustomMessageData } from 'hubot-slack';
+import { Robot } from 'hubot-slack';
 import Config from '../config';
 
 export default (robot: Robot) => {
 
-  robot.error((err, res) => {
-    const slackAdapter = robot.adapter as ISlackAdapter;
-    const msg = `I've just encountered this error: ${err}`;
+  robot.error((err, response) => {
+    const user = response.envelope.user;
+    const fallback = `Error responding to message from @${user.name}
+Command: ${response.message.text}
+Error: ${err.message}`;
+    const text = `Error responding to message from @${user.name}
+\`\`\`
+Command: ${response.message.text}
+\`\`\`
+\`\`\`
+Error: ${err.stack}
+\`\`\``;
 
-    if (slackAdapter.customMessage) {
-      const customMessage: ICustomMessageData = {
-        channel: Config.error_channel,
-        attachments: [{
-          fallback: msg,
-          color: '#801515',
-          title: `I've just encountered an error`,
-          text: `\`\`\`\n${err.stack}\n\`\`\``,
-          mrkdwn_in: ['text'],
-        }],
-      };
+    robot.send({ room: Config.HACKBOT_ERROR_CHANNEL.value }, {
+      attachments: [{
+        fallback: fallback,
+        color: 'warning',
+        title: `Hackbot error caught`,
+        text: text,
+        mrkdwn_in: ['text'],
+      }],
+    });
 
-      robot.logger.info(`Posting custom message`, customMessage);
-      slackAdapter.customMessage(customMessage);
-    } else {
-      const envelope: IEnvelope = {
-        room: Config.error_channel,
-      };
-      robot.logger.info(`Posting standard message to ${Config.error_channel}`, msg);
-      robot.adapter.send(envelope, msg);
-    }
-
-    if (res) {
-      res.reply('Uhh, sorry, I just experienced an error :goberserk:');
+    if (response) {
+      response.reply('Uhh, sorry, I just experienced an error :goberserk:');
     }
   });
 };

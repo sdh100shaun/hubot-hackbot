@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "body-parser": "^1.15.2",
+    "hubot-slack": "^4.1.0",
     "slug": "^0.9.1",
     "source-map-support": "^0.4.2",
     "yayson": "^2.0.1"
@@ -52,8 +53,5 @@
   ],
   "bugs": {
     "url": "https://github.com/TechNottingham/hubot-hackbot/issues"
-  },
-  "optionalDependencies": {
-    "hubot-slack": "^4.1.0"
   }
 }

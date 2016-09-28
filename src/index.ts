@@ -22,7 +22,7 @@
 
 import Client from './client';
 import { RobotWithClient } from './hackbot';
-import Config from './config';
+import Config, { loadConfig } from './config';
 
 import ErrorScript from './scripts/error.script';
 
@@ -38,9 +38,9 @@ import TellMeAboutMyTeamScript from './scripts/tell_me_about_my_team.script';
 import TellMeAboutTeamScript from './scripts/tell_me_about_team.script';
 
 function load(robot: RobotWithClient) {
-  robot.logger.info(Config);
+  loadConfig(robot.logger.error.bind(robot.logger));
 
-  robot.client = new Client(Config.api_url, Config.api_password, robot);
+  robot.client = new Client(Config.HACKBOT_API_URL.value, Config.HACKBOT_API_PASSWORD.value, robot);
 
   ErrorScript(robot);
 

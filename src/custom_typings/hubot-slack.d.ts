@@ -1,11 +1,12 @@
 declare module "hubot-slack" {
-  import { Adapter } from 'hubot';
+  import { Adapter, Robot as Hubot, Response, IEnvelope } from 'hubot';
+  import { MemoryDataStore } from '@slack/client';
 
   // see https://api.slack.com/docs/attachments
   // also https://api.slack.com/docs/formatting/builder
   interface IAttachment {
     fallback: string;
-    color: string;
+    color?: 'good' | 'warning' | 'danger' | string;
     pretext?: string;
 
     author_name?: string;
@@ -40,16 +41,38 @@ declare module "hubot-slack" {
   }
 
   interface ICustomMessageData {
-    channel: string;
+    channel?: string;
     message?: ICustomMessage;
     text?: string;
-    attachments?: Array<IAttachment>;
+    attachments?: IAttachment[];
     username?: string;
     icon_url?: string;
     icon_emoji?: string;
   }
 
-  interface ISlackAdapter extends Adapter {
-    customMessage(msg: ICustomMessageData): void;
+  interface SlackBot extends Adapter {
+    client: {
+      rtm: {
+        dataStore: MemoryDataStore;
+      }
+    }
+
+    send(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+    reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
   }
+
+  interface Robot extends Hubot {
+    adapter: SlackBot;
+
+    respond(regex: RegExp, options: any, callback: (res: Response) => void): void;
+    respond(regex: RegExp, callback: (res: Response) => void): void;
+    send(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+    reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+  }
+
+  export interface Response {
+    reply(msg: ICustomMessageData): void;
+  }
+
+  export function use(robot: Hubot): SlackBot;
 }
