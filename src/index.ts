@@ -36,6 +36,7 @@ import OurMottoIsScript from './scripts/our_motto_is.script';
 import PrimeDirectivesScript from './scripts/prime_directives.script';
 import TellMeAboutMyTeamScript from './scripts/tell_me_about_my_team.script';
 import TellMeAboutTeamScript from './scripts/tell_me_about_team.script';
+import TellMeAboutUsername from './scripts/tell_me_about_username.script';
 
 function load(robot: RobotWithClient) {
   loadConfig(robot.logger.error.bind(robot.logger));
@@ -54,6 +55,7 @@ function load(robot: RobotWithClient) {
   PrimeDirectivesScript(robot);
   TellMeAboutMyTeamScript(robot);
   TellMeAboutTeamScript(robot);
+  TellMeAboutUsername(robot)
 }
 
 export = load;
