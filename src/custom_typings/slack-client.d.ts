@@ -200,7 +200,7 @@ declare module "@slack/client" {
     over_integrations_limit: boolean;
   }
 
-  interface MemoryDataStore {
+  class MemoryDataStore {
     clear(): void;
 
     getUserById(userId: string): User;

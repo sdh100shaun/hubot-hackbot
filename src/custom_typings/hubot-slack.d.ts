@@ -1,6 +1,6 @@
-declare module "hubot-slack" {
-  import { Adapter, Robot as Hubot, Response as HubotResponse, IEnvelope } from 'hubot';
-  import { MemoryDataStore } from '@slack/client';
+declare module 'hubot-slack' {
+  import { Adapter, Robot as Hubot, Response as HubotResponse, IEnvelope as HubotEnvelope } from 'hubot';
+  import { MemoryDataStore, User as SlackUser } from '@slack/client';
 
   // see https://api.slack.com/docs/attachments
   // also https://api.slack.com/docs/formatting/builder
@@ -50,20 +50,28 @@ declare module "hubot-slack" {
     icon_emoji?: string;
   }
 
-  interface SlackBot extends Adapter {
-    client: {
-      rtm: {
-        dataStore: MemoryDataStore;
-      }
+  interface SlackBotClient {
+    rtm: {
+      dataStore: MemoryDataStore;
     }
+  }
 
-    send(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
-    reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+  interface SlackBot extends Adapter {
+    client: SlackBotClient;
+
+    send(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
+    reply(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
+  }
+
+  interface Envelope {
+    user: SlackUser;
   }
 
   export interface Response extends HubotResponse {
-    send(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
-    reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+    envelope: Envelope & HubotEnvelope;
+
+    send(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
+    reply(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
   }
 
   interface Robot extends Hubot {
@@ -72,8 +80,8 @@ declare module "hubot-slack" {
     respond(regex: RegExp, options: any, callback: (res: Response) => void): void;
     respond(regex: RegExp, callback: (res: Response) => void): void;
     error(handler: (err: Error, res: Response) => void): void;
-    send(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
-    reply(envelope: IEnvelope, ...messages: ICustomMessageData[]): void;
+    send(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
+    reply(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
   }
 
   export function use(robot: Hubot): SlackBot;
