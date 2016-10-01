@@ -20,7 +20,6 @@ const Config = {
     required: false,
     default: [],
     loader: (value: string) => value.split(','),
-    value: <string[]> undefined,
   },
 };
 

@@ -40,8 +40,8 @@ import TellMeAboutTeamScript from './scripts/tell_me_about_team.script';
 function load(robot: RobotWithClient) {
   loadConfig(robot.logger.error.bind(robot.logger));
 
-  robot.logger.info(`HACKBOT_ERROR_CHANNEL set to ${Config.HACKBOT_ERROR_CHANNEL}`);
-  robot.logger.info(`HACKBOT_API_URL set to ${Config.HACKBOT_API_URL}`);
+  robot.logger.info(`HACKBOT_ERROR_CHANNEL set to ${Config.HACKBOT_ERROR_CHANNEL.value}`);
+  robot.logger.info(`HACKBOT_API_URL set to ${Config.HACKBOT_API_URL.value}`);
 
   robot.client = new Client(Config.HACKBOT_API_URL.value, Config.HACKBOT_API_PASSWORD.value, robot);
 
