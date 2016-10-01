@@ -5,7 +5,7 @@ import { UserData } from 'hubot';
 import { MemoryDataStore, User } from '@slack/client';
 import * as Helper from 'hubot-test-helper';
 
-describe.only('@hubot add @username to my team', () => {
+describe('@hubot add @username to my team', () => {
 
   let helper: Helper.Helper;
   let room: Helper.Room;

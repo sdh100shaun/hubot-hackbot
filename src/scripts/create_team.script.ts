@@ -3,20 +3,20 @@ import { RobotWithClient } from '../hackbot';
 export default (robot: RobotWithClient) => {
 
   robot.respond(/create team (.*)/i, (response) => {
-    const userId = response.message.user.id;
+    const user = robot.adapter.client.rtm.dataStore.getUserById(response.message.user.id);
     const userName = response.message.user.name;
     const teamName = response.match[1];
 
-    robot.client.getUser(userId)
+    robot.client.getUser(user.id)
       .then((res) => {
 
-        const emailAddress = robot.brain.data.users[userId].email_address;
+        const emailAddress = user.profile.email;
 
         if (res.statusCode === 404) {
-          return robot.client.createUser(userId, userName, emailAddress)
+          return robot.client.createUser(user.id, userName, emailAddress)
             .then(createUserResponse => {
               if (createUserResponse.ok) {
-                return robot.client.createTeam(teamName, userId, emailAddress)
+                return robot.client.createTeam(teamName, user.id, emailAddress)
                   .then(createTeamResponse => {
                     if (createTeamResponse.ok) {
                       return response.reply(`Welcome to team ${teamName}!`);
@@ -41,7 +41,7 @@ export default (robot: RobotWithClient) => {
           return response.reply(`You're already a member of ${res.user.team.name}!`);
         }
 
-        return robot.client.createTeam(teamName, userId, emailAddress)
+        return robot.client.createTeam(teamName, user.id, emailAddress)
           .then(createTeamResponse => {
             if (createTeamResponse.ok) {
               return response.reply(`Welcome to team ${teamName}!`);
