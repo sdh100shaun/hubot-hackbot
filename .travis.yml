@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "6.6"
+  - '6.7'
 
 cache:
   directories:
@@ -8,18 +8,23 @@ cache:
 
 script: npm test -- -R list
 
-after_success:
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_NODE_VERSION == "node" && bash deploy.sh
-
 env:
   global:
-    - GH_REF: github.com/TechNottingham/Hackbot.git
-    - secure: "aXWsOih3TY/6tMwDfUeD0wfi4OiTpbv0s06SNfQMOjXnOSY3AJ7r8c7Inm4ZHjKjpkfKCD3u7IafJik2bIWNEbtBowD9IC0r0yCi1qbieHWDLzu8wn+EWoXkkzAWVxa6LT4U6tOJ8ewyvBSjldmX77oAunZoE3ZNa2O3XWGaJ1arZ/FCbpZkX3BeCMfE/r2Ti3xifPcr0nuscD6GZFa6Hlr5FyvyxvLxCMKgK1LNpN+eRGyyLpnlFh57Hbckv/0SSCTruriLcDaekyJXQ+u7++PMauayIQzbTtzNvyv+EWMn3svOm7eMzCRzGaTGRxdMB/dCLnCJLmxbvnmjxitzEKzmWuHJl3/4HYbdDjUVWGaPwVmr2S8Z/5cHsvDqRGvm+3umT70T0WqP0Xam62kxb6sYX3d4XLBAx/d+9tv+nkwyiNJPtS26ZUmtJM0Jkbavq5Nd+CzWzv/ir1Lr984e+ZAv19vtCso4VuZy16B/A9EVlRy9Oe1/m11BM0HvkzOqX3e46TrMM/QfXNcNxfM+ptEJ5Rkn/PA3ifeqnU+eJPi9MyunS8NJqhnsi9j3Ye03xywSWSB2pU0OdsBSPc8+Smnr8PWe7zLcEt0jKs8TWZfUaz0ZI7FbsYbmHEvdneaAHWZy8H8/o5Vui2x9DiKfd54o3FCwQaKIlKQhAoiBybY="
     - CXX: g++-4.8
 
 addons:
   apt:
     sources:
-    - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r-test
     packages:
-     - g++-4.8
+      - g++-4.8
+
+deploy:
+  provider: npm
+  email: david.p.wood@gmail.com
+  api_key:
+    secure: U4wIJhLAv8UcpRsW604RnOwHSFf0ccVT1DHTKXk2KYFjC/gFkvxVkpAYlOQrlFmD7F8TEoqpmfifcT+mgMPzSB2qqtmQAyAcQyYOU7cvcgjU0j5CyzDq4aP2QKwiQaWONGuVc3pQu+45prj00W0XNXK1sK3e4qz7piKVMwBwpdUJeLLDZuv7ZseL6a6tfdF1OvTrTdoFry0IF1eEAWW8nVAJZYqN4PTPwT8XfxgPplcpl9/0uBJNwEpvdeAzo/wWEa5KpAxa5OD96b4WSpf4ULJYJ/y+FEZ+YsEVpB6dB1kHVeyodwMnBcreAcfWpgw2xQvB7TZ12EHFRnFVePUM6jwNIlUp6YrUlvPV2oQYoiBsTA3uBmThQARGjpgBNBYXO78zK2T4zoHtyyQMBh/1t4q0xzo/ssJNIKdBvFOOcCR0qSiad2N+3IgQQ4klvA+VknnUuHpFzAGOA3gDMrUl9kZo8/o3gEHinubUKy4n/J66HR08CmtllsHGujH2wlZwH4PzCdGX7FmQVc7K+aUkJNDM+vkz+frUkdcpwcaDwrXxxobKG1h/cyt/mFrD08IJDHQ31kQ898oHfZJXrxlHcgTj3A64ibnD1WIo4K2ROap3FEFva/piNYdPRonC3zMK8nXvpXpyHx3KkSUtiFo88rD8ow526L/lVF5ayw0BjXU=
+  on:
+    tags: true
+    repo: TechNottingham/hubot-hackbot
+    branch: master
