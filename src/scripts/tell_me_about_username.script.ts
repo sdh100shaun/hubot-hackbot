@@ -1,24 +1,14 @@
 import { RobotWithClient } from '../hackbot';
-import { UserData } from 'hubot';
 
 export default (robot: RobotWithClient) => {
 
   robot.respond(/tell me about @([a-z0-9.\-_]+)/i, response => {
     const username = response.match[1];
 
-    let user: UserData = null;
-    const users = robot.brain.data.users;
-    for (let _userId in robot.brain.data.users) {
-      if (robot.brain.data.users.hasOwnProperty(_userId)) {
-        const _user = users[_userId];
-        if (_user.name === username) {
-          user = _user;
-          break;
-        }
-      }
-    }
+    const dataStore = robot.adapter.client.rtm.dataStore;
+    const user = dataStore.getUserByName(username);
 
-    if (user === null) {
+    if (user === undefined) {
       response.reply(`"${username}" is not a user I recognise!`);
       return;
     }
