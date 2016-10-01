@@ -240,4 +240,19 @@ declare module "@slack/client" {
     removeBot(bot: Bot): void;
     removeTeam(team: Team): void;
   }
+
+  class RtmClient {}
+
+  class WebClient {}
+
+  class IncomingWebhook {}
+
+  class LegacyRtmClient {}
+
+  var CLIENT_EVENTS: {
+    WEB: string;
+    RTM: string;
+  };
+  var RTM_EVENTS: {};
+  var RTM_MESSAGE_SUBTYPES: {};
 }

@@ -13,7 +13,7 @@ declare module 'hubot-test-helper' {
     }
 
     interface Helper {
-      new (scriptsPaths: string): Helper;
+      new (scriptsPaths: string | string[]): Helper;
       createRoom(options?: CreateRoomOptions): Room;
     }
 

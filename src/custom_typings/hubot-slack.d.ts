@@ -1,6 +1,22 @@
 declare module 'hubot-slack' {
   import { Adapter, Robot as Hubot, Response as HubotResponse, IEnvelope as HubotEnvelope } from 'hubot';
-  import { MemoryDataStore, User as SlackUser } from '@slack/client';
+  import { MemoryDataStore, User as SlackUser, RtmClient, WebClient } from '@slack/client';
+
+  interface SlackClient {
+    robot: Robot;
+
+    rtm: RtmClient;
+    web: WebClient;
+    format: SlackFormatter;
+    listeners: any[];
+
+    connect(): void;
+    on(name: string, callback: (arg: any) => void): void;
+    disconnect(): void;
+    setTopic(id: string, topic: string): void;
+    send(envelope: Envelope, message: string): void;
+    send(envelope: Envelope, message: ICustomMessageData): void;
+  }
 
   // see https://api.slack.com/docs/attachments
   // also https://api.slack.com/docs/formatting/builder
@@ -67,7 +83,7 @@ declare module 'hubot-slack' {
     user: SlackUser;
   }
 
-  export interface Response extends HubotResponse {
+  interface Response extends HubotResponse {
     envelope: Envelope & HubotEnvelope;
 
     send(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
@@ -84,5 +100,9 @@ declare module 'hubot-slack' {
     reply(envelope: HubotEnvelope, ...messages: ICustomMessageData[]): void;
   }
 
-  export function use(robot: Hubot): SlackBot;
+  interface SlackFormatter {
+
+  }
+
+  function use(robot: Hubot): SlackBot;
 }

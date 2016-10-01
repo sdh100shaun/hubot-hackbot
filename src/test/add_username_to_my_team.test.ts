@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { RobotWithClient } from '../hackbot';
-import { UserData } from 'hubot';
 import { MemoryDataStore, User } from '@slack/client';
 import * as Helper from 'hubot-test-helper';
 
@@ -18,9 +17,7 @@ describe('@hubot add @username to my team', () => {
     room = helper.createRoom();
     robot = <RobotWithClient> room.robot;
     dataStore = new MemoryDataStore();
-    robot.adapter.client = {
-      rtm: { dataStore: dataStore },
-    };
+    robot.adapter.client = { rtm: { dataStore: dataStore } };
   }
 
   function tearDown() {
@@ -71,8 +68,12 @@ describe('@hubot add @username to my team', () => {
 
       addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({ ok: true }));
 
-      sinon.stub(dataStore, 'getUserById').withArgs(userName).returns({ id: userName, profile: { email: userEmail } } as User);
-      sinon.stub(dataStore, 'getUserByName').withArgs(otherUserUsername).returns({ id: otherUserId, name: otherUserUsername } as UserData);
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
       return room.user.say(userName, `@hubot add @${otherUserUsername}   to my team`);
     });
@@ -128,8 +129,12 @@ describe('@hubot add @username to my team', () => {
         statusCode: 403,
       }));
 
-      sinon.stub(dataStore, 'getUserById').withArgs(userName).returns({ id: userName, profile: { email: userEmail } } as User);
-      sinon.stub(dataStore, 'getUserByName').withArgs(otherUserUsername).returns({ id: otherUserId, name: otherUserUsername } as UserData);
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
       return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`);
     });
@@ -216,8 +221,12 @@ describe('@hubot add @username to my team', () => {
       createUserStub = sinon.stub(robot.client, 'createUser').returns(Promise.resolve({ ok: true }));
       addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({ ok: true }));
 
-      sinon.stub(dataStore, 'getUserById').withArgs(userName).returns({ id: userName, profile: { email: userEmail } } as User);
-      sinon.stub(dataStore, 'getUserByName').withArgs(otherUserUsername).returns({ id: otherUserId, name: otherUserUsername } as UserData);
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
       return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`);
     });
@@ -283,8 +292,12 @@ describe('@hubot add @username to my team', () => {
         statusCode: 400,
       }));
 
-      sinon.stub(dataStore, 'getUserById').withArgs(userName).returns({ id: userName, profile: { email: userEmail } } as User);
-      sinon.stub(dataStore, 'getUserByName').withArgs(otherUserUsername).returns({ id: otherUserId, name: otherUserUsername } as UserData);
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
       return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`);
     });
