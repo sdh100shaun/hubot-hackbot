@@ -23,9 +23,14 @@ export default (robot: Robot) => {
   });
 
   robot.respond(/whois (.+)/i, (response) => {
-    const userName = response.match[1];
     const dataStore = robot.adapter.client.rtm.dataStore;
 
+    const userId = response.envelope.user.id;
+    if (!dataStore.getUserById(userId).is_admin) {
+      return response.reply('Only admins can use the `whois` command');
+    }
+
+    const userName = response.match[1];
     const user = dataStore.getUserByName(userName);
 
     if (user) {
