@@ -22,6 +22,9 @@
 
 import Client from './client';
 import { RobotWithClient } from './hackbot';
+import Config, { loadConfig } from './config';
+
+import ErrorScript from './scripts/error.script';
 
 import AddUsernameToMyTeamScript from './scripts/add_username_to_my_team.script';
 import CanYouSeeTheApiScript from './scripts/can_you_see_the_api.script';
@@ -35,7 +38,11 @@ import TellMeAboutMyTeamScript from './scripts/tell_me_about_my_team.script';
 import TellMeAboutTeamScript from './scripts/tell_me_about_team.script';
 
 function load(robot: RobotWithClient) {
-  robot.client = new Client(robot);
+  loadConfig(robot.logger.error.bind(robot.logger));
+
+  robot.client = new Client(Config.HACKBOT_API_URL.value, Config.HACKBOT_API_PASSWORD.value, robot);
+
+  ErrorScript(robot);
 
   AddUsernameToMyTeamScript(robot);
   CanYouSeeTheApiScript(robot);

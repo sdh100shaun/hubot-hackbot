@@ -201,10 +201,20 @@ describe('@hubot leave my team', () => {
     before(setUp);
     after(tearDown);
 
+    let error: Error;
+    let emitStub: sinon.SinonStub;
+
     before(() => {
-      sinon.stub(robot.client, 'getUser').returns(Promise.reject(new Error('unknown')));
+      error = new Error('when getUser fails');
+
+      sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
+      emitStub = sinon.stub(robot, 'emit');
 
       return room.user.say('sarah', '@hubot leave my team');
+    });
+
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should tell the user that there is a problem', () => {
@@ -220,23 +230,39 @@ describe('@hubot leave my team', () => {
     before(setUp);
     after(tearDown);
 
+    let userId: string;
+    let error: Error;
+    let emitStub: sinon.SinonStub;
+
     before(() => {
+      userId = 'sarah';
+      error = new Error('when removeTeamMember fails');
+
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
-          team: { id: '234324' },
+          team: { id: 'teamid' },
         },
       }));
 
-      sinon.stub(robot.client, 'removeTeamMember').returns(Promise.reject(new Error('when removeTeamMember fails')));
+      sinon.stub(robot.client, 'removeTeamMember').returns(Promise.reject(error));
+      emitStub = sinon.stub(robot, 'emit');
 
-      return room.user.say('sarah', '@hubot leave my team');
+      robot.brain.data.users[userId] = <UserData> {
+        email_address: 'sdfsfdsfsdf',
+      };
+
+      return room.user.say(userId, '@hubot leave my team');
+    });
+
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should tell the user that there is a problem', () => {
       expect(room.messages).to.eql([
-        ['sarah', '@hubot leave my team'],
-        ['hubot', '@sarah I\'m sorry, there appears to be a big problem!'],
+        [userId, '@hubot leave my team'],
+        ['hubot', `@${userId} I\'m sorry, there appears to be a big problem!`],
       ]);
     });
   });

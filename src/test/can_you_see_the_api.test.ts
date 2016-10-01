@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import { RobotWithClient } from '../hackbot';
 import * as Helper from 'hubot-test-helper';
 
-describe('Can see the API', () => {
+describe('Can you see the API?', () => {
 
   let helper: Helper.Helper;
   let room: Helper.Room;
@@ -20,14 +20,15 @@ describe('Can see the API', () => {
     room.destroy();
   }
 
-  describe('given hubot can see the API', () => {
+  describe('can see the API', () => {
 
     before(setUp);
     after(tearDown);
 
     before(() => {
       sinon.stub(robot.client, 'checkApi').returns(Promise.resolve({ ok: true }));
-      room.user.say('bob', '@hubot can you see the api?');
+
+      return room.user.say('bob', '@hubot can you see the api?');
     });
 
     it('should reply to the user that the API is available', () => {
@@ -39,14 +40,15 @@ describe('Can see the API', () => {
     });
   });
 
-  describe('given hubot is unable to see the API', () => {
+  describe('unable to see the API', () => {
 
     before(setUp);
     after(tearDown);
 
     before(() => {
       sinon.stub(robot.client, 'checkApi').returns(Promise.resolve({ ok: false, statusCode: 99 }));
-      room.user.say('bob', '@hubot can you see the api?');
+
+      return room.user.say('bob', '@hubot can you see the api?');
     });
 
     it('should reply to the user that the API cannot be seen', () => {
@@ -58,14 +60,25 @@ describe('Can see the API', () => {
     });
   });
 
-  describe('given hubot is unable to see the API because of a http error', () => {
+  describe('unable to see the API because of a http error', () => {
 
     before(setUp);
     after(tearDown);
 
+    let error: Error;
+    let emitStub: sinon.SinonStub;
+
     before(() => {
-      sinon.stub(robot.client, 'checkApi').returns(Promise.reject(new Error('unknown')));
-      room.user.say('bob', '@hubot can you see the api?');
+      error = new Error('unable to see the API because of a http error');
+
+      sinon.stub(robot.client, 'checkApi').returns(Promise.reject(error));
+      emitStub = sinon.stub(robot, 'emit');
+
+      return room.user.say('bob', '@hubot can you see the api?');
+    });
+
+    it('should emit the error', () => {
+      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
     });
 
     it('should reply to the user that the API cannot be seen because of a big problem', () => {

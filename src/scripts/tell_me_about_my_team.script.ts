@@ -18,6 +18,7 @@ export default (robot: RobotWithClient) => {
         response.reply(`"${res.user.team.name}" has ${res.user.team.members.length} ${noun}: ${memberList.join(', ')}\r\n${motto}`);
       })
       .catch(err => {
+        robot.emit('error', err, response);
         response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });

@@ -26,6 +26,7 @@ export default (robot: RobotWithClient) => {
           });
       })
       .catch(err => {
+        robot.emit('error', err, response);
         response.reply(`I'm sorry, there appears to be a big problem!`);
       });
   });

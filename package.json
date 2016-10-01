@@ -1,6 +1,6 @@
 {
   "name": "hubot-hackbot",
-  "version": "0.0.9",
+  "version": "0.0.10-2",
   "author": "Andrew Seward <abseward@googlemail.com>",
   "contributors": [
     "David Wood <david.p.wood@gmail.com> (http://codesleuth.co.uk/)",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "body-parser": "^1.15.2",
+    "hubot-slack": "^4.1.0",
     "slug": "^0.9.1",
     "source-map-support": "^0.4.2",
     "yayson": "^2.0.1"
