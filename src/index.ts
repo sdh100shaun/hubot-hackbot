@@ -55,7 +55,7 @@ function load(robot: RobotWithClient) {
   PrimeDirectivesScript(robot);
   TellMeAboutMyTeamScript(robot);
   TellMeAboutTeamScript(robot);
-  TellMeAboutUsername(robot)
+  TellMeAboutUsername(robot);
 }
 
 export = load;
