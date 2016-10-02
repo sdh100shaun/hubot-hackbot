@@ -1,4 +1,4 @@
-import { UserData, Response } from 'hubot';
+import { Response } from 'hubot';
 import { RobotWithClient } from '../hackbot';
 
 function addUserToTeam(
@@ -28,31 +28,19 @@ export default (robot: RobotWithClient) => {
 
   robot.respond(/add @([a-z0-9.\-_]+)\s+to my team/, response => {
     const otherUsername = response.match[1];
-    const userId = response.message.user.id;
+    const dataStore = robot.adapter.client.rtm.dataStore;
+    const user = dataStore.getUserById(response.message.user.id);
 
-    robot
-      .client
-      .getUser(userId)
+    robot.client
+      .getUser(user.id)
       .then(userResponse => {
         if (userResponse.user.team.id === undefined) {
           return response.reply(`I would, but you're not in a team...`);
         }
 
         const teamId = userResponse.user.team.id;
-
-        let otherUser: UserData;
-        const users = robot.brain.data.users;
-        for (let _userId in robot.brain.data.users) {
-          if (robot.brain.data.users.hasOwnProperty(_userId)) {
-            const user = users[_userId];
-            if (user.name === otherUsername) {
-              otherUser = user;
-              break;
-            }
-          }
-        }
-
-        const emailAddress = robot.brain.data.users[userId].email_address;
+        const otherUser = dataStore.getUserByName(otherUsername);
+        const emailAddress = user.profile.email;
 
         return robot.client.getUser(otherUser.id)
           .then(_userResponse => {

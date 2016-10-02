@@ -2,10 +2,8 @@ import { Robot } from 'hubot-slack';
 
 export default (robot: Robot) => {
 
-  robot.respond(/my id/i, (response) => {
-    const userId = response.envelope.user.id;
-    const dataStore = robot.adapter.client.rtm.dataStore;
-    const user = dataStore.getUserById(userId);
+  robot.respond(/who am i/i, (response) => {
+    const user = response.envelope.user;
 
     if (user) {
       const msg = JSON.stringify(user, null, 2);
@@ -22,12 +20,12 @@ export default (robot: Robot) => {
     }
   });
 
-  robot.respond(/whois (.+)/i, (response) => {
+  robot.respond(/who is (.+)/i, (response) => {
     const dataStore = robot.adapter.client.rtm.dataStore;
 
     const userId = response.envelope.user.id;
     if (!dataStore.getUserById(userId).is_admin) {
-      return response.reply('Only admins can use the `whois` command');
+      return response.reply('Only admins can use the `who is` command');
     }
 
     const userName = response.match[1];
