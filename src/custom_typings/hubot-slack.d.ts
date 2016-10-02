@@ -67,9 +67,7 @@ declare module 'hubot-slack' {
   }
 
   interface SlackBotClient {
-    rtm: {
-      dataStore: MemoryDataStore;
-    }
+    rtm: RtmClient;
   }
 
   interface SlackBot extends Adapter {

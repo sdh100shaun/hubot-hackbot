@@ -241,9 +241,51 @@ declare module "@slack/client" {
     removeTeam(team: Team): void;
   }
 
-  class RtmClient {}
+  interface ClientOptions {
+    socketFn: (socketUrl: string, opts: { proxyURL?: string }) => any;
+    dataStore: any;
+    autoReconnect: boolean;
+    maxReconnectionAttempts: number;
+    reconnectionBackoff: number;
+    wsPingInterval: number;
+    maxPongInterval: number;
+    logLevel: string;
+    logger: (logLevel: string, logString: string) => void;
+  }
 
-  class WebClient {}
+  interface BaseAPIClient {
+    slackAPIUrl: string;
+    userAgent: string;
+    dataStore: MemoryDataStore;
+    transport: (args: any, cb: Function) => void;
+
+    emit(...args: any[]): void;
+    registerDataStore(dataStore: any): void;
+  }
+
+  class RtmClient implements BaseAPIClient {
+    constructor(token: string, opts: ClientOptions);
+
+    slackAPIUrl: string;
+    userAgent: string;
+    dataStore: MemoryDataStore;
+    transport: (args: any, cb: Function) => void;
+
+    emit(...args: any[]): void;
+    registerDataStore(dataStore: any): void;
+  }
+
+  class WebClient implements BaseAPIClient {
+    constructor(token: string, opts: ClientOptions);
+
+    slackAPIUrl: string;
+    userAgent: string;
+    dataStore: MemoryDataStore;
+    transport: (args: any, cb: Function) => void;
+
+    emit(...args: any[]): void;
+    registerDataStore(dataStore: any): void;
+  }
 
   class IncomingWebhook {}
 

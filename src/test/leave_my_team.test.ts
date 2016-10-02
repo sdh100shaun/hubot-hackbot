@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { RobotWithClient } from '../hackbot';
+import { SlackBotClient } from 'hubot-slack';
 import { MemoryDataStore, User } from '@slack/client';
 import * as Helper from 'hubot-test-helper';
 
@@ -17,7 +18,7 @@ describe('@hubot leave my team', () => {
     room = helper.createRoom();
     robot = <RobotWithClient> room.robot;
     dataStore = new MemoryDataStore();
-    robot.adapter.client = { rtm: { dataStore: dataStore } };
+    robot.adapter.client = <SlackBotClient> { rtm: { dataStore: dataStore } };
   }
 
   function tearDown() {
