@@ -23,14 +23,14 @@ declare module "hubot" {
     message?: Message;
   }
 
-  export class User {
+  class User {
     id: string;
     name: string;
     room: string;
   }
 
-  export class Message {
-    constructor (user: User);
+  class Message {
+    constructor(user: User);
 
     user: User;
     text: string;
@@ -39,15 +39,15 @@ declare module "hubot" {
     done: boolean;
   }
 
-  export class EnterMessage extends Message { }
-  export class LeaveMessage extends Message { }
-  export class TopicMessage extends Message { }
-  export class TextMessage extends Message { }
-  export class CatchAllMessage extends Message {
+  class EnterMessage extends Message { }
+  class LeaveMessage extends Message { }
+  class TopicMessage extends Message { }
+  class TextMessage extends Message { }
+  class CatchAllMessage extends Message {
     message: Message;
   }
 
-  export class Response {
+  class Response {
     robot: Robot;
     match: string[];
     message: Message;
@@ -59,22 +59,30 @@ declare module "hubot" {
     reply(...strings: string[]): void;
   }
 
-  export interface IBrain {
+  class Listener {
+
+  }
+
+  class TextListener {
+
+  }
+
+  interface IBrain {
     get(key: string): any;
     set(key: string, value: any): IBrain;
   }
 
-  export interface UserData {
+  interface UserData {
     email_address: string;
     name: string;
     id: string;
   }
 
-  export interface BrainData {
-    users: { [userId: string] : UserData }
+  interface BrainData {
+    users: { [userId: string]: UserData }
   }
 
-  export class Brain implements IBrain {
+  class Brain implements IBrain {
     constructor(robot: Robot);
 
     users(): { [id: string]: User; };
@@ -90,7 +98,7 @@ declare module "hubot" {
     data: BrainData;
   }
 
-  export class Adapter {
+  class Adapter {
     constructor(robot: Robot);
 
     send(envelope: IEnvelope, ...messages: string[]): void;
@@ -109,7 +117,7 @@ declare module "hubot" {
     debug(...msg: any[]): void;
   }
 
-  export class Robot {
+  class Robot {
     adapter: Adapter;
     brain: Brain;
     router: ExpressApp;
@@ -129,5 +137,8 @@ declare module "hubot" {
     on(event: string, listener: (arg: any) => void): void;
     send(envelope: IEnvelope, ...messages: string[]): void;
     reply(envelope: IEnvelope, ...messages: Message[]): void;
+
+    loadFile(path: string, file: string): void;
+    load(path: string): void;
   }
 }

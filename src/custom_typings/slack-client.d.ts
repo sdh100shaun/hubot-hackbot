@@ -240,4 +240,61 @@ declare module "@slack/client" {
     removeBot(bot: Bot): void;
     removeTeam(team: Team): void;
   }
+
+  interface ClientOptions {
+    socketFn: (socketUrl: string, opts: { proxyURL?: string }) => any;
+    dataStore: any;
+    autoReconnect: boolean;
+    maxReconnectionAttempts: number;
+    reconnectionBackoff: number;
+    wsPingInterval: number;
+    maxPongInterval: number;
+    logLevel: string;
+    logger: (logLevel: string, logString: string) => void;
+  }
+
+  interface BaseAPIClient {
+    slackAPIUrl: string;
+    userAgent: string;
+    dataStore: MemoryDataStore;
+    transport: (args: any, cb: Function) => void;
+
+    emit(...args: any[]): void;
+    registerDataStore(dataStore: any): void;
+  }
+
+  class RtmClient implements BaseAPIClient {
+    constructor(token: string, opts: ClientOptions);
+
+    slackAPIUrl: string;
+    userAgent: string;
+    dataStore: MemoryDataStore;
+    transport: (args: any, cb: Function) => void;
+
+    emit(...args: any[]): void;
+    registerDataStore(dataStore: any): void;
+  }
+
+  class WebClient implements BaseAPIClient {
+    constructor(token: string, opts: ClientOptions);
+
+    slackAPIUrl: string;
+    userAgent: string;
+    dataStore: MemoryDataStore;
+    transport: (args: any, cb: Function) => void;
+
+    emit(...args: any[]): void;
+    registerDataStore(dataStore: any): void;
+  }
+
+  class IncomingWebhook {}
+
+  class LegacyRtmClient {}
+
+  var CLIENT_EVENTS: {
+    WEB: string;
+    RTM: string;
+  };
+  var RTM_EVENTS: {};
+  var RTM_MESSAGE_SUBTYPES: {};
 }

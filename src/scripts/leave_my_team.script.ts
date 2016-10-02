@@ -3,17 +3,17 @@ import { RobotWithClient } from '../hackbot';
 export default (robot: RobotWithClient) => {
 
   robot.respond(/leave my team/i, response => {
-    const userId = response.message.user.id;
+    const user = robot.adapter.client.rtm.dataStore.getUserById(response.message.user.id);
 
-    robot.client.getUser(userId)
+    robot.client.getUser(user.id)
       .then(res => {
         if (!res.ok || res.user.team.id === undefined) {
           return response.reply(`You're not in a team! :goberserk:`);
         }
 
-        const emailAddress = robot.brain.data.users[userId].email_address;
+        const emailAddress = user.profile.email;
 
-        return robot.client.removeTeamMember(res.user.team.id, userId, emailAddress)
+        return robot.client.removeTeamMember(res.user.team.id, user.id, emailAddress)
           .then(removeTeamMemberResponse => {
             if (removeTeamMemberResponse.ok) {
               return response.reply(`OK, you've been removed from team "${res.user.team.name}"`);

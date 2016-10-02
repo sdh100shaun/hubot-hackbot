@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { RobotWithClient } from '../hackbot';
-import { UserData } from 'hubot';
-import { MemoryDataStore } from '@slack/client';
+import { SlackBotClient } from 'hubot-slack';
+import { MemoryDataStore, User } from '@slack/client';
 import * as Helper from 'hubot-test-helper';
 
 describe('@hubot tell me about @username', () => {
@@ -18,9 +18,7 @@ describe('@hubot tell me about @username', () => {
     room = helper.createRoom();
     robot = <RobotWithClient> room.robot;
     dataStore = new MemoryDataStore();
-    robot.adapter.client = {
-      rtm: { dataStore: dataStore },
-    };
+    robot.adapter.client = <SlackBotClient> { rtm: { dataStore: dataStore } };
   }
 
   function tearDown() {
@@ -49,7 +47,7 @@ describe('@hubot tell me about @username', () => {
       sinon
         .stub(dataStore, 'getUserByName')
         .withArgs(username)
-        .returns({ id: userId, name: username } as UserData);
+        .returns({ id: userId, name: username } as User);
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
@@ -102,7 +100,7 @@ describe('@hubot tell me about @username', () => {
       sinon
         .stub(dataStore, 'getUserByName')
         .withArgs(username)
-        .returns({ id: userId, name: username } as UserData);
+        .returns({ id: userId, name: username } as User);
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
@@ -153,7 +151,7 @@ describe('@hubot tell me about @username', () => {
       sinon
         .stub(dataStore, 'getUserByName')
         .withArgs(username)
-        .returns({ id: userId, name: username } as UserData);
+        .returns({ id: userId, name: username } as User);
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
@@ -198,7 +196,7 @@ describe('@hubot tell me about @username', () => {
       sinon
         .stub(dataStore, 'getUserByName')
         .withArgs(username)
-        .returns({ id: userId, name: username } as UserData);
+        .returns({ id: userId, name: username } as User);
 
       getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: false,
@@ -282,7 +280,7 @@ describe('@hubot tell me about @username', () => {
       sinon
         .stub(dataStore, 'getUserByName')
         .withArgs(username)
-        .returns({ id: userId, name: username } as UserData);
+        .returns({ id: userId, name: username } as User);
 
       return room.user.say(myUsername, `@hubot tell me about @${username}`);
     });

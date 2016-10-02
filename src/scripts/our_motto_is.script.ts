@@ -3,17 +3,17 @@ import { RobotWithClient } from '../hackbot';
 export default (robot: RobotWithClient) => {
 
   robot.respond(/our motto is (.*)/i, response => {
-    const userId = response.message.user.id;
+    const user = robot.adapter.client.rtm.dataStore.getUserById(response.message.user.id);
     const motto = response.match[1];
 
-    robot.client.getUser(userId)
+    robot.client.getUser(user.id)
       .then(getUserResponse => {
 
         if ((!getUserResponse.ok && getUserResponse.statusCode === 404) || getUserResponse.user.team.id === undefined) {
           return response.reply(`You're not in a team! :goberserk:`);
         }
 
-        const emailAddress = robot.brain.data.users[userId].email_address;
+        const emailAddress = user.profile.email;
 
         robot.client.updateMotto(motto, getUserResponse.user.team.id, emailAddress)
           .then(updateMottoResponse => {

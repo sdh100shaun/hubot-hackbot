@@ -1,7 +1,8 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { RobotWithClient } from '../hackbot';
-import { UserData } from 'hubot';
+import { SlackBotClient } from 'hubot-slack';
+import { MemoryDataStore, User } from '@slack/client';
 import * as Helper from 'hubot-test-helper';
 
 describe('@hubot add @username to my team', () => {
@@ -9,12 +10,15 @@ describe('@hubot add @username to my team', () => {
   let helper: Helper.Helper;
   let room: Helper.Room;
   let robot: RobotWithClient;
+  let dataStore: MemoryDataStore;
 
   before(() => helper = new Helper('../index.js'));
 
   function setUp() {
     room = helper.createRoom();
     robot = <RobotWithClient> room.robot;
+    dataStore = new MemoryDataStore();
+    robot.adapter.client = <SlackBotClient> { rtm: { dataStore: dataStore } };
   }
 
   function tearDown() {
@@ -26,7 +30,7 @@ describe('@hubot add @username to my team', () => {
     before(setUp);
     after(tearDown);
 
-    let userId: string;
+    let userName: string;
     let userEmail: string;
     let otherUserId: string;
     let otherUserUsername: string;
@@ -36,7 +40,7 @@ describe('@hubot add @username to my team', () => {
     let addUserToTeamStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'micah';
+      userName = 'micah';
       userEmail = 'micah.micah~micah';
       otherUserId = 'polly';
       otherUserUsername = 'abcdefghijklmnopqrstuvwxyz.-_0123456789';
@@ -44,82 +48,8 @@ describe('@hubot add @username to my team', () => {
       existingTeamName = 'Ocean Mongrels';
 
       getUserStub = sinon.stub(robot.client, 'getUser');
-      getUserStub.withArgs(userId).returns(Promise.resolve({
-        ok: true,
-        user: {
-          team: {
-            id: existingTeamId,
-            name: existingTeamName,
-          },
-        },
-      }));
-
       getUserStub
-        .withArgs(otherUserId)
-        .returns(Promise.resolve({
-          ok: true,
-          statusCode: 200,
-        }));
-
-      addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({ ok: true }));
-
-      robot.brain.data.users[userId] = <UserData> {
-        email_address: userEmail,
-      };
-
-      robot.brain.data.users[otherUserId] = <UserData> {
-        id: otherUserId,
-        name: otherUserUsername,
-      };
-
-      return room.user.say(userId, `@hubot add @${otherUserUsername} to my team`);
-    });
-
-    it('should get the current user', () => {
-      expect(getUserStub).to.have.been.calledWith(userId);
-    });
-
-    it('should get the other user', () => {
-      expect(getUserStub).to.have.been.calledWith(otherUserId);
-    });
-
-    it('should add the other user to the team', () => {
-      expect(addUserToTeamStub).to.have.been.calledWith(existingTeamId, otherUserId, userEmail);
-    });
-
-    it('should tell the user that the command has completed', () => {
-      expect(room.messages).to.eql([
-        [userId, `@hubot add @${otherUserUsername} to my team`],
-        ['hubot', `@${userId} Done!`],
-      ]);
-    });
-  });
-
-  describe('when username has a trailing space', () => {
-
-    before(setUp);
-    after(tearDown);
-
-    let userId: string;
-    let userEmail: string;
-    let otherUserId: string;
-    let otherUserUsername: string;
-    let existingTeamId: string;
-    let existingTeamName: string;
-    let getUserStub: sinon.SinonStub;
-    let addUserToTeamStub: sinon.SinonStub;
-
-    before(() => {
-      userId = 'micah';
-      userEmail = 'micah.micah~micah';
-      otherUserId = 'polly';
-      otherUserUsername = 'pollygrafanaasa';
-      existingTeamId = 'ocean-mongrels';
-      existingTeamName = 'Ocean Mongrels';
-
-      getUserStub = sinon.stub(robot.client, 'getUser');
-      getUserStub
-        .withArgs(userId)
+        .withArgs(userName)
         .returns(Promise.resolve({
           ok: true,
           user: {
@@ -139,20 +69,18 @@ describe('@hubot add @username to my team', () => {
 
       addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({ ok: true }));
 
-      robot.brain.data.users[userId] = <UserData> {
-        email_address: userEmail,
-      };
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
-      robot.brain.data.users[otherUserId] = <UserData> {
-        id: otherUserId,
-        name: otherUserUsername,
-      };
-
-      return room.user.say(userId, `@hubot add @${otherUserUsername}  to my team`);
+      return room.user.say(userName, `@hubot add @${otherUserUsername}   to my team`);
     });
 
     it('should get the current user', () => {
-      expect(getUserStub).to.have.been.calledWith(userId);
+      expect(getUserStub).to.have.been.calledWith(userName);
     });
 
     it('should get the other user', () => {
@@ -165,8 +93,8 @@ describe('@hubot add @username to my team', () => {
 
     it('should tell the user that the command has completed', () => {
       expect(room.messages).to.eql([
-        [userId, `@hubot add @${otherUserUsername}  to my team`],
-        ['hubot', `@${userId} Done!`],
+        [userName, `@hubot add @${otherUserUsername}   to my team`],
+        ['hubot', `@${userName} Done!`],
       ]);
     });
   });
@@ -176,24 +104,18 @@ describe('@hubot add @username to my team', () => {
     before(setUp);
     after(tearDown);
 
-    let userId: string;
-    let userEmail: string;
-    let otherUserId: string;
+    let userName: string;
     let otherUserUsername: string;
-    let existingTeamId: string;
-    let existingTeamName: string;
-    let getUserStub: sinon.SinonStub;
-    let addUserToTeamStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'micah';
-      userEmail = 'micah.micah~micah';
-      otherUserId = 'polly';
+      userName = 'micah';
+      const userEmail = 'micah.micah~micah';
+      const otherUserId = 'polly';
       otherUserUsername = 'pollygrafanaasa';
-      existingTeamId = 'ocean-mongrels';
-      existingTeamName = 'Ocean Mongrels';
+      const existingTeamId = 'ocean-mongrels';
+      const existingTeamName = 'Ocean Mongrels';
 
-      getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
+      sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           team: {
@@ -203,26 +125,25 @@ describe('@hubot add @username to my team', () => {
         },
       }));
 
-      addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({
+      sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({
         ok: false,
         statusCode: 403,
       }));
 
-      robot.brain.data.users[userId] = <UserData> {
-        email_address: userEmail,
-      };
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
-      robot.brain.data.users[otherUserId] = <UserData> {
-        name: otherUserUsername,
-      };
-
-      return room.user.say(userId, `@hubot add @${otherUserUsername} to my team`);
+      return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`);
     });
 
     it('should tell the user that they do not have permission', () => {
       expect(room.messages).to.eql([
-        [userId, `@hubot add @${otherUserUsername} to my team`],
-        ['hubot', `@${userId} Sorry, you don't have permission to add people to your team.`],
+        [userName, `@hubot add @${otherUserUsername} to my team`],
+        ['hubot', `@${userName} Sorry, you don't have permission to add people to your team.`],
       ]);
     });
   });
@@ -232,34 +153,29 @@ describe('@hubot add @username to my team', () => {
     before(setUp);
     after(tearDown);
 
-    let userId: string;
-    let userEmail: string;
+    let userName: string;
     let otherUserUsername: string;
-    let getUserStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'micah';
-      userEmail = 'micah.micah~micah';
+      userName = 'micah';
       otherUserUsername = 'pollygrafanaasa';
 
-      getUserStub = sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
+      sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
           team: {},
         },
       }));
 
-      robot.brain.data.users[userId] = <UserData> {
-        email_address: userEmail,
-      };
+      sinon.stub(dataStore, 'getUserById').withArgs(userName).returns({ id: userName } as User);
 
-      return room.user.say(userId, `@hubot add @${otherUserUsername} to my team`);
+      return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`);
     });
 
     it('shouldtell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
-        [userId, `@hubot add @${otherUserUsername} to my team`],
-        ['hubot', `@${userId} I would, but you're not in a team...`],
+        [userName, `@hubot add @${otherUserUsername} to my team`],
+        ['hubot', `@${userName} I would, but you're not in a team...`],
       ]);
     });
   });
@@ -269,7 +185,7 @@ describe('@hubot add @username to my team', () => {
     before(setUp);
     after(tearDown);
 
-    let userId: string;
+    let userName: string;
     let userEmail: string;
     let otherUserId: string;
     let otherUserUsername: string;
@@ -280,7 +196,7 @@ describe('@hubot add @username to my team', () => {
     let addUserToTeamStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'micah';
+      userName = 'micah';
       userEmail = 'micah.micah~micah';
       otherUserId = 'polly';
       otherUserUsername = 'pollygrafanaasa';
@@ -288,7 +204,7 @@ describe('@hubot add @username to my team', () => {
       existingTeamName = 'Ocean Mongrels';
 
       getUserStub = sinon.stub(robot.client, 'getUser');
-      getUserStub.withArgs(userId).returns(Promise.resolve({
+      getUserStub.withArgs(userName).returns(Promise.resolve({
         ok: true,
         user: {
           team: {
@@ -304,23 +220,20 @@ describe('@hubot add @username to my team', () => {
       }));
 
       createUserStub = sinon.stub(robot.client, 'createUser').returns(Promise.resolve({ ok: true }));
-
       addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({ ok: true }));
 
-      robot.brain.data.users[userId] = <UserData> {
-        email_address: userEmail,
-      };
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
-      robot.brain.data.users[otherUserId] = <UserData> {
-        id: otherUserId,
-        name: otherUserUsername,
-      };
-
-      return room.user.say(userId, `@hubot add @${otherUserUsername} to my team`);
+      return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`);
     });
 
     it('should get the current user', () => {
-      expect(getUserStub).to.have.been.calledWith(userId);
+      expect(getUserStub).to.have.been.calledWith(userName);
     });
 
     it('should get the other user', () => {
@@ -337,8 +250,8 @@ describe('@hubot add @username to my team', () => {
 
     it('should tell the user that the command has completed', () => {
       expect(room.messages).to.eql([
-        [userId, `@hubot add @${otherUserUsername} to my team`],
-        ['hubot', `@${userId} Done!`],
+        [userName, `@hubot add @${otherUserUsername} to my team`],
+        ['hubot', `@${userName} Done!`],
       ]);
     });
   });
@@ -348,25 +261,19 @@ describe('@hubot add @username to my team', () => {
     before(setUp);
     after(tearDown);
 
-    let userId: string;
-    let userEmail: string;
-    let otherUserId: string;
+    let userName: string;
     let otherUserUsername: string;
-    let existingTeamId: string;
-    let existingTeamName: string;
-    let getUserStub: sinon.SinonStub;
-    let addUserToTeamStub: sinon.SinonStub;
 
     before(() => {
-      userId = 'micah';
-      userEmail = 'micah.micah~micah';
-      otherUserId = 'polly';
+      userName = 'micah';
+      const userEmail = 'micah.micah~micah';
+      const otherUserId = 'polly';
       otherUserUsername = 'pollygrafanaasa';
-      existingTeamId = 'ocean-mongrels';
-      existingTeamName = 'Ocean Mongrels';
+      const existingTeamId = 'ocean-mongrels';
+      const existingTeamName = 'Ocean Mongrels';
 
-      getUserStub = sinon.stub(robot.client, 'getUser');
-      getUserStub.withArgs(userId).returns(Promise.resolve({
+      const getUserStub = sinon.stub(robot.client, 'getUser');
+      getUserStub.withArgs(userName).returns(Promise.resolve({
         ok: true,
         user: {
           team: {
@@ -381,27 +288,25 @@ describe('@hubot add @username to my team', () => {
         statusCode: 200,
       }));
 
-      addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({
+      sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({
         ok: false,
         statusCode: 400,
       }));
 
-      robot.brain.data.users[userId] = <UserData> {
-        email_address: userEmail,
-      };
+      sinon.stub(dataStore, 'getUserById')
+        .withArgs(userName)
+        .returns({ id: userName, profile: { email: userEmail } } as User);
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername } as User);
 
-      robot.brain.data.users[otherUserId] = <UserData> {
-        id: otherUserId,
-        name: otherUserUsername,
-      };
-
-      return room.user.say(userId, `@hubot add @${otherUserUsername} to my team`);
+      return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`);
     });
 
     it('should tell the user that the other user may already be in a team', () => {
       expect(room.messages).to.eql([
-        [userId, `@hubot add @${otherUserUsername} to my team`],
-        ['hubot', `@${userId} Sorry, ${otherUserUsername} is already in another team and must leave that team first.`],
+        [userName, `@hubot add @${otherUserUsername} to my team`],
+        ['hubot', `@${userName} Sorry, ${otherUserUsername} is already in another team and must leave that team first.`],
       ]);
     });
   });
