@@ -1,23 +1,17 @@
-import { RobotWithClient } from '../hackbot';
+import { AsyncRobot } from '../async';
 
-export default (robot: RobotWithClient) => {
+export default (robot: AsyncRobot) => {
 
-  robot.respond(/find teams like (.*)/i, response => {
+  robot.respondAsync(/find teams like (.*)/i, async (response) => {
     const nameFilter = response.match[1];
 
-    robot.client.findTeams(nameFilter)
-      .then(res => {
-        if (res.teams.length === 0) {
-          return response.reply('None found.');
-        }
+    const res = await robot.client.findTeams(nameFilter);
+    if (res.teams.length === 0) {
+      return response.reply('None found.');
+    }
 
-        const names = res.teams.slice(0, 3).map(team => team.name);
-        response.reply(`Found ${res.teams.length} teams; here's a few: ${names.join(', ')}`);
-      })
-      .catch(err => {
-        robot.emit('error', err, response);
-        response.reply(`I'm sorry, there appears to be a big problem!`);
-      });
+    const names = res.teams.slice(0, 3).map(team => team.name);
+    response.reply(`Found ${res.teams.length} teams; here's a few: ${names.join(', ')}`);
   });
 
 };

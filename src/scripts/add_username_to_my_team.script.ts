@@ -1,9 +1,8 @@
 import { Response } from 'hubot';
-import { RobotWithClient } from '../hackbot';
 import { AsyncRobot } from '../async';
 
 async function addUserToTeam(
-  robot: RobotWithClient,
+  robot: AsyncRobot,
   response: Response,
   teamId: string,
   otherUserId: string,

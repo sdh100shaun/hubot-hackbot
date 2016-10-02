@@ -1,20 +1,14 @@
-import { RobotWithClient } from '../hackbot';
+import { AsyncRobot } from '../async';
 
-export default (robot: RobotWithClient) => {
-  robot.respond(/can you see the api\??/i, (response) => {
+export default (robot: AsyncRobot) => {
+  robot.respondAsync(/can you see the api\??/i, async (response) => {
     response.reply(`I'll have a quick look for you...`);
 
-    robot.client
-      .checkApi()
-      .then((res) => {
-        if (res.ok) {
-          return response.reply('I see her!');
-        }
-        response.reply(`I'm sorry, there appears to be a problem; something about "${res.statusCode}"`);
-      })
-      .catch((err) => {
-        robot.emit('error', err, response);
-        response.reply(`I'm sorry, there appears to be a big problem!`);
-      });
+    const res = await robot.client.checkApi();
+
+    if (res.ok) {
+      return response.reply('I see her!');
+    }
+    response.reply(`I'm sorry, there appears to be a problem; something about "${res.statusCode}"`);
   });
 };

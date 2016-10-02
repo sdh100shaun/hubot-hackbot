@@ -52,16 +52,16 @@ function load(robot: RobotWithClient) {
   const augmentedRobot: AsyncRobot = AugmentRobot(robot);
 
   AddUsernameToMyTeamScript(augmentedRobot);
-  CanYouSeeTheApiScript(robot);
-  CreateTeamScript(robot);
-  FindTeamsLikeScript(robot);
-  LeaveMyTeamScript(robot);
+  CanYouSeeTheApiScript(augmentedRobot);
+  CreateTeamScript(augmentedRobot);
+  FindTeamsLikeScript(augmentedRobot);
+  LeaveMyTeamScript(augmentedRobot);
   MyIdScript(robot);
-  OurMottoIsScript(robot);
+  OurMottoIsScript(augmentedRobot);
   PrimeDirectivesScript(robot);
-  TellMeAboutMyTeamScript(robot);
-  TellMeAboutTeamScript(robot);
-  TellMeAboutUsername(robot);
+  TellMeAboutMyTeamScript(augmentedRobot);
+  TellMeAboutTeamScript(augmentedRobot);
+  TellMeAboutUsername(augmentedRobot);
 }
 
 export = load;

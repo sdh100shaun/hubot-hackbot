@@ -205,27 +205,20 @@ describe('@hubot tell me about my team', () => {
     after(tearDown);
 
     let userId: string;
-    let error: Error;
-    let emitStub: sinon.SinonStub;
 
     before(() => {
       userId = 'jerry';
-      error = new Error('when getUser errors');
+      const error = new Error('when getUser errors');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       return room.user.say(userId, `@hubot tell me about my team`);
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [userId, `@hubot tell me about my team`],
-        ['hubot', `@${userId} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });

@@ -8,9 +8,9 @@ export interface AsyncRobot extends RobotWithClient {
 
 function respondAsync(regex: RegExp, options: any, callback: (res: Response) => PromiseLike<void>) {
   const robot: Robot = this;
-  const cb: (res: Response) => PromiseLike<void> = (typeof callback === "Function" || options);
+  const cb: (res: Response) => PromiseLike<void> = (typeof options === "function" ? options : callback);
   robot.respond(regex, options, (res: Response) => {
-    cb(res).then(() => void 0, (err) => robot.emit('error', err, res));
+    cb(res).then(undefined, (err) => robot.emit('error', err, res));
   });
 }
 
