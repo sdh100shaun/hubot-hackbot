@@ -74,7 +74,7 @@ describe('Can you see the API?', () => {
       return room.user.say('bob', '@hubot can you see the api?');
     });
 
-    it('should reply to the user that the API cannot be seen because of a big problem', () => {
+    it('should not report the error', () => {
       expect(room.messages).to.eql([
         ['bob', '@hubot can you see the api?'],
         ['hubot', `@bob I'll have a quick look for you...`],
