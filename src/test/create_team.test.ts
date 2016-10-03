@@ -339,7 +339,7 @@ describe('@hubot create team X', () => {
     });
   });
 
-  describe('when user does not already exist and creating the team returns(an unexpected code', () => {
+  describe('when user does not already exist and creating the team returns an unexpected code', () => {
 
     before(setUp);
     after(tearDown);
@@ -413,16 +413,14 @@ describe('@hubot create team X', () => {
 
     let userName: string;
     let teamName: string;
-    let error: Error;
-    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userName = 'sarah';
       teamName = 'Rosie';
-      error = new Error('when getUser fails');
+      const error = new Error('when getUser fails');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       sinon.stub(dataStore, 'getUserById')
         .withArgs(userName)
@@ -431,14 +429,9 @@ describe('@hubot create team X', () => {
       return room.user.say(userName, `@hubot create team ${teamName}`);
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [userName, `@hubot create team ${teamName}`],
-        ['hubot', `@${userName} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });
@@ -450,17 +443,15 @@ describe('@hubot create team X', () => {
 
     let userName: string;
     let teamName: string;
-    let error: Error;
-    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userName = 'sarah';
       teamName = 'Rosie';
-      error = new Error('when user does not exist and createUser fails');
+      const error = new Error('when user does not exist and createUser fails');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({ ok: false, statusCode: 404 }));
       sinon.stub(robot.client, 'createUser').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       sinon.stub(dataStore, 'getUserById')
         .withArgs(userName)
@@ -469,14 +460,9 @@ describe('@hubot create team X', () => {
       return room.user.say(userName, `@hubot create team ${teamName}`);
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [userName, `@hubot create team ${teamName}`],
-        ['hubot', `@${userName} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });
@@ -488,18 +474,16 @@ describe('@hubot create team X', () => {
 
     let userName: string;
     let teamName: string;
-    let error: Error;
-    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userName = 'sarah';
       teamName = 'Rosie';
-      error = new Error('when created user and createTeam fails');
+      const error = new Error('when created user and createTeam fails');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({ ok: true, user: { team: {} } }));
       sinon.stub(robot.client, 'createUser').returns({ ok: true });
       sinon.stub(robot.client, 'createTeam').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       sinon.stub(dataStore, 'getUserById')
         .withArgs(userName)
@@ -508,14 +492,9 @@ describe('@hubot create team X', () => {
       return room.user.say(userName, `@hubot create team ${teamName}`);
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [userName, `@hubot create team ${teamName}`],
-        ['hubot', `@${userName} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });
@@ -527,17 +506,15 @@ describe('@hubot create team X', () => {
 
     let userName: string;
     let teamName: string;
-    let error: Error;
-    let emitStub: sinon.SinonSpy;
 
     before(() => {
       userName = 'sarah';
       teamName = 'Rosie';
-      error = new Error('when user already exists and createTeam fails');
+      const error = new Error('when user already exists and createTeam fails');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({ ok: true, user: { team: {} } }));
       sinon.stub(robot.client, 'createTeam').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       sinon.stub(dataStore, 'getUserById')
         .withArgs(userName)
@@ -546,14 +523,9 @@ describe('@hubot create team X', () => {
       return room.user.say(userName, `@hubot create team ${teamName}`);
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [userName, `@hubot create team ${teamName}`],
-        ['hubot', `@${userName} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });

@@ -23,6 +23,7 @@
 import Client from './client';
 import { RobotWithClient } from './hackbot';
 import Config, { loadConfig } from './config';
+import { AugmentRobot, AugmentedRobot } from './async';
 
 import ErrorScript from './scripts/error.script';
 
@@ -48,17 +49,19 @@ function load(robot: RobotWithClient) {
 
   ErrorScript(robot);
 
-  AddUsernameToMyTeamScript(robot);
-  CanYouSeeTheApiScript(robot);
-  CreateTeamScript(robot);
-  FindTeamsLikeScript(robot);
-  LeaveMyTeamScript(robot);
+  const augmentedRobot: AugmentedRobot = AugmentRobot(robot);
+
+  AddUsernameToMyTeamScript(augmentedRobot);
+  CanYouSeeTheApiScript(augmentedRobot);
+  CreateTeamScript(augmentedRobot);
+  FindTeamsLikeScript(augmentedRobot);
+  LeaveMyTeamScript(augmentedRobot);
   MyIdScript(robot);
-  OurMottoIsScript(robot);
+  OurMottoIsScript(augmentedRobot);
   PrimeDirectivesScript(robot);
-  TellMeAboutMyTeamScript(robot);
-  TellMeAboutTeamScript(robot);
-  TellMeAboutUsername(robot);
+  TellMeAboutMyTeamScript(augmentedRobot);
+  TellMeAboutTeamScript(augmentedRobot);
+  TellMeAboutUsername(augmentedRobot);
 }
 
 export = load;

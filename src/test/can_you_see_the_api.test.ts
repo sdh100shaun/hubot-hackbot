@@ -65,27 +65,19 @@ describe('Can you see the API?', () => {
     before(setUp);
     after(tearDown);
 
-    let error: Error;
-    let emitStub: sinon.SinonStub;
-
     before(() => {
-      error = new Error('unable to see the API because of a http error');
+      const error = new Error('unable to see the API because of a http error');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'checkApi').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       return room.user.say('bob', '@hubot can you see the api?');
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should reply to the user that the API cannot be seen because of a big problem', () => {
+    it('should not report the error', () => {
       expect(room.messages).to.eql([
         ['bob', '@hubot can you see the api?'],
         ['hubot', `@bob I'll have a quick look for you...`],
-        ['hubot', '@bob I\'m sorry, there appears to be a big problem!'],
       ]);
     });
   });

@@ -265,17 +265,15 @@ describe('@hubot tell me about @username', () => {
     let myUsername: string;
     let userId: string;
     let username: string;
-    let error: Error;
-    let emitStub: sinon.SinonStub;
 
     before(() => {
       myUsername = 'benny';
       userId = 'pig';
       username = 'PigBodine';
-      error = new Error('problem happened');
+      const error = new Error('problem happened');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       sinon
         .stub(dataStore, 'getUserByName')
@@ -285,14 +283,9 @@ describe('@hubot tell me about @username', () => {
       return room.user.say(myUsername, `@hubot tell me about @${username}`);
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [myUsername, `@hubot tell me about @${username}`],
-        ['hubot', `@${myUsername} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });

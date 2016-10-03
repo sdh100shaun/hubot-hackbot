@@ -206,15 +206,13 @@ describe('@hubot leave my team', () => {
     after(tearDown);
 
     let userName: string;
-    let error: Error;
-    let emitStub: sinon.SinonStub;
 
     before(() => {
       userName = 'sarah';
-      error = new Error('when getUser fails');
+      const error = new Error('when getUser fails');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       sinon.stub(dataStore, 'getUserById')
         .withArgs(userName)
@@ -223,14 +221,9 @@ describe('@hubot leave my team', () => {
       return room.user.say(userName, '@hubot leave my team');
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [userName, '@hubot leave my team'],
-        ['hubot', `@${userName} I'm sorry, there appears to be a big problem!`],
       ]);
     });
   });
@@ -241,13 +234,12 @@ describe('@hubot leave my team', () => {
     after(tearDown);
 
     let userName: string;
-    let error: Error;
-    let emitStub: sinon.SinonStub;
 
     before(() => {
       userName = 'sarah';
-      error = new Error('when removeTeamMember fails');
+      const error = new Error('when removeTeamMember fails');
 
+      sinon.stub(robot, 'emit');
       sinon.stub(robot.client, 'getUser').returns(Promise.resolve({
         ok: true,
         user: {
@@ -256,7 +248,6 @@ describe('@hubot leave my team', () => {
       }));
 
       sinon.stub(robot.client, 'removeTeamMember').returns(Promise.reject(error));
-      emitStub = sinon.stub(robot, 'emit');
 
       sinon.stub(dataStore, 'getUserById')
         .withArgs(userName)
@@ -265,14 +256,9 @@ describe('@hubot leave my team', () => {
       return room.user.say(userName, '@hubot leave my team');
     });
 
-    it('should emit the error', () => {
-      expect(emitStub).to.have.been.calledWith('error', error, sinon.match.object);
-    });
-
-    it('should tell the user that there is a problem', () => {
+    it('should not respond', () => {
       expect(room.messages).to.eql([
         [userName, '@hubot leave my team'],
-        ['hubot', `@${userName} I\'m sorry, there appears to be a big problem!`],
       ]);
     });
   });
