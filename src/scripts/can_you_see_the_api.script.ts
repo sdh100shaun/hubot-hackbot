@@ -1,6 +1,6 @@
-import { AsyncRobot } from '../async';
+import { AugmentedRobot } from '../async';
 
-export default (robot: AsyncRobot) => {
+export default (robot: AugmentedRobot) => {
   robot.respondAsync(/can you see the api\??/i, async (response) => {
     response.reply(`I'll have a quick look for you...`);
 

@@ -1,6 +1,6 @@
-import { AsyncRobot } from '../async';
+import { AugmentedRobot } from '../async';
 
-export default (robot: AsyncRobot) => {
+export default (robot: AugmentedRobot) => {
 
   robot.respondAsync(/tell me about @([a-z0-9.\-_]+)/i, async (response) => {
     const username = response.match[1];

@@ -1,6 +1,6 @@
-import { AsyncRobot } from '../async';
+import { AugmentedRobot } from '../async';
 
-export default (robot: AsyncRobot) => {
+export default (robot: AugmentedRobot) => {
 
   robot.respondAsync(/our motto is (.*)/i, async (response) => {
     const user = robot.adapter.client.rtm.dataStore.getUserById(response.message.user.id);

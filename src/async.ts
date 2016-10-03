@@ -1,7 +1,7 @@
 import { Robot, Response } from 'hubot';
 import { RobotWithClient } from './hackbot';
 
-export interface AsyncRobot extends RobotWithClient {
+export interface AugmentedRobot extends RobotWithClient {
   respondAsync(regex: RegExp, options: any, callback: (res: Response) => PromiseLike<void>): void;
   respondAsync(regex: RegExp, callback: (res: Response) => PromiseLike<void>): void;
 }
@@ -15,7 +15,7 @@ function respondAsync(regex: RegExp, options: any, callback: (res: Response) => 
 }
 
 export function AugmentRobot(robot: Robot) {
-  const asyncRobot: AsyncRobot = <any> robot;
+  const asyncRobot: AugmentedRobot = <any> robot;
   asyncRobot.respondAsync = respondAsync.bind(robot);
   return asyncRobot;
 }

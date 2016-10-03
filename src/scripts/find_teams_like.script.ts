@@ -1,6 +1,6 @@
-import { AsyncRobot } from '../async';
+import { AugmentedRobot } from '../async';
 
-export default (robot: AsyncRobot) => {
+export default (robot: AugmentedRobot) => {
 
   robot.respondAsync(/find teams like (.*)/i, async (response) => {
     const nameFilter = response.match[1];

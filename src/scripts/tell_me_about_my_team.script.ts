@@ -1,6 +1,6 @@
-import { AsyncRobot } from '../async';
+import { AugmentedRobot } from '../async';
 
-export default (robot: AsyncRobot) => {
+export default (robot: AugmentedRobot) => {
 
   robot.respondAsync(/tell me about my team/i, async (response) => {
     const userId = response.message.user.id;

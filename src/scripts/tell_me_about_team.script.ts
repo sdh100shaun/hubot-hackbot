@@ -1,7 +1,7 @@
-import { AsyncRobot } from '../async';
+import { AugmentedRobot } from '../async';
 import * as slug from 'slug';
 
-export default (robot: AsyncRobot) => {
+export default (robot: AugmentedRobot) => {
 
   robot.respondAsync(/tell me about team (.*)/i, async (response) => {
     const teamId = slug(response.match[1], { lower: true });

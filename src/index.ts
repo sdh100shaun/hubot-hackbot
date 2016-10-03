@@ -23,7 +23,7 @@
 import Client from './client';
 import { RobotWithClient } from './hackbot';
 import Config, { loadConfig } from './config';
-import { AugmentRobot, AsyncRobot } from './async';
+import { AugmentRobot, AugmentedRobot } from './async';
 
 import ErrorScript from './scripts/error.script';
 
@@ -49,7 +49,7 @@ function load(robot: RobotWithClient) {
 
   ErrorScript(robot);
 
-  const augmentedRobot: AsyncRobot = AugmentRobot(robot);
+  const augmentedRobot: AugmentedRobot = AugmentRobot(robot);
 
   AddUsernameToMyTeamScript(augmentedRobot);
   CanYouSeeTheApiScript(augmentedRobot);

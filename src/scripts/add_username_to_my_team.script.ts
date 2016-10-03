@@ -1,27 +1,27 @@
 import { Response } from 'hubot';
-import { AsyncRobot } from '../async';
+import { AugmentedRobot } from '../async';
 
 async function addUserToTeam(
-  robot: AsyncRobot,
+  robot: AugmentedRobot,
   response: Response,
   teamId: string,
   otherUserId: string,
   otherUsername: string,
   emailAddress: string
 ) {
-  const _res = await robot.client.addUserToTeam(teamId, otherUserId, emailAddress);
-  if (_res.statusCode === 400) {
+  const res = await robot.client.addUserToTeam(teamId, otherUserId, emailAddress);
+  if (res.statusCode === 400) {
     return response.reply(`Sorry, ${otherUsername} is already in another team and must leave that team first.`);
   }
 
-  if (_res.statusCode === 403) {
+  if (res.statusCode === 403) {
     return response.reply(`Sorry, you don't have permission to add people to your team.`);
   }
 
   response.reply('Done!');
 }
 
-export default (robot: AsyncRobot) => {
+export default (robot: AugmentedRobot) => {
 
   robot.respondAsync(/add @([a-z0-9.\-_]+)\s+to my team/, async (response) => {
     const otherUsername = response.match[1];
