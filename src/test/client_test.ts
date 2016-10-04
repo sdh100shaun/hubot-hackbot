@@ -248,6 +248,95 @@ describe('Hack24 API Client', () => {
     });
   });
 
+  describe('#removeTeam', () => {
+
+    describe('when request succeeds', () => {
+
+      let server: Server;
+      let teamId: string;
+      let expectedAuth: string | string[];
+      let authorization: string | string[];
+      let result: any;
+
+      before((done) => {
+        const pass = 'sky';
+        const emailAddress = 'john@example.com';
+
+        const api = express();
+
+        teamId = 'whatever';
+        expectedAuth = `Basic ${new Buffer(`${emailAddress}:${pass}`).toString('base64')}`;
+
+        api.delete(`/teams/${teamId}`, apiJsonParser, (req: RequestWithBody, res: express.Response) => {
+          authorization = req.headers['authorization'];
+          res.sendStatus(204);
+        });
+
+        const client = new Client('http://localhost:12345', pass);
+
+        server = api.listen(12345, () => {
+          client.removeTeam(teamId, emailAddress)
+            .then(res => {
+              result = res;
+              done();
+            })
+            .catch(done);
+        });
+      });
+
+      after((done) => {
+        server.close(done);
+      });
+
+      it('should resolve with status code 204 No Content', () => {
+        expect(result.statusCode).to.equal(204);
+      });
+
+      it('should resolve with OK', () => {
+        expect(result.ok).to.be.true;
+      });
+
+      it('should request with the expected authorization', () => {
+        expect(authorization).to.equal(expectedAuth);
+      });
+    });
+
+    describe('when request errors', () => {
+
+      let server: Server;
+      let error: Error;
+
+      before((done) => {
+        const api = express();
+
+        api.use((req: express.Request, res: ResponseWithSocket) => {
+          res.socket.destroy();
+        });
+
+        const client = new Client('http://localhost:12345', 'adsa');
+
+        server = api.listen(12345, () => {
+          client.removeTeam('some team', 'some user')
+            .then(() => {
+              done(new Error('Promise resolved'));
+            })
+            .catch((err) => {
+              error = err;
+              done();
+            });
+        });
+      });
+
+      after((done) => {
+        server.close(done);
+      });
+
+      it('should reject with an error', () => {
+        expect(error.message).to.equal('socket hang up');
+      });
+    });
+  });
+
   describe('#getUser', () => {
 
     describe('when user exists and in a team', () => {

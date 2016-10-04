@@ -74,6 +74,22 @@ export default class Client {
     });
   }
 
+  public removeTeam(teamId: string, emailAddress: string) {
+    return new Promise<ApiResponse>((resolve, reject) => {
+      this.createClient(`/teams/${teamId}`, { auth: this.getAuth(emailAddress) })
+        .delete('')((err, res) => {
+          if (err) {
+            return reject(err);
+          }
+
+          resolve({
+            ok: res.statusCode === 204,
+            statusCode: res.statusCode,
+          });
+        });
+    });
+  }
+
   public createUser(userId: string, userName: string, emailAddress: string) {
     return new Promise<ApiResponse>((resolve, reject) => {
       const body = JSON.stringify({

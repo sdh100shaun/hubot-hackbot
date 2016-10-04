@@ -13,14 +13,22 @@ export default (robot: AugmentedRobot) => {
     const emailAddress = user.profile.email;
 
     const removeTeamMemberResponse = await robot.client.removeTeamMember(res.user.team.id, user.id, emailAddress);
-    if (removeTeamMemberResponse.ok) {
-      return response.reply(`OK, you've been removed from team "${res.user.team.name}"`);
-    }
+
     if (removeTeamMemberResponse.statusCode === 403) {
       return response.reply(`Sorry, you don't have permission to leave your team.`);
     }
+    if (!removeTeamMemberResponse.ok) {
+      response.reply(`Sorry, I tried, but something went wrong.`);
+    }
 
-    response.reply(`Sorry, I tried, but something went wrong.`);
+    if (res.user.team.members && res.user.team.members.length === 1) {
+      const removeTeamResponse = await robot.client.removeTeam(res.user.team.id, emailAddress);
+      if (removeTeamResponse.ok) {
+        return response.reply(`OK, you've been removed from team "${res.user.team.name}" and the team has been deleted.`);
+      }
+    }
+
+    return response.reply(`OK, you've been removed from team "${res.user.team.name}"`);
   });
 
 };
