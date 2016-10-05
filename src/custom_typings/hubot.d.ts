@@ -30,7 +30,7 @@ declare module "hubot" {
   }
 
   class Message {
-    constructor(user: User);
+    constructor(user: User, done?: boolean);
 
     user: User;
     text: string;
@@ -42,8 +42,14 @@ declare module "hubot" {
   class EnterMessage extends Message { }
   class LeaveMessage extends Message { }
   class TopicMessage extends Message { }
-  class TextMessage extends Message { }
+
+  class TextMessage extends Message {
+    constructor(user: User, text: string, id: string);
+  }
+
   class CatchAllMessage extends Message {
+    constructor(message: Message);
+
     message: Message;
   }
 
@@ -137,6 +143,13 @@ declare module "hubot" {
     on(event: string, listener: (arg: any) => void): void;
     send(envelope: IEnvelope, ...messages: string[]): void;
     reply(envelope: IEnvelope, ...messages: Message[]): void;
+    hear(regex: RegExp, options: any, callback: (res: Response) => void): void;
+    hear(regex: RegExp, callback: (res: Response) => void): void;
+    catchAll(options: any, callback: (res: Response) => void): void;
+    catchAll(callback: (res: Response) => void): void;
+
+    receive(message: Message, callback: () => void): void;
+    receive(message: Message): void;
 
     loadFile(path: string, file: string): void;
     load(path: string): void;

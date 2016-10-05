@@ -1,5 +1,5 @@
 import { Response } from 'hubot';
-import { AugmentedRobot } from '../async';
+import { AugmentedRobot } from '../augmented_robot';
 
 async function addUserToTeam(
   robot: AugmentedRobot,
