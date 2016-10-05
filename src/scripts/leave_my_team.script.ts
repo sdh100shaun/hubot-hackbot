@@ -21,11 +21,9 @@ export default (robot: AugmentedRobot) => {
       response.reply(`Sorry, I tried, but something went wrong.`);
     }
 
-    if (res.user.team.members && res.user.team.members.length === 1) {
-      const removeTeamResponse = await robot.client.removeTeam(res.user.team.id, emailAddress);
-      if (removeTeamResponse.ok) {
-        return response.reply(`OK, you've been removed from team "${res.user.team.name}" and the team has been deleted.`);
-      }
+    const removeTeamResponse = await robot.client.removeTeam(res.user.team.id, emailAddress);
+    if (removeTeamResponse.ok) {
+      return response.reply(`OK, you've been removed from team "${res.user.team.name}" and the team has been deleted.`);
     }
 
     return response.reply(`OK, you've been removed from team "${res.user.team.name}"`);
