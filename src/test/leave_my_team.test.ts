@@ -36,6 +36,7 @@ describe('@hubot leave my team', () => {
     let existingTeamName: string;
     let getUserStub: sinon.SinonStub;
     let removeTeamMemberStub: sinon.SinonStub;
+    let removeTeamStub: sinon.SinonStub;
 
     before(() => {
       userName = 'micah';
@@ -54,6 +55,8 @@ describe('@hubot leave my team', () => {
       }));
 
       removeTeamMemberStub = sinon.stub(robot.client, 'removeTeamMember').returns(Promise.resolve({ ok: true }));
+
+      removeTeamStub = sinon.stub(robot.client, 'removeTeam').returns(Promise.resolve({ ok: false }));
 
       sinon.stub(dataStore, 'getUserById')
         .withArgs(userName)
@@ -103,9 +106,6 @@ describe('@hubot leave my team', () => {
           team: {
             id: existingTeamId,
             name: existingTeamName,
-            members: [{
-              name: 'a',
-            }],
           },
         },
       }));
