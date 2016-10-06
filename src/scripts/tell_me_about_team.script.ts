@@ -1,4 +1,4 @@
-import { AugmentedRobot } from '../async';
+import { AugmentedRobot } from '../augmented_robot';
 import * as slug from 'slug';
 
 export default (robot: AugmentedRobot) => {

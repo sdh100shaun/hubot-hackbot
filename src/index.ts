@@ -23,7 +23,7 @@
 import Client from './client';
 import { RobotWithClient } from './hackbot';
 import Config, { loadConfig } from './config';
-import { AugmentRobot, AugmentedRobot } from './async';
+import { AugmentRobot, AugmentedRobot } from './augmented_robot';
 
 import ErrorScript from './scripts/error.script';
 
@@ -38,6 +38,7 @@ import PrimeDirectivesScript from './scripts/prime_directives.script';
 import TellMeAboutMyTeamScript from './scripts/tell_me_about_my_team.script';
 import TellMeAboutTeamScript from './scripts/tell_me_about_team.script';
 import TellMeAboutUsername from './scripts/tell_me_about_username.script';
+import OkHackbot from './scripts/ok_hackbot.script';
 
 function load(robot: RobotWithClient) {
   loadConfig(robot.logger.error.bind(robot.logger));
@@ -62,6 +63,7 @@ function load(robot: RobotWithClient) {
   TellMeAboutMyTeamScript(augmentedRobot);
   TellMeAboutTeamScript(augmentedRobot);
   TellMeAboutUsername(augmentedRobot);
+  OkHackbot(augmentedRobot);
 }
 
 export = load;

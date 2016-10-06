@@ -1,5 +1,5 @@
 declare module 'hubot-test-helper' {
-  import { Robot, User as HubotUser } from 'hubot';
+  import { Robot, User as HubotUser, Message, Adapter } from 'hubot';
 
   var hth: hth.Helper;
 
@@ -7,6 +7,7 @@ declare module 'hubot-test-helper' {
     interface CreateRoomOptions { }
 
     interface User extends HubotUser {
+      say(userName: string, message: Message): Promise<void>;
       say(userName: string, message: string): Promise<void>;
       enter(userName: string): Promise<void>;
       leave(userName: string): Promise<void>;
@@ -17,11 +18,13 @@ declare module 'hubot-test-helper' {
       createRoom(options?: CreateRoomOptions): Room;
     }
 
-    interface Room {
-      destroy(): void;
+    interface Room extends Adapter {
       user: User;
       messages: [string, string][];
       robot: Robot;
+
+      receive(userName: string, message: string): Promise<void>;
+      destroy(): void;
     }
   }
 
