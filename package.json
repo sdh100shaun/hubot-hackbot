@@ -8,13 +8,12 @@
   ],
   "description": "Hackbot is here to help you hack",
   "scripts": {
-    "typings": "cd src && typings i",
     "clean": "rimraf build",
     "lint": "tslint -c src/tslint.json -e \"src/**/*.d.ts\" \"src/**/*.ts\"",
     "prebuild": "npm run lint && npm run clean",
     "build": "tsc -p src",
     "test": "mocha -R dot --compilers coffee:coffee-script/register --require source-map-support/register --recursive build",
-    "prepublish": "npm run typings && npm run build && npm test"
+    "prepublish": "npm run build && npm test"
   },
   "main": "build/index.js",
   "engines": {
