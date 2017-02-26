@@ -5,6 +5,8 @@
     "outDir": "../build",
     "rootDir": ".",
     "sourceMap": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true
   }
 }
