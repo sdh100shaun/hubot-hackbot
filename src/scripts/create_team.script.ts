@@ -8,7 +8,6 @@ export default (robot: AugmentedRobot) => {
     const teamName = response.match[1]
 
     const res = await robot.client.getUser(user.id)
-    console.log('res', res)
 
     const emailAddress = user.profile.email
 
