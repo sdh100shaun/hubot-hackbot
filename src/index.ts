@@ -20,50 +20,50 @@
 //   David Wood <david.p.wood@gmail.com>
 //
 
-import Client from './client';
-import { RobotWithClient } from './hackbot';
-import Config, { loadConfig } from './config';
-import { AugmentRobot, AugmentedRobot } from './augmented_robot';
+import Client from './client'
+import { RobotWithClient } from './hackbot'
+import Config, { loadConfig } from './config'
+import { AugmentRobot, AugmentedRobot } from './augmented_robot'
 
-import ErrorScript from './scripts/error.script';
+import ErrorScript from './scripts/error.script'
 
-import AddUsernameToMyTeamScript from './scripts/add_username_to_my_team.script';
-import CanYouSeeTheApiScript from './scripts/can_you_see_the_api.script';
-import CreateTeamScript from './scripts/create_team.script';
-import FindTeamsLikeScript from './scripts/find_teams_like.script';
-import LeaveMyTeamScript from './scripts/leave_my_team.script';
-import MyIdScript from './scripts/my_id.script';
-import OurMottoIsScript from './scripts/our_motto_is.script';
-import PrimeDirectivesScript from './scripts/prime_directives.script';
-import TellMeAboutMyTeamScript from './scripts/tell_me_about_my_team.script';
-import TellMeAboutTeamScript from './scripts/tell_me_about_team.script';
-import TellMeAboutUsername from './scripts/tell_me_about_username.script';
-import OkHackbot from './scripts/ok_hackbot.script';
+import AddUsernameToMyTeamScript from './scripts/add_username_to_my_team.script'
+import CanYouSeeTheApiScript from './scripts/can_you_see_the_api.script'
+import CreateTeamScript from './scripts/create_team.script'
+import FindTeamsLikeScript from './scripts/find_teams_like.script'
+import LeaveMyTeamScript from './scripts/leave_my_team.script'
+import MyIdScript from './scripts/my_id.script'
+import OurMottoIsScript from './scripts/our_motto_is.script'
+import PrimeDirectivesScript from './scripts/prime_directives.script'
+import TellMeAboutMyTeamScript from './scripts/tell_me_about_my_team.script'
+import TellMeAboutTeamScript from './scripts/tell_me_about_team.script'
+import TellMeAboutUsername from './scripts/tell_me_about_username.script'
+import OkHackbot from './scripts/ok_hackbot.script'
 
 function load(robot: RobotWithClient) {
-  loadConfig(robot.logger.error.bind(robot.logger));
+  loadConfig(robot.logger.error.bind(robot.logger))
 
-  robot.logger.debug(`HACKBOT_ERROR_CHANNEL set to ${Config.HACKBOT_ERROR_CHANNEL.value}`);
-  robot.logger.debug(`HACKBOT_API_URL set to ${Config.HACKBOT_API_URL.value}`);
+  robot.logger.debug(`HACKBOT_ERROR_CHANNEL set to ${Config.HACKBOT_ERROR_CHANNEL.value}`)
+  robot.logger.debug(`HACKBOT_API_URL set to ${Config.HACKBOT_API_URL.value}`)
 
-  robot.client = new Client(Config.HACKBOT_API_URL.value, Config.HACKBOT_API_PASSWORD.value, robot);
+  robot.client = new Client(Config.HACKBOT_API_URL.value, Config.HACKBOT_API_PASSWORD.value, robot)
 
-  ErrorScript(robot);
+  ErrorScript(robot)
 
-  const augmentedRobot: AugmentedRobot = AugmentRobot(robot);
+  const augmentedRobot: AugmentedRobot = AugmentRobot(robot)
 
-  AddUsernameToMyTeamScript(augmentedRobot);
-  CanYouSeeTheApiScript(augmentedRobot);
-  CreateTeamScript(augmentedRobot);
-  FindTeamsLikeScript(augmentedRobot);
-  LeaveMyTeamScript(augmentedRobot);
-  MyIdScript(robot);
-  OurMottoIsScript(augmentedRobot);
-  PrimeDirectivesScript(robot);
-  TellMeAboutMyTeamScript(augmentedRobot);
-  TellMeAboutTeamScript(augmentedRobot);
-  TellMeAboutUsername(augmentedRobot);
-  OkHackbot(augmentedRobot);
+  AddUsernameToMyTeamScript(augmentedRobot)
+  CanYouSeeTheApiScript(augmentedRobot)
+  CreateTeamScript(augmentedRobot)
+  FindTeamsLikeScript(augmentedRobot)
+  LeaveMyTeamScript(augmentedRobot)
+  MyIdScript(robot)
+  OurMottoIsScript(augmentedRobot)
+  PrimeDirectivesScript(robot)
+  TellMeAboutMyTeamScript(augmentedRobot)
+  TellMeAboutTeamScript(augmentedRobot)
+  TellMeAboutUsername(augmentedRobot)
+  OkHackbot(augmentedRobot)
 }
 
-export = load;
+export = load

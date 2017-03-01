@@ -1,26 +1,26 @@
-import { Robot } from 'hubot-slack';
-import Config from '../config';
+import { Robot } from 'hubot-slack'
+import Config from '../config'
 
 export default (robot: Robot) => {
 
   robot.error((err, response) => {
-    let fallback = `Error: ${err.message}`;
+    let fallback = `Error: ${err.message}`
     let text = `\`\`\`
 Error: ${err.stack}
-\`\`\``;
+\`\`\``
 
     if (response) {
-      response.reply('Uhh, sorry, I just experienced an error :goberserk:');
+      response.reply('Uhh, sorry, I just experienced an error :goberserk:')
 
-      const user = response.envelope.user;
+      const user = response.envelope.user
       fallback = `Error responding to message from @${user.name}
 Command: ${response.message.text}
-${fallback}`;
+${fallback}`
       text = `Error responding to message from @${user.name}
 \`\`\`
 Command: ${response.message.text}
 \`\`\`
-${text}`;
+${text}`
   }
 
     robot.send({ room: Config.HACKBOT_ERROR_CHANNEL.value }, {
@@ -31,6 +31,6 @@ ${text}`;
         text: text,
         mrkdwn_in: ['text'],
       }],
-    });
-  });
-};
+    })
+  })
+}

@@ -1,8 +1,8 @@
 interface ConfigValue<T> {
-  required: boolean;
-  default: T;
-  loader: (value: string) => T;
-  value: T;
+  required: boolean
+  default: T
+  loader: (value: string) => T
+  value: T
 }
 
 const Config = {
@@ -21,26 +21,26 @@ const Config = {
     default: [],
     loader: (value: string) => value.split(','),
   },
-};
+}
 
 function loadEnv<T>(name: string, env: ConfigValue<T>, errorReporter: (msg: string) => void) {
-  const value = process.env[name];
+  const value = process.env[name]
   if (value !== undefined) {
     if (env.loader !== undefined) {
-      env.value = env.loader(value);
+      env.value = env.loader(value)
     } else {
-      env.value = <any> value;
+      env.value = <any> value
     }
   } else {
     if (env.required) {
-      return errorReporter(`Environment variable ${name} is required`);
+      return errorReporter(`Environment variable ${name} is required`)
     }
-    env.value = env.default;
+    env.value = env.default
   }
 }
 
 export function loadConfig(errorReporter: (msg: string) => void) {
-  Object.keys(Config).forEach(key => loadEnv(key, (<any> Config)[key], errorReporter));
+  Object.keys(Config).forEach((key) => loadEnv(key, (<any> Config)[key], errorReporter))
 }
 
-export default Config;
+export default Config
