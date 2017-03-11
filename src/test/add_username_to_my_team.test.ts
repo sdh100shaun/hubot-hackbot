@@ -155,7 +155,7 @@ describe('@hubot add @username to my team', () => {
       return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`)
     })
 
-    it('shouldtell the user that they are not in a team', () => {
+    it('should tell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
         [userName, `@hubot add @${otherUserUsername} to my team`],
         ['hubot', `@${userName} I would, but you're not in a team...`],
@@ -263,6 +263,55 @@ describe('@hubot add @username to my team', () => {
       expect(room.messages).to.eql([
         [userName, `@hubot add @${otherUserUsername} to my team`],
         ['hubot', `@${userName} Sorry, ${otherUserUsername} is already in another team and must leave that team first.`],
+      ])
+    })
+  })
+
+  describe('when other user is a bot', () => {
+
+    before(setUp)
+    after(tearDown)
+
+    const { id: userId, name: userName } = random.user()
+    const { id: otherUserId, name: otherUserUsername } = random.otheruser()
+    const { id: existingTeamId, name: existingTeamName } = random.team()
+    let getUserStub: sinon.SinonStub
+    let addUserToTeamStub: sinon.SinonStub
+
+    before(() => {
+      getUserStub = sinon.stub(robot.client, 'getUser')
+      getUserStub
+        .withArgs(userId)
+        .returns(Promise.resolve({
+          ok: true,
+          user: {
+            team: {
+              id: existingTeamId,
+              name: existingTeamName,
+            },
+          },
+        }))
+        .withArgs(otherUserId)
+        .returns(Promise.resolve({
+          ok: true,
+          statusCode: 200,
+        }))
+
+      addUserToTeamStub = sinon.stub(robot.client, 'addUserToTeam').returns(Promise.resolve({ ok: true }))
+
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(userName)
+        .returns({ id: userId } as User)
+        .withArgs(otherUserUsername)
+        .returns({ id: otherUserId, name: otherUserUsername, is_bot: true } as User)
+
+      return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`)
+    })
+
+    it('should tell the user that the other user is a bot', () => {
+      expect(room.messages).to.eql([
+        [userName, `@hubot add @${otherUserUsername} to my team`],
+        ['hubot', `@${userName} I would, but @${otherUserUsername} is a bot and can't code, yet...`],
       ])
     })
   })
