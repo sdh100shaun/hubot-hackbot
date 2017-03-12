@@ -18,7 +18,7 @@ declare module 'scoped-http-client' {
   export interface ClientOptions {
     auth?: string;
   }
-  
+
   export interface ScopedClientConstructor {
     (url: string, options?: ClientOptions): Client;
   }
