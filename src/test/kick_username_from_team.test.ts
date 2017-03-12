@@ -6,7 +6,7 @@ import { MemoryDataStore, User } from '@slack/client'
 import * as Helper from 'hubot-test-helper'
 import * as random from './random'
 
-describe('@hubot leave my team', () => {
+describe('@hubot kick @username from my team', () => {
 
   let helper: Helper.Helper
   let room: Helper.Room
@@ -26,15 +26,15 @@ describe('@hubot leave my team', () => {
     room.destroy()
   }
 
-  describe('when in a team', () => {
+  describe('when in the same team', () => {
 
     before(setUp)
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { id: existingTeamId, name: existingTeamName } = random.team()
+    const { id: otherUserId, name: otherUsername } = random.user()
+    const { id: teamId, name: teamName } = random.team()
     let removeTeamMemberStub: sinon.SinonStub
-    let removeTeamStub: sinon.SinonStub
 
     before(() => {
       sinon.stub(robot.client, 'getUser')
@@ -43,95 +43,84 @@ describe('@hubot leave my team', () => {
           ok: true,
           user: {
             team: {
-              id: existingTeamId,
-              name: existingTeamName,
+              id: teamId,
+              name: teamName,
             },
           },
         }))
 
       removeTeamMemberStub = sinon.stub(robot.client, 'removeTeamMember').returns(Promise.resolve({ ok: true }))
-      removeTeamStub = sinon.stub(robot.client, 'removeTeam').returns(Promise.resolve({ ok: false }))
 
       sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUsername)
+        .returns({ id: otherUserId } as User)
         .withArgs(userName)
         .returns({ id: userId } as User)
 
-      return room.user.say(userName, '@hubot leave my team')
+      return room.user.say(userName, `@hubot kick @${otherUsername} from my team`)
     })
 
     it('should remove the user from the team', () => {
-      expect(removeTeamMemberStub).to.have.been.calledWith(existingTeamId, userId, userId)
+      expect(removeTeamMemberStub).to.have.been.calledWith(teamId, otherUserId, userId)
     })
 
-    it('should attempt to remove the team', () => {
-      expect(removeTeamStub).to.have.been.calledWith(existingTeamId, userId)
-    })
-
-    it('should tell the user that they have left the team', () => {
+    it('should tell the user that the command has completed', () => {
       expect(room.messages).to.eql([
-        [userName, '@hubot leave my team'],
-        ['hubot', `@${userName} OK, you've been removed from team "${existingTeamName}"`],
+        [userName, `@hubot kick @${otherUsername} from my team`],
+        ['hubot', `@${userName} Done!`],
       ])
     })
   })
 
-  describe('when in a team and only member of the team', () => {
+  describe('when the current user is not in a team', () => {
 
     before(setUp)
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { id: existingTeamId, name: existingTeamName } = random.team()
-    let getUserStub: sinon.SinonStub
+    const { name: otherUsername } = random.user()
+    let removeTeamMemberSpy: sinon.SinonSpy
+
+    before(() => {
+      sinon.stub(robot.client, 'getUser')
+        .withArgs(userId)
+        .returns(Promise.resolve({
+          ok: true,
+          user: {
+            team: {},
+          },
+        }))
+
+      removeTeamMemberSpy = sinon.spy(robot.client, 'removeTeamMember')
+
+      sinon.stub(dataStore, 'getUserByName')
+        .withArgs(userName)
+        .returns({ id: userId } as User)
+
+      return room.user.say(userName, `@hubot kick @${otherUsername} from my team`)
+    })
+
+    it('should not remove the user from the team', () => {
+      expect(removeTeamMemberSpy).to.not.have.been.called
+    })
+
+    it('should tell the user that the command has failed', () => {
+      expect(room.messages).to.eql([
+        [userName, `@hubot kick @${otherUsername} from my team`],
+        ['hubot', `@${userName} I would, but you're not in a team...`],
+      ])
+    })
+  })
+
+  describe('when the @username is not in the same team', () => {
+
+    before(setUp)
+    after(tearDown)
+
+    const { id: userId, name: userName } = random.user()
+    const { id: otherUserId, name: otherUsername } = random.user()
+    const { id: teamId, name: teamName } = random.team()
     let removeTeamMemberStub: sinon.SinonStub
-    let removeTeamStub: sinon.SinonStub
-
-    before(() => {
-      getUserStub = sinon.stub(robot.client, 'getUser')
-        .withArgs(userId)
-        .returns(Promise.resolve({
-          ok: true,
-          user: {
-            team: {
-              id: existingTeamId,
-              name: existingTeamName,
-            },
-          },
-        }))
-
-      removeTeamMemberStub = sinon.stub(robot.client, 'removeTeamMember').returns(Promise.resolve({ ok: true }))
-      removeTeamStub = sinon.stub(robot.client, 'removeTeam').returns(Promise.resolve({ ok: true }))
-
-      sinon.stub(dataStore, 'getUserByName')
-        .withArgs(userName)
-        .returns({ id: userId } as User)
-
-      return room.user.say(userName, '@hubot leave my team')
-    })
-
-    it('should remove the user from the team', () => {
-      expect(removeTeamMemberStub).to.have.been.calledWith(existingTeamId, userId, userId)
-    })
-
-    it('should remove the team', () => {
-      expect(removeTeamStub).to.have.been.calledWith(existingTeamId, userId)
-    })
-
-    it('should tell the user that they have left the team and that the team has been deleted', () => {
-      expect(room.messages).to.eql([
-        [userName, '@hubot leave my team'],
-        ['hubot', `@${userName} OK, you've been removed from team "${existingTeamName}" and the team has been deleted.`],
-      ])
-    })
-  })
-
-  describe('when not a registered attendee', () => {
-
-    before(setUp)
-    after(tearDown)
-
-    const { id: userId, name: userName } = random.user()
-    const { id: existingTeamId, name: existingTeamName } = random.team()
 
     before(() => {
       sinon.stub(robot.client, 'getUser')
@@ -140,62 +129,27 @@ describe('@hubot leave my team', () => {
           ok: true,
           user: {
             team: {
-              id: existingTeamId,
-              name: existingTeamName,
+              id: teamId,
+              name: teamName,
             },
           },
         }))
 
-      sinon.stub(robot.client, 'removeTeamMember').returns(Promise.resolve({
-        ok: false,
-        statusCode: 403,
-      }))
+      removeTeamMemberStub = sinon.stub(robot.client, 'removeTeamMember').returns(Promise.resolve({ ok: false, statusCode: 400 }))
 
       sinon.stub(dataStore, 'getUserByName')
+        .withArgs(otherUsername)
+        .returns({ id: otherUserId } as User)
         .withArgs(userName)
         .returns({ id: userId } as User)
 
-      return room.user.say(userName, '@hubot leave my team')
+      return room.user.say(userName, `@hubot kick @${otherUsername} from my team`)
     })
 
-    it('should tell the user that they have left the team', () => {
+    it('should tell the user that the command has failed', () => {
       expect(room.messages).to.eql([
-        [userName, '@hubot leave my team'],
-        ['hubot', `@${userName} Sorry, you don't have permission to leave your team.`],
-      ])
-    })
-  })
-
-  describe('when not in a team', () => {
-
-    before(setUp)
-    after(tearDown)
-
-    const { id: userId, name: userName } = random.user()
-
-    before(() => {
-      sinon.stub(robot.client, 'getUser')
-        .withArgs(userId)
-        .returns(Promise.resolve({
-          ok: true,
-          user: {
-            team: {
-              id: undefined,
-            },
-          },
-        }))
-
-      sinon.stub(dataStore, 'getUserByName')
-        .withArgs(userName)
-        .returns({ id: userId } as User)
-
-      return room.user.say(userName, '@hubot leave my team')
-    })
-
-    it('should tell the user that they are not in a team', () => {
-      expect(room.messages).to.eql([
-        [userName, '@hubot leave my team'],
-        ['hubot', `@${userName} You're not in a team! :goberserk:`],
+        [userName, `@hubot kick @${otherUsername} from my team`],
+        ['hubot', `@${userName} Sorry, I can't because @${otherUsername} is not in your team...`],
       ])
     })
   })
@@ -206,6 +160,7 @@ describe('@hubot leave my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
+    const { name: otherUsername } = random.user()
 
     before(() => {
       sinon.stub(robot.client, 'getUser')
@@ -219,12 +174,12 @@ describe('@hubot leave my team', () => {
         .withArgs(userName)
         .returns({ id: userId } as User)
 
-      return room.user.say(userName, '@hubot leave my team')
+      return room.user.say(userName, `@hubot kick @${otherUsername} from my team`)
     })
 
     it('should tell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
-        [userName, '@hubot leave my team'],
+        [userName, `@hubot kick @${otherUsername} from my team`],
         ['hubot', `@${userName} You're not in a team! :goberserk:`],
       ])
     })
@@ -236,6 +191,7 @@ describe('@hubot leave my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
+    const { name: otherUsername } = random.user()
 
     before(() => {
       const error = new Error('[test] when getUser fails')
@@ -247,12 +203,12 @@ describe('@hubot leave my team', () => {
         .withArgs(userName)
         .returns({ id: userId } as User)
 
-      return room.user.say(userName, '@hubot leave my team')
+      return room.user.say(userName, `@hubot kick @${otherUsername} from my team`)
     })
 
     it('should not respond', () => {
       expect(room.messages).to.eql([
-        [userName, '@hubot leave my team'],
+        [userName, `@hubot kick @${otherUsername} from my team`],
       ])
     })
   })
@@ -263,6 +219,7 @@ describe('@hubot leave my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
+    const { name: otherUsername } = random.user()
 
     before(() => {
       const error = new Error('[test] when removeTeamMember fails')
@@ -283,13 +240,14 @@ describe('@hubot leave my team', () => {
         .withArgs(userName)
         .returns({ id: userId } as User)
 
-      return room.user.say(userName, '@hubot leave my team')
+      return room.user.say(userName, `@hubot kick @${otherUsername} from my team`)
     })
 
     it('should not respond', () => {
       expect(room.messages).to.eql([
-        [userName, '@hubot leave my team'],
+        [userName, `@hubot kick @${otherUsername} from my team`],
       ])
     })
   })
+
 })

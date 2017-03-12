@@ -24,31 +24,31 @@
     "url": "https://github.com/TechNottingham/hubot-hackbot"
   },
   "dependencies": {
-    "body-parser": "^1.16.1",
-    "hubot-slack": "^4.3.2",
+    "body-parser": "^1.17.1",
+    "hubot-slack": "^4.3.3",
     "slug": "^0.9.1",
     "source-map-support": "^0.4.11",
     "yayson": "^2.0.3"
   },
   "devDependencies": {
-    "@types/body-parser": "0.0.34",
+    "@types/body-parser": "^1.16.0",
     "@types/chai": "^3.4.35",
     "@types/express": "^4.0.35",
-    "@types/mocha": "^2.2.39",
-    "@types/node": "^7.0.5",
+    "@types/mocha": "^2.2.40",
+    "@types/node": "^6.0.65",
     "@types/sinon": "^1.16.35",
     "@types/sinon-chai": "^2.7.27",
     "@types/yayson": "^2.0.1",
     "chai": "^3.5.0",
     "coffee-script": "^1.12.4",
-    "express": "^4.14.1",
+    "express": "^4.15.2",
     "hubot-test-helper": "^1.5.1",
     "mocha": "^3.2.0",
     "rimraf": "^2.6.1",
     "scoped-http-client": "^0.11.0",
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
-    "tslint": "^4.4.2",
+    "tslint": "^4.5.1",
     "typescript": "^2.2.1"
   },
   "keywords": [

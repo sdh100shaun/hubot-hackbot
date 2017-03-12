@@ -155,7 +155,7 @@ describe('@hubot add @username to my team', () => {
       return room.user.say(userName, `@hubot add @${otherUserUsername} to my team`)
     })
 
-    it('should tell the user that they are not in a team', () => {
+    it('shouldtell the user that they are not in a team', () => {
       expect(room.messages).to.eql([
         [userName, `@hubot add @${otherUserUsername} to my team`],
         ['hubot', `@${userName} I would, but you're not in a team...`],
