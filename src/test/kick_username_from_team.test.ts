@@ -32,7 +32,7 @@ describe('@hubot kick @username from my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { id: otherUserId, name: otherUsername } = random.user()
+    const { id: otherUserId, name: otherUsername } = random.otheruser()
     const { id: teamId, name: teamName } = random.team()
     let removeTeamMemberStub: sinon.SinonStub
 
@@ -78,7 +78,7 @@ describe('@hubot kick @username from my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { name: otherUsername } = random.user()
+    const { name: otherUsername } = random.otheruser()
     let removeTeamMemberSpy: sinon.SinonSpy
 
     before(() => {
@@ -118,7 +118,7 @@ describe('@hubot kick @username from my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { id: otherUserId, name: otherUsername } = random.user()
+    const { id: otherUserId, name: otherUsername } = random.otheruser()
     const { id: teamId, name: teamName } = random.team()
     let removeTeamMemberStub: sinon.SinonStub
 
@@ -160,7 +160,7 @@ describe('@hubot kick @username from my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { name: otherUsername } = random.user()
+    const { name: otherUsername } = random.otheruser()
 
     before(() => {
       sinon.stub(robot.client, 'getUser')
@@ -191,7 +191,7 @@ describe('@hubot kick @username from my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { name: otherUsername } = random.user()
+    const { name: otherUsername } = random.otheruser()
 
     before(() => {
       const error = new Error('[test] when getUser fails')
@@ -219,7 +219,7 @@ describe('@hubot kick @username from my team', () => {
     after(tearDown)
 
     const { id: userId, name: userName } = random.user()
-    const { name: otherUsername } = random.user()
+    const { name: otherUsername } = random.otheruser()
 
     before(() => {
       const error = new Error('[test] when removeTeamMember fails')

@@ -2,6 +2,7 @@
   "name": "hubot-hackbot",
   "version": "2.0.0",
   "author": "Andrew Seward <abseward@googlemail.com>",
+  "license": "GPL-3.0",
   "contributors": [
     "David Wood <david.p.wood@gmail.com> (http://codesleuth.co.uk/)",
     "Joshua Hawxwell <m@hawx.me> (http://hawx.me/)"

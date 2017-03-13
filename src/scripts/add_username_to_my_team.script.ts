@@ -37,6 +37,10 @@ export default (robot: AugmentedRobot) => {
 
     const otherUser = dataStore.getUserByName(otherUsername)
 
+    if (otherUser.is_bot) {
+      return response.reply(`I would, but @${otherUsername} is a bot and can't code, yet...`)
+    }
+
     const otherUserResponse = await robot.client.getUser(otherUser.id)
     if (otherUserResponse.ok) {
       return addUserToTeam(robot, response, teamId, otherUser.id, otherUsername, user.id)
